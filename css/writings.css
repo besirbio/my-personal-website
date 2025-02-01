@@ -1,0 +1,100 @@
+/* writings.css for writings.html */
+
+/* Global Styles */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  color: #333;
+  margin: 0;
+  padding: 0;
+  line-height: 1.8;
+}
+
+/* Header */
+header {
+  background: #007bff;
+  color: white;
+  text-align: center;
+  padding: 20px;
+}
+
+h1 {
+  margin: 0;
+  font-size: 2em;
+}
+
+/* Main Content Area */
+#writings-content {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Each Essay Preview */
+.writing-item {
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.writing-item h3 {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+}
+
+.writing-item p {
+  font-size: 1.1em;
+  text-align: justify;
+  margin-bottom: 10px;
+}
+
+/* Make the Essay Title a clickable link */
+.essay-title {
+  text-decoration: none;
+  color: #2a5d84;
+}
+
+.essay-title:hover {
+  text-decoration: underline;
+}
+
+/* Back Button */
+.back-button {
+  display: block;
+  width: fit-content;
+  margin: 20px auto;
+  padding: 10px 15px;
+  background: #007bff;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  text-align: center;
+  transition: background 0.3s;
+}
+
+.back-button:hover {
+  background: #0056b3;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  #writings-content {
+    max-width: 95%;
+    padding: 15px;
+  }
+  
+  h1 {
+    font-size: 1.8em;
+  }
+  
+  .writing-item h3 {
+    font-size: 1.3em;
+  }
+  
+  .writing-item p {
+    font-size: 1em;
+  }
+}
