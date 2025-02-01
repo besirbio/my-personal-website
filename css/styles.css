@@ -59,3 +59,28 @@ a {
 a:hover {
   text-decoration: underline;
 }
+
+
+footer {
+  text-align: center; /* Centers everything in the footer */
+  padding: 10px;
+}
+
+footer h3 {
+  margin-bottom: 10px; /* Adds space between the title and icons */
+}
+
+footer a {
+  display: inline-block; /* Keeps icons in a row */
+  margin: 0 10px; /* Adds spacing between icons */
+}
+
+footer a img {
+  width: 30px;
+  height: 30px;
+  transition: transform 0.3s;
+}
+
+footer a img:hover {
+  transform: scale(1.2); /* Slightly enlarges on hover */
+}
