@@ -20,15 +20,50 @@
   <!-- Rest of the content remains the same -->
   <section id="writings-content">
     
-    <div class="writing-item">
-      <h3><a href="essay1.html" class="essay-title">Understanding Stress: The Balance Between Survival Mechanism and Health Risk</a></h3>
-       <p>This essay explores the biological mechanisms of stress, emphasizing its evolutionary role in human survival. It explains how stress triggers physiological responses, such as the release of hormones like cortisol, adrenaline, and noradrenaline, which prepare the body for "fight or flight." While these processes are beneficial in the short term, the essay highlights the dangers of chronic stress, including its potential to cause various health issues like diabetes, heart disease, and autoimmune disorders. The piece also addresses the modern challenges that contribute to chronic stress and discusses strategies for managing it to avoid long-term health consequences.</p>
-    </div>
+    <style>
+.truncate-text {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.read-more {
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+    display: inline-block;
+    margin-top: 5px;
+}
+</style>
 
 <div class="writing-item">
-      <h3><a href="essay2.html" class="essay-title">Beyond the Horizon and Beyond from a Metaphysical Perspective</a></h3>
-       <p>"Beyond the Horizon and Beyond from a Metaphysical Perspective" by <strong>Sezai Karakoç</strong> is a reflective piece that delves into the ethical and spiritual implications of humanity’s relationship with the natural world. It examines the act of consuming animals, urging readers to consider it not as a natural right but as a blessing granted by the Creator. Through philosophical and religious lenses, Karakoç explores themes of responsibility, sacrifice, and the interconnectedness of all life, challenging readers to rethink their role in the natural order and the moral consequences of their actions. The work invites deep reflection on existence, purpose, and the greater responsibilities humanity holds in the world.</p>
-    </div>
+    <h3><a href="essay1.html" class="essay-title">Understanding Stress: The Balance Between Survival Mechanism and Health Risk</a></h3>
+    <p class="truncate-text">This essay explores the biological mechanisms of stress, emphasizing its evolutionary role in human survival. It explains how stress triggers physiological responses, such as the release of hormones like cortisol, adrenaline, and noradrenaline, which prepare the body for "fight or flight." While these processes are beneficial in the short term, the essay highlights the dangers of chronic stress, including its potential to cause various health issues like diabetes, heart disease, and autoimmune disorders. The piece also addresses the modern challenges that contribute to chronic stress and discusses strategies for managing it to avoid long-term health consequences.</p>
+</div>
+
+<div class="writing-item">
+    <h3><a href="essay2.html" class="essay-title">Beyond the Horizon and Beyond from a Metaphysical Perspective</a></h3>
+    <p class="truncate-text">"Beyond the Horizon and Beyond from a Metaphysical Perspective" by <strong>Sezai Karakoç</strong> is a reflective piece that delves into the ethical and spiritual implications of humanity’s relationship with the natural world. It examines the act of consuming animals, urging readers to consider it not as a natural right but as a blessing granted by the Creator. Through philosophical and religious lenses, Karakoç explores themes of responsibility, sacrifice, and the interconnectedness of all life, challenging readers to rethink their role in the natural order and the moral consequences of their actions. The work invites deep reflection on existence, purpose, and the greater responsibilities humanity holds in the world.</p>
+</div>
+
+<script>
+document.querySelectorAll('.writing-item p').forEach(p => {
+    const readMoreLink = document.createElement('a');
+    readMoreLink.className = 'read-more';
+    readMoreLink.textContent = 'Read More';
+    
+    p.parentNode.insertBefore(readMoreLink, p.nextSibling);
+    
+    readMoreLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        p.classList.toggle('truncate-text');
+        readMoreLink.textContent = p.classList.contains('truncate-text') 
+            ? 'Read More' 
+            : 'Read Less';
+    });
+});
+</script>
 
    
     <a href="index.html" class="back-button">Back to Home</a>

@@ -42,6 +42,21 @@ header h1 {
   padding: 20px;
 }
 
+#about h2 {
+  font-size: 1.8em;
+  margin-bottom: 15px;
+  color: #3b5998;
+}
+
+#about p {
+  font-size: 1.1em;
+  color: #555;
+  line-height: 1.8;
+  max-width: 800px;
+  margin: 0 auto 20px;
+  text-align: justify;
+}
+
 #about img {
   width: 200px;
   border-radius: 50%;
@@ -135,7 +150,6 @@ footer a:hover img {
     font-size: 0.9em;
   }
 }
-
 
 #video {
   text-align: center;
