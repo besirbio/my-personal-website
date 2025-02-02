@@ -1,8 +1,6 @@
-/* writings.css for writings.html */
-
 /* Global Styles */
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Arial', sans-serif;
   background-color: #f9f9f9;
   color: #333;
   margin: 0;
@@ -12,25 +10,28 @@ body {
 
 /* Header */
 header {
-  background: #007bff;
+  background: linear-gradient(135deg, #4e54c8, #8f94fb);
   color: white;
   text-align: center;
-  padding: 20px;
+  padding: 2rem 0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 h1 {
   margin: 0;
-  font-size: 2em;
+  font-size: 2.5rem;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
 }
 
 /* Main Content Area */
 #writings-content {
-  max-width: 800px;
+  max-width: 65ch;
   margin: 40px auto;
-  padding: 20px;
+  padding: 2rem;
   background: white;
   border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 /* Each Essay Preview */
@@ -41,12 +42,13 @@ h1 {
 }
 
 .writing-item h3 {
-  font-size: 1.5em;
+  font-size: 1.5rem;
   margin-bottom: 10px;
+  color: #2b4a6a;
 }
 
 .writing-item p {
-  font-size: 1.1em;
+  font-size: 1.1rem;
   text-align: justify;
   margin-bottom: 10px;
 }
@@ -67,7 +69,7 @@ h1 {
   width: fit-content;
   margin: 20px auto;
   padding: 10px 15px;
-  background: #007bff;
+  background: #4a9375;
   color: white;
   text-decoration: none;
   border-radius: 5px;
@@ -76,7 +78,7 @@ h1 {
 }
 
 .back-button:hover {
-  background: #0056b3;
+  background: #2b4a6a;
 }
 
 /* Responsive Adjustments */
@@ -87,14 +89,14 @@ h1 {
   }
   
   h1 {
-    font-size: 1.8em;
+    font-size: 1.8rem;
   }
   
   .writing-item h3 {
-    font-size: 1.3em;
+    font-size: 1.3rem;
   }
   
   .writing-item p {
-    font-size: 1em;
+    font-size: 1rem;
   }
 }

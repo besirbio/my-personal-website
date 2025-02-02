@@ -42,11 +42,19 @@ header h1 {
   padding: 20px;
 }
 
+
 #about img {
   width: 200px;
   border-radius: 50%;
   margin-bottom: 20px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
+
+#about img:hover {
+  transform: scale(1.1); /* Slightly increase the size */
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3); /* Add a shadow effect */
+}
+
 
 /* Navigation Section (used in main page) */
 #navigation {
@@ -154,3 +162,22 @@ footer a:hover img {
     margin: 8px;
   }
 }
+
+.back-button {
+  display: block;
+  width: fit-content;
+  margin: 20px auto;
+  padding: 10px 15px;
+  background: #007bff;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  text-align: center;
+  transition: background 0.3s;
+}
+
+.back-button:hover {
+  background: #0056b3;
+}
+
+
