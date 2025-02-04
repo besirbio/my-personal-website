@@ -8,14 +8,14 @@
 /* Global Styles */
 body {
   font-family: Arial, sans-serif;
-  background-color: #f7f7f7;
-  color: #444;
+  background-color: #eef1f7;
+  color: #333;
   line-height: 1.6;
 }
 
 /* Header */
 header {
-  background: linear-gradient(135deg, #4e54c8, #8f94fb);
+  background: linear-gradient(135deg, #3b5998, #8b9dc3);
   color: white;
   text-align: center;
   padding: 20px;
@@ -42,19 +42,11 @@ header h1 {
   padding: 20px;
 }
 
-
 #about img {
   width: 200px;
   border-radius: 50%;
   margin-bottom: 20px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-
-#about img:hover {
-  transform: scale(1.1); /* Slightly increase the size */
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3); /* Add a shadow effect */
-}
-
 
 /* Navigation Section (used in main page) */
 #navigation {
@@ -63,7 +55,7 @@ header h1 {
 }
 
 button {
-  background-color: #4e54c8;
+  background-color: #3b5998;
   color: #fff;
   border: none;
   padding: 12px 24px;
@@ -75,7 +67,7 @@ button {
 }
 
 button:hover {
-  background-color: #3b3fc1;
+  background-color: #2d4373;
 }
 
 /* Sections for Additional Content */
@@ -86,7 +78,7 @@ section {
 
 /* Footer */
 footer {
-  background-color: #4e54c8;
+  background-color: #3b5998;
   color: white;
   text-align: center;
   padding: 15px;
@@ -122,7 +114,7 @@ footer a:hover img {
 
 .grade-nav a {
   display: inline-block;
-  background-color: #4e54c8;
+  background-color: #3b5998;
   color: white;
   padding: 15px 25px;
   margin: 10px;
@@ -133,7 +125,7 @@ footer a:hover img {
 }
 
 .grade-nav a:hover {
-  background-color: #3b3fc1;
+  background-color: #2d4373;
   transform: scale(1.05);
 }
 
@@ -162,22 +154,3 @@ footer a:hover img {
     margin: 8px;
   }
 }
-
-.back-button {
-  display: block;
-  width: fit-content;
-  margin: 20px auto;
-  padding: 10px 15px;
-  background: #007bff;
-  color: white;
-  text-decoration: none;
-  border-radius: 5px;
-  text-align: center;
-  transition: background 0.3s;
-}
-
-.back-button:hover {
-  background: #0056b3;
-}
-
-

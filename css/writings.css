@@ -1,7 +1,7 @@
 /* Global Styles */
 body {
   font-family: 'Arial', sans-serif;
-  background-color: #f9f9f9;
+  background-color: #eef1f7;
   color: #333;
   margin: 0;
   padding: 0;
@@ -10,7 +10,7 @@ body {
 
 /* Header */
 header {
-  background: linear-gradient(135deg, #4e54c8, #8f94fb);
+  background: linear-gradient(135deg, #3b5998, #8b9dc3);
   color: white;
   text-align: center;
   padding: 2rem 0;
@@ -44,19 +44,20 @@ h1 {
 .writing-item h3 {
   font-size: 1.5rem;
   margin-bottom: 10px;
-  color: #2b4a6a;
+  color: #3b5998;
 }
 
 .writing-item p {
   font-size: 1.1rem;
   text-align: justify;
   margin-bottom: 10px;
+  color: #555;
 }
 
 /* Make the Essay Title a clickable link */
 .essay-title {
   text-decoration: none;
-  color: #2a5d84;
+  color: #3b5998;
 }
 
 .essay-title:hover {
@@ -69,7 +70,7 @@ h1 {
   width: fit-content;
   margin: 20px auto;
   padding: 10px 15px;
-  background: #4a9375;
+  background: #3b5998;
   color: white;
   text-decoration: none;
   border-radius: 5px;
@@ -78,7 +79,7 @@ h1 {
 }
 
 .back-button:hover {
-  background: #2b4a6a;
+  background: #2d4373;
 }
 
 /* Responsive Adjustments */

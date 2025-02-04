@@ -8,14 +8,14 @@
 /* Global Styles */
 body {
   font-family: Arial, sans-serif;
-  background-color: #f7f7f7;
-  color: #444;
+  background-color: #eef1f7;
+  color: #333;
   line-height: 1.6;
 }
 
 /* Header */
 header {
-  background: linear-gradient(135deg, #4e54c8, #8f94fb);
+  background: linear-gradient(135deg, #3b5998, #8b9dc3);
   color: white;
   text-align: center;
   padding: 20px;
@@ -54,7 +54,7 @@ ul li {
 
 ul li a {
   display: inline-block;
-  background-color: #4e54c8;
+  background-color: #3b5998;
   color: white;
   padding: 12px 20px;
   text-decoration: none;
@@ -64,13 +64,13 @@ ul li a {
 }
 
 ul li a:hover {
-  background-color: #3b3fc1;
+  background-color: #2d4373;
   transform: scale(1.05);
 }
 
 /* Footer */
 footer {
-  background-color: #4e54c8;
+  background-color: #3b5998;
   color: white;
   text-align: center;
   padding: 15px;
@@ -80,7 +80,7 @@ footer {
 .back-button {
   display: inline-block;
   padding: 10px 15px;
-  background: #007bff;
+  background: #3b5998;
   color: white;
   text-decoration: none;
   border-radius: 5px;
@@ -88,7 +88,7 @@ footer {
 }
 
 .back-button:hover {
-  background: #0056b3;
+  background: #2d4373;
 }
 
 /* Responsive Design */
