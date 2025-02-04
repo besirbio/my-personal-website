@@ -14,7 +14,7 @@ body {
   padding: 1.5rem 0;
 }
 
-/* Header */
+/* Essay Page Header */
 header {
   background: linear-gradient(135deg, #4e54c8, #8f94fb);
   color: white;
@@ -22,7 +22,6 @@ header {
   padding: 2rem 0;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
-
 header h1 {
   font-size: 2.5rem;
   line-height: 1.2;
@@ -30,8 +29,8 @@ header h1 {
   letter-spacing: -0.5px;
 }
 
-/* Main Content Area */
-#writings-content {
+/* Essay Content Container */
+#essay-content {
   max-width: 65ch;
   margin: 40px auto;
   padding: 2rem;
@@ -40,52 +39,34 @@ header h1 {
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
-/* Each Essay Preview */
-.writing-item {
-  margin-bottom: 30px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid #eee;
+/* Image Container */
+.image-container {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.image-container img {
+  max-width: 80%;
+  height: auto;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.writing-item h3 {
-  font-size: 1.5rem;
-  margin-bottom: 10px;
-  color: #2b4a6a;
-}
-
-.writing-item p {
+/* Essay Text */
+article p {
   font-size: 1.1rem;
   text-align: justify;
-  margin-bottom: 10px;
+  margin-bottom: 1.5rem;
   color: #555;
 }
 
-/* Make the Essay Title a clickable link */
-.essay-title {
-  text-decoration: none;
-  color: #2a5d84;
+/* Metadata (Translator, Publication Date) */
+article p strong {
+  color: #2b4a6a;
+  font-weight: bold;
 }
-
-.essay-title:hover {
-  text-decoration: underline;
-}
-
-/* Back Button */
-.back-button {
-  display: block;
-  width: fit-content;
-  margin: 20px auto;
-  padding: 10px 15px;
-  background: #4e54c8;
-  color: white;
-  text-decoration: none;
-  border-radius: 5px;
-  text-align: center;
-  transition: background 0.3s;
-}
-
-.back-button:hover {
-  background: #3b3fc1;
+article time {
+  font-style: italic;
+  color: #777;
 }
 
 /* Footer */
@@ -96,42 +77,38 @@ footer {
   padding: 15px;
   margin-top: 20px;
 }
-
-footer h3 {
-  margin-bottom: 10px;
-}
-
-footer a {
+/* Back to Home Button Styles */
+.back-button {
   display: inline-block;
-  margin: 0 10px;
-  transition: transform 0.3s;
+  background-color: #28a745; /* Green color for the button */
+  color: white;
+  text-decoration: none; /* Remove underline from the link */
+  padding: 10px 20px; /* Add padding for better spacing */
+  border-radius: 5px; /* Rounded corners */
+  font-size: 1em; /* Adjust font size */
+  transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transition effects */
 }
-
-footer a img {
-  width: 30px;
-  height: 30px;
-}
-
-footer a:hover img {
-  transform: scale(1.2);
+.back-button:hover {
+  background-color: #218838; /* Darker green on hover */
+  transform: scale(1.05); /* Slightly enlarge the button on hover */
 }
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {
-  #writings-content {
+  #essay-content {
     max-width: 95%;
     padding: 15px;
   }
-  
-  h1 {
+
+  header h1 {
     font-size: 1.8rem;
   }
-  
-  .writing-item h3 {
-    font-size: 1.3rem;
-  }
-  
-  .writing-item p {
+
+  article p {
     font-size: 1rem;
+  }
+
+  .image-container img {
+    max-width: 100%;
   }
 }
