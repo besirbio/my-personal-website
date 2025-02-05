@@ -3,66 +3,107 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>My Personal Website</title>
+  <title>My Personal Website with Biology Chatbot</title>
   
-  <!-- Open Graph Meta Tags -->
+  <!-- Open Graph and Twitter Meta Tags (optional) -->
   <meta property="og:title" content="Besir Zeneli - Biologist & Educator">
   <meta property="og:description" content="Explore my journey in biology, education, and athletics. Learn, engage, and connect.">
   <meta property="og:image" content="https://besirbio.github.io/my-personal-website/besir.jpeg">
   <meta property="og:url" content="https://besirbio.github.io/my-personal-website/">
   <meta property="og:type" content="website">
-
-  <!-- Twitter Card Meta Tags -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Besir Zeneli - Biologist & Educator">
   <meta name="twitter:description" content="Explore my journey in biology, education, and athletics. Learn, engage, and connect.">
   <meta name="twitter:image" content="https://besirbio.github.io/my-personal-website/besir.jpeg">
   <meta name="twitter:site" content="@besir_zeneli">
-
-  <!-- Link to the external CSS file -->
+  
+  <!-- External CSS and Font Awesome -->
   <link rel="stylesheet" href="css/index.css" />
   <link rel="icon" type="image/png" href="android-chrome-192x192.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Chatbot Styles (can also be placed in your external CSS file) -->
+  <style>
+    /* Chatbot container styling */
+    #chatbot-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 300px;
+      background: #f1f1f1;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-family: Arial, sans-serif;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      z-index: 1000;
+    }
+    #chatbot-header {
+      background: #4CAF50;
+      color: white;
+      padding: 10px;
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px;
+      text-align: center;
+    }
+    #chatbot-messages {
+      height: 200px;
+      overflow-y: auto;
+      padding: 10px;
+      background: white;
+    }
+    #chatbot-input-area {
+      display: flex;
+      border-top: 1px solid #ccc;
+    }
+    #chatbot-input {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-bottom-left-radius: 5px;
+    }
+    #chatbot-send {
+      padding: 10px;
+      border: none;
+      background: #4CAF50;
+      color: white;
+      cursor: pointer;
+      border-bottom-right-radius: 5px;
+    }
+  </style>
 </head>
 <body>
+  <!-- Your existing website content -->
   <header>
     <h1>Welcome to My Personal Website</h1>
   </header>
 
   <div class="container">
-
-<section id="navigation">
-    <button onclick="location.href='studying-materials/studyingmaterials.html'">
-      <i class="fas fa-book-open"></i> Studying Materials
-    </button>
-    <button onclick="location.href='writings.html'">
-      <i class="fas fa-feather"></i> The Pen (القلم, al-qalam)
-    </button>
-  </section>
+    <section id="navigation">
+      <button onclick="location.href='studying-materials/studyingmaterials.html'">
+        <i class="fas fa-book-open"></i> Studying Materials
+      </button>
+      <button onclick="location.href='writings.html'">
+        <i class="fas fa-feather"></i> The Pen (القلم, al-qalam)
+      </button>
+    </section>
 
     <section id="about">
       <img src="besir.jpeg" alt="Your Picture" />
-      <p>I’m Besir Zeneli, a biologist, educator, and athletics veteran from North Macedonia with a deep passion for science, youth development, and making meaningful connections across cultures. My journey began at Hacettepe University, where I earned my degree in biology, and since then, I’ve dedicated myself to helping students discover the wonders of the natural world. As a biology teacher at Marif International School, I’m not just teaching facts—I’m guiding the next generation of thinkers and innovators, helping them understand the impact they can have on the world around them.
-
-Outside the classroom, my heart has always been in athletics. As a former national team runner and veteran of the sport, I know firsthand the power of discipline, perseverance, and teamwork. My involvement in North Macedonia's athletic community goes beyond just competing; it’s about inspiring others and contributing to a legacy of growth and excellence in our sport.</p>
+      <p>I’m Besir Zeneli, a biologist, educator, and athletics veteran from North Macedonia with a deep passion for science, youth development, and making meaningful connections across cultures. My journey began at Hacettepe University, where I earned my degree in biology, and since then, I’ve dedicated myself to helping students discover the wonders of the natural world...</p>
     </section>
 
-<section id="video">
-  <h2>Science is Beautiful</h2>
-  <p>Enjoy this amazing Symphony of Science video!</p>
-  <div class="video-container">
-   <iframe width="560" height="315" src="https://www.youtube.com/embed/9Cd36WJ79z4" title="Symphony of Science - The Poetry of Reality (An Anthem for Science)" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe> 
-      
-    </iframe>
-  </div>
-</section>
-
+    <section id="video">
+      <h2>Science is Beautiful</h2>
+      <p>Enjoy this amazing Symphony of Science video!</p>
+      <div class="video-container">
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/9Cd36WJ79z4" title="Symphony of Science - The Poetry of Reality" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      </div>
+    </section>
 
     <section id="quote" style="text-align: center; font-style: italic; margin: 20px;">
       <p>"Science is the poetry of reality." - Richard Dawkins</p>
     </section>
-
-      </div>
+  </div>
 
   <footer>
     <a href="https://www.linkedin.com/in/besir-zeneli-0174688b/?originalSubdomain=mk" target="_blank">
@@ -80,5 +121,98 @@ Outside the classroom, my heart has always been in athletics. As a former nation
   </footer>
 
   <p style="text-align: center;">&copy; 2025 Your Website</p>
+  
+  <!-- Chatbot Container -->
+  <div id="chatbot-container">
+    <div id="chatbot-header">Biology Chatbot</div>
+    <div id="chatbot-messages"></div>
+    <div id="chatbot-input-area">
+      <input type="text" id="chatbot-input" placeholder="Ask a biology question...">
+      <button id="chatbot-send">Send</button>
+    </div>
+  </div>
+
+  <!-- Chatbot JavaScript -->
+  <script>
+    // IMPORTANT: Do not expose your secret API key in production!
+    const OPENAI_API_KEY = "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"; // Replace with your actual OpenAI API key
+
+    // Function to get a ChatGPT response via OpenAI's API
+    async function getChatGPTResponse(question) {
+      // Check if the question is related to biology
+      const biologyKeywords = ['biology', 'cell', 'DNA', 'genetics', 'evolution', 'organism', 'ecosystem'];
+      const lowerQuestion = question.toLowerCase();
+      const isBiology = biologyKeywords.some(keyword => lowerQuestion.includes(keyword));
+
+      if (!isBiology) {
+        return "I'm sorry, I only answer biology-related questions.";
+      }
+
+      // Prepare a prompt that instructs ChatGPT to be a biology expert
+      const prompt = "You are a helpful assistant specialized in biology. Answer the following question with detailed and accurate information:\n\n" + question;
+
+      try {
+        const response = await fetch("https://api.openai.com/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + OPENAI_API_KEY
+          },
+          body: JSON.stringify({
+            model: "gpt-3.5-turbo",
+            messages: [{role: "user", content: prompt}],
+            max_tokens: 200,
+            temperature: 0.7
+          })
+        });
+
+        const data = await response.json();
+
+        if (data.error) {
+          console.error(data.error);
+          return "Error: " + data.error.message;
+        }
+
+        return data.choices[0].message.content.trim();
+      } catch (error) {
+        console.error("Error fetching answer:", error);
+        return "There was an error processing your request. Please try again later.";
+      }
+    }
+
+    // Function to add messages to the chat window
+    function addMessage(sender, message) {
+      const messagesDiv = document.getElementById('chatbot-messages');
+      const messageElement = document.createElement('div');
+      messageElement.style.margin = '5px 0';
+      messageElement.innerHTML = `<strong>${sender}:</strong> ${message}`;
+      messagesDiv.appendChild(messageElement);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    // Event listener for the send button
+    document.getElementById('chatbot-send').addEventListener('click', async function() {
+      const inputField = document.getElementById('chatbot-input');
+      const question = inputField.value.trim();
+      if (question) {
+        addMessage('You', question);
+        inputField.value = '';
+        // Show a temporary "Typing..." message
+        addMessage('Bot', 'Typing...');
+        const answer = await getChatGPTResponse(question);
+        // Remove the temporary "Typing..." message
+        const messagesDiv = document.getElementById('chatbot-messages');
+        messagesDiv.removeChild(messagesDiv.lastChild);
+        addMessage('Bot', answer);
+      }
+    });
+
+    // Allow pressing Enter to send the message
+    document.getElementById('chatbot-input').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        document.getElementById('chatbot-send').click();
+      }
+    });
+  </script>
 </body>
 </html>
