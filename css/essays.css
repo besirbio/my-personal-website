@@ -16,7 +16,7 @@ body {
 
 /* Essay Page Header */
 header {
-  background: linear-gradient(135deg, #4e54c8, #8f94fb);
+  background: linear-gradient(135deg, #3b5998, #8b9dc3);
   color: white;
   text-align: center;
   padding: 2rem 0;
@@ -71,7 +71,7 @@ article time {
 
 /* Footer */
 footer {
-  background-color: #4e54c8;
+  background-color: #3b5998;
   color: white;
   text-align: center;
   padding: 15px;
