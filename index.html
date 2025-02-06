@@ -47,6 +47,47 @@
 Outside the classroom, my heart has always been in athletics. As a former national team runner and veteran of the sport, I know firsthand the power of discipline, perseverance, and teamwork. My involvement in North Macedonia's athletic community goes beyond just competing; it’s about inspiring others and contributing to a legacy of growth and excellence in our sport.</p>
     </section>
 
+<div id="chat-container">
+    <div id="chat-box"></div>
+    <input type="text" id="user-input" placeholder="Ask a biology question...">
+    <button onclick="sendMessage()">Send</button>
+</div>
+
+<style>
+    #chat-container { width: 300px; border: 1px solid #ccc; padding: 10px; }
+    #chat-box { height: 200px; overflow-y: scroll; border-bottom: 1px solid #ccc; margin-bottom: 10px; }
+    input { width: 80%; padding: 5px; }
+</style>
+
+<script>
+    async function sendMessage() {
+        let userInput = document.getElementById("user-input").value;
+        if (!userInput.trim()) return;
+
+        let chatBox = document.getElementById("chat-box");
+        chatBox.innerHTML += `<div><b>You:</b> ${userInput}</div>`;
+
+        try {
+            let response = await fetch("http://127.0.0.1:5000/ask", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ question: userInput })
+            });
+
+            let data = await response.json();
+            let botResponse = data.answer || "Error getting response.";
+            chatBox.innerHTML += `<div><b>Bot:</b> ${botResponse}</div>`;
+        } catch (error) {
+            chatBox.innerHTML += `<div><b>Error:</b> Could not connect to server.</div>`;
+        }
+
+        document.getElementById("user-input").value = "";
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+</script>
+
+
+
 <section id="video">
   <h2>Science is Beautiful</h2>
   <p>Enjoy this amazing Symphony of Science video!</p>
@@ -56,7 +97,6 @@ Outside the classroom, my heart has always been in athletics. As a former nation
     </iframe>
   </div>
 </section>
-
 
     <section id="quote" style="text-align: center; font-style: italic; margin: 20px;">
       <p>"Science is the poetry of reality." - Richard Dawkins</p>
@@ -77,8 +117,12 @@ Outside the classroom, my heart has always been in athletics. As a former nation
     <a href="https://x.com/besir_zeneli?lang=ar" target="_blank">
       <img src="icons/twitter.png" alt="Twitter" width="30" height="30">
     </a>
+
+
   </footer>
 
   <p style="text-align: center;">&copy; 2025 Your Website</p>
+
+
 </body>
 </html>
