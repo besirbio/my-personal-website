@@ -6,6 +6,49 @@
   <title>12th Grade Materials</title>
   <link rel="stylesheet" href="../css/grades.css" />
   <link rel="icon" type="image/png" href="android-chrome-192x192.png">
+  <style>
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgb(0,0,0);
+      background-color: rgba(0,0,0,0.4);
+    }
+
+    .modal-content {
+      margin: 15% auto;
+      display: block;
+      width: 80%;
+      max-width: 700px;
+    }
+
+    .modal-content img {
+      width: 100%;
+    }
+
+    .close {
+      position: absolute;
+      top: 15px;
+      right: 35px;
+      color: #f1f1f1;
+      font-size: 40px;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: #bbb;
+      text-decoration: none;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -20,8 +63,6 @@
       <li><a href="../pdfs/grade12/Blood Groups.pdf" target="_blank">Blood Groups</a></li>
       <li><a href="../pdfs/grade12/Blood Types Exercise and Homework.pdf" target="_blank">Blood Types Exercise and Homework</a></li>
       <li><a href="../pdfs/grade12/Excretory system - Main.pdf" target="_blank">Excretory System - Main</a></li>
-
-
       <!-- Add additional PDF links as needed -->
     </ul>
   </section>
@@ -30,12 +71,58 @@
   <section>
     <p>Interactive Simulation for Blood Types:</p>
     <ul>
-      <li><a href="https://www.labxchange.org/library/items/lb:LabXchange:9e1a1712:lx_simulation:1" target="_blank">Blood Typing Simulation -  Game</a></li>
+      <li><a href="https://www.labxchange.org/library/items/lb:LabXchange:9e1a1712:lx_simulation:1" target="_blank">Blood Typing Simulation - Game</a></li>
     </ul>
   </section>
+
+  <!-- New section for the interactive image link -->
+  <section>
+    <p>Click on the link below to view an image of blood types compatibilities:</p>
+    <ul>
+      <li><a href="javascript:void(0);" id="openModal">Blood Types Compatibilities</a></li>
+    </ul>
+  </section>
+
+  <!-- Modal for the image -->
+  <div id="myModal" class="modal">
+    <span class="close" id="closeModal">&times;</span>
+    <img class="modal-content" id="modalImage" src="">
+  </div>
 
   <footer>
     <a href="studyingmaterials.html" class="back-button">Back to Studying Materials</a>
   </footer>
+
+  <script>
+    // Get the modal
+    var modal = document.getElementById("myModal");
+
+    // Get the image and the modal content
+    var modalImg = document.getElementById("modalImage");
+
+    // Get the link that opens the modal
+    var link = document.getElementById("openModal");
+
+    // Get the <span> element that closes the modal
+    var closeModal = document.getElementById("closeModal");
+
+    // When the user clicks on the link, open the modal
+    link.onclick = function() {
+      modal.style.display = "block";
+      modalImg.src = "https://i0.wp.com/www.compoundchem.com/wp-content/uploads/2018/01/Blood-Types-Compatibilities.png?ssl=1";
+    }
+
+    // When the user clicks on <span> (x), close the modal
+    closeModal.onclick = function() {
+      modal.style.display = "none";
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    }
+  </script>
 </body>
 </html>
