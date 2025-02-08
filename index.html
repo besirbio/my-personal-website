@@ -23,22 +23,23 @@
   <link rel="stylesheet" href="css/index.css" />
   <link rel="icon" type="image/png" href="android-chrome-192x192.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+ </head>
 <body>
   <header>
     <h1>Welcome to My Personal Website</h1>
   </header>
 
   <div class="container">
-
-<section id="navigation">
-    <button onclick="location.href='studying-materials/studyingmaterials.html'">
-      <i class="fas fa-book-open"></i> Studying Materials
-    </button>
-    <button onclick="location.href='writings.html'">
-      <i class="fas fa-feather"></i> The Pen (القلم, al-qalam)
-    </button>
-  </section>
+    <section id="navigation">
+      <button onclick="location.href='studying-materials/studyingmaterials.html'">
+        <i class="fas fa-book-open"></i> Studying Materials
+      </button>
+      <button onclick="location.href='writings.html'">
+        <i class="fas fa-feather"></i> The Pen (القلم, al-qalam)
+      </button>
+    </section>
 
     <section id="about">
       <img src="besir.jpeg" alt="Your Picture" />
@@ -47,23 +48,23 @@
 Outside the classroom, my heart has always been in athletics. As a former national team runner and veteran of the sport, I know firsthand the power of discipline, perseverance, and teamwork. My involvement in North Macedonia's athletic community goes beyond just competing; it’s about inspiring others and contributing to a legacy of growth and excellence in our sport.</p>
     </section>
 
-
-
-<section id="video">
-  <h2>Science is Beautiful</h2>
-  <p>Enjoy this amazing Symphony of Science video!</p>
-  <div class="video-container">
-   <iframe width="560" height="315" src="https://www.youtube.com/embed/9Cd36WJ79z4" title="Symphony of Science - The Poetry of Reality (An Anthem for Science)" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe> 
-      
-    </iframe>
-  </div>
-</section>
+    <section id="video">
+      <h2>Science is Beautiful</h2>
+      <p>Enjoy this amazing Symphony of Science video!</p>
+      <div class="video-container">
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/9Cd36WJ79z4" 
+                title="Symphony of Science - The Poetry of Reality (An Anthem for Science)" 
+                frameborder="0" allow="accelerometer; autoplay; clipboard-write; 
+                encrypted-media; gyroscope; picture-in-picture; web-share" 
+                referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
+        </iframe>
+      </div>
+    </section>
 
     <section id="quote" style="text-align: center; font-style: italic; margin: 20px;">
       <p>"Science is the poetry of reality." - Richard Dawkins</p>
     </section>
-
-      </div>
+  </div>
 
   <footer>
     <a href="https://www.linkedin.com/in/besir-zeneli-0174688b/?originalSubdomain=mk" target="_blank">
@@ -78,12 +79,98 @@ Outside the classroom, my heart has always been in athletics. As a former nation
     <a href="https://x.com/besir_zeneli?lang=ar" target="_blank">
       <img src="icons/twitter.png" alt="Twitter" width="30" height="30">
     </a>
-
-
   </footer>
 
   <p style="text-align: center;">&copy; 2025 Your Website</p>
 
+  <script>
+    // Chatbot functionality
+    const API_KEY = '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'; // Replace with your OpenAI API key
+    const MODEL = 'gpt-3.5-turbo';
 
+    function toggleChat() {
+      const chatWindow = document.querySelector('.chat-window');
+      chatWindow.style.display = chatWindow.style.display === 'flex' ? 'none' : 'flex';
+    }
+
+    function createMessageElement(text, isUser) {
+      const messagesDiv = document.getElementById('chat-messages');
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+      messageDiv.textContent = text;
+      messagesDiv.appendChild(messageDiv);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    function simulateThinking() {
+      const messagesDiv = document.getElementById('chat-messages');
+      const typingDiv = document.createElement('div');
+      typingDiv.className = 'typing-indicator';
+      typingDiv.textContent = 'BioBot is thinking...';
+      messagesDiv.appendChild(typingDiv);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+      return typingDiv;
+    }
+
+    async function getBotResponse(userMessage) {
+      try {
+        const response = await axios.post(
+          'https://api.openai.com/v1/chat/completions',
+          {
+            model: MODEL,
+            messages: [{
+              role: "system",
+              content: "You are a biology expert assistant. Provide accurate, concise answers " +
+                       "about biological concepts. For non-biology questions, politely decline. " +
+                       "Use simple language suitable for students."
+            }, {
+              role: "user",
+              content: userMessage
+            }],
+            temperature: 0.7,
+            max_tokens: 150
+          },
+          {
+            headers: {
+              'Authorization': `Bearer ${API_KEY}`,
+              'Content-Type': 'application/json'
+            }
+          }
+        );
+        return response.data.choices[0].message.content.trim();
+      } catch (error) {
+        console.error('Chatbot error:', error);
+        return "Sorry, I'm having trouble answering that. Please try another biology question.";
+      }
+    }
+
+   // Replace the existing sendMessage function with:
+async function sendMessage() {
+  const userInput = document.getElementById('user-input');
+  const message = userInput.value.trim();
+  if (!message) return;
+
+  createMessageElement(message, true);
+  userInput.value = '';
+
+  const typing = simulateThinking();
+  try {
+    const response = await axios.post(
+      'http://localhost:3001/api/chat', // Local testing URL
+      { message: message }
+    );
+    createMessageElement(response.data.answer, false);
+  } catch (error) {
+    createMessageElement("Sorry, the biology expert is unavailable right now.", false);
+  } finally {
+    typing.remove();
+  }
+}
+
+    // Handle Enter key
+    document.getElementById('user-input').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') sendMessage();
+    });
+  </script>
 </body>
 </html>
