@@ -22,32 +22,67 @@
 <svg id="mindmap"></svg>
 <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script><script src="https://cdn.jsdelivr.net/npm/markmap-view@0.18.10/dist/browser/index.js"></script><script src="https://cdn.jsdelivr.net/npm/markmap-toolbar@0.18.10/dist/index.js"></script><script>(()=>{setTimeout(()=>{const{markmap:x,mm:K}=window,P=new x.Toolbar;P.attach(K);const F=P.render();F.setAttribute("style","position:absolute;bottom:20px;right:20px"),document.body.append(F)})})()</script><script>((b,L,T,D)=>{const H=b();window.mm=H.Markmap.create("svg#mindmap",(L||H.deriveOptions)(D),T)})(()=>window.markmap,null,{"content":"Temperature Control in Ectotherms and Endotherms","children":[{"content":"Main Concepts","children":[{"content":"1. Importance of Temperature Control","children":[{"content":"<strong>Important forEnzyme Function</strong>","children":[{"content":"Optimal within narrow temperature range","children":[],"payload":{"tag":"li","lines":"6,7"}},{"content":"<strong>Extreme Heat</strong>: Denatures enzymes (alters active site shape, prevents substrate binding)","children":[],"payload":{"tag":"li","lines":"7,8"}},{"content":"<strong>Extreme Cold</strong>: Slows metabolic reactions","children":[],"payload":{"tag":"li","lines":"8,9"}}],"payload":{"tag":"li","lines":"5,9"}},{"content":"<strong>Consequences of Failure</strong>","children":[{"content":"Organ dysfunction","children":[],"payload":{"tag":"li","lines":"10,11"}},{"content":"Hypothermia","children":[],"payload":{"tag":"li","lines":"11,12"}},{"content":"Hyperthermia","children":[],"payload":{"tag":"li","lines":"12,14"}}],"payload":{"tag":"li","lines":"9,14"}}],"payload":{"tag":"h3","lines":"4,5"}},{"content":"2. Responses to Temperature Extremes","children":[{"content":"<strong>Too Hot</strong>","children":[{"content":"Sweating","children":[],"payload":{"tag":"li","lines":"16,17"}},{"content":"Seeking shade","children":[],"payload":{"tag":"li","lines":"17,18"}},{"content":"Drinking water","children":[],"payload":{"tag":"li","lines":"18,19"}}],"payload":{"tag":"li","lines":"15,19"}},{"content":"<strong>Too Cold</strong>","children":[{"content":"Shivering","children":[],"payload":{"tag":"li","lines":"20,21"}},{"content":"Bundling up","children":[],"payload":{"tag":"li","lines":"21,22"}},{"content":"Reduced activity","children":[],"payload":{"tag":"li","lines":"22,24"}}],"payload":{"tag":"li","lines":"19,24"}}],"payload":{"tag":"h3","lines":"14,15"}},{"content":"3. Ectotherms","children":[{"content":"<strong>Definition</strong>: Depend on external heat sources for body temperature regulation","children":[],"payload":{"tag":"li","lines":"25,26"}},{"content":"<strong>Behavioral Responses</strong>","children":[{"content":"Basking in the sun (e.g., lizards on rocks)","children":[],"payload":{"tag":"li","lines":"27,28"}},{"content":"Seeking shade or burrowing (e.g., snakes under rocks)","children":[],"payload":{"tag":"li","lines":"28,29"}},{"content":"Adjusting body position (e.g., butterflies spreading wings)","children":[],"payload":{"tag":"li","lines":"29,30"}}],"payload":{"tag":"li","lines":"26,30"}},{"content":"<strong>Examples</strong>","children":[{"content":"Reptiles (e.g., crocodiles)","children":[],"payload":{"tag":"li","lines":"31,32"}},{"content":"Amphibians","children":[],"payload":{"tag":"li","lines":"32,33"}},{"content":"Fish","children":[],"payload":{"tag":"li","lines":"33,34"}},{"content":"Insects","children":[],"payload":{"tag":"li","lines":"34,35"}}],"payload":{"tag":"li","lines":"30,35"}},{"content":"<strong>Key Feature</strong>: Rely on environment (ectothermic thermoregulation)","children":[],"payload":{"tag":"li","lines":"35,37"}}],"payload":{"tag":"h3","lines":"24,25"}},{"content":"4. Endotherms","children":[{"content":"<strong>Definition</strong>: Regulate body temperature internally","children":[],"payload":{"tag":"li","lines":"38,39"}},{"content":"<strong>Behavioral Responses</strong>","children":[{"content":"Seeking shade or water (e.g., elephants bathing)","children":[],"payload":{"tag":"li","lines":"40,41"}},{"content":"Curling up or huddling (e.g., penguins conserving heat)","children":[],"payload":{"tag":"li","lines":"41,42"}}],"payload":{"tag":"li","lines":"39,42"}},{"content":"<strong>Physical Responses</strong>","children":[{"content":"<strong>Vasodilation</strong>: Widens blood vessels to release heat (e.g., sweating in humans)","children":[],"payload":{"tag":"li","lines":"43,44"}},{"content":"<strong>Vasoconstriction</strong>: Narrows blood vessels to retain heat (e.g., shivering)","children":[],"payload":{"tag":"li","lines":"44,45"}},{"content":"<strong>Metabolic Heat Production</strong>: Increases metabolic rate (e.g., brown fat in babies)","children":[],"payload":{"tag":"li","lines":"45,46"}}],"payload":{"tag":"li","lines":"42,46"}},{"content":"<strong>Examples</strong>","children":[{"content":"Mammals (e.g., humans)","children":[],"payload":{"tag":"li","lines":"47,48"}},{"content":"Birds","children":[],"payload":{"tag":"li","lines":"48,50"}}],"payload":{"tag":"li","lines":"46,50"}}],"payload":{"tag":"h3","lines":"37,38"}}],"payload":{"tag":"h2","lines":"2,3"}}],"payload":{"tag":"h1","lines":"0,1"}},null)</script>
 
-<footer>
-    <div class="button-container">
-      <a href="grade13.html" class="back-button">Back to 13th Grade</a>
-    </div>
-  </footer>
-
 <style>
     .back-button {
-      display: inline-block;
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      display: inline-flex;
+      align-items: center;
       padding: 12px 24px;
-      background-color: #007BFF; /* Button background color */
-      color: #ffffff; /* Text color */
+      background: linear-gradient(135deg, #4a90e2 0%, #1b5aa4 100%);
+      color: white;
       text-decoration: none;
-      border-radius: 5px;
+      border-radius: 30px;
       font-size: 16px;
-      font-weight: bold;
-      transition: background-color 0.3s ease, transform 0.3s ease;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      font-weight: 500;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      border: none;
+      cursor: pointer;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    }
+    
+    .back-button::before {
+      content: '←';
+      margin-right: 8px;
+      font-size: 18px;
+      transition: transform 0.2s ease;
     }
     
     .back-button:hover {
-      background-color: #0056b3;
+      background: linear-gradient(135deg, #3b7cc0 0%, #14487d 100%);
       transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
     }
-  </style>
+    
+    .back-button:hover::before {
+      transform: translateX(-4px);
+    }
+    
+    .back-button:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    @keyframes bounceLeft {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(-6px); }
+    }
+    
+    .back-button:hover::before {
+      animation: bounceLeft 1.2s infinite;
+    }
+</style>
+
+<footer>
+    <div class="button-container">
+      <a href="mindmappings12thgrade.html" class="back-button">Back to Topics</a>
+    </div>
+</footer>
 
 
 </body>
 </html>
+
