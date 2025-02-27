@@ -111,3 +111,22 @@ footer {
     font-size: 1em;
   }
 }
+
+.mind-mappings-button {
+  display: inline-block;
+  padding: 12px 24px;
+  background-color: #007BFF; /* Button background color */
+  color: #ffffff; /* Text color */
+  text-decoration: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.mind-mappings-button:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+}
+
