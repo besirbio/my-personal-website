@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>Markmap</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+}
+#mindmap {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+}
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/markmap-toolbar@0.18.10/dist/style.css">
+</head>
+<body>
+<svg id="mindmap"></svg>
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script><script src="https://cdn.jsdelivr.net/npm/markmap-view@0.18.10/dist/browser/index.js"></script><script src="https://cdn.jsdelivr.net/npm/markmap-toolbar@0.18.10/dist/index.js"></script><script>(()=>{setTimeout(()=>{const{markmap:x,mm:K}=window,P=new x.Toolbar;P.attach(K);const F=P.render();F.setAttribute("style","position:absolute;bottom:20px;right:20px"),document.body.append(F)})})()</script><script>((b,L,T,D)=>{const H=b();window.mm=H.Markmap.create("svg#mindmap",(L||H.deriveOptions)(D),T)})(()=>window.markmap,null,{"content":"M Phase of the Cell Cycle","children":[{"content":"Main Concepts","children":[{"content":"2. Mitosis: Nuclear Division","children":[{"content":"<strong>Four Phases</strong>","children":[{"content":"1. <strong>Prophase</strong>","children":[{"content":"<strong>Duration</strong>: Longest phase","children":[],"payload":{"tag":"li","lines":"7,8"}},{"content":"<strong>Events</strong>","children":[{"content":"Chromatin condenses into chromosomes","children":[],"payload":{"tag":"li","lines":"9,10"}},{"content":"Nucleolus disappears","children":[],"payload":{"tag":"li","lines":"10,11"}},{"content":"Replicated DNA forms sister chromatids (visible chromosomes)","children":[],"payload":{"tag":"li","lines":"11,12"}},{"content":"Centromere attaches sister chromatids","children":[],"payload":{"tag":"li","lines":"12,13"}},{"content":"Spindle fibers (microtubules) form from centrioles","children":[],"payload":{"tag":"li","lines":"13,14"}},{"content":"Centrioles move to opposite poles","children":[],"payload":{"tag":"li","lines":"14,15"}},{"content":"Nuclear membrane disappears","children":[],"payload":{"tag":"li","lines":"15,16"}},{"content":"Spindle fibers attach to centromeres","children":[],"payload":{"tag":"li","lines":"16,17"}}],"payload":{"tag":"li","lines":"8,17"}}],"payload":{"tag":"li","lines":"6,17","listIndex":1}},{"content":"2. <strong>Metaphase</strong>","children":[{"content":"<strong>Events</strong>","children":[{"content":"Centrioles reach poles","children":[],"payload":{"tag":"li","lines":"19,20"}},{"content":"Spindle fibers align chromosomes along cell equator","children":[],"payload":{"tag":"li","lines":"20,21"}},{"content":"Sister chromatids positioned on either side of equator","children":[],"payload":{"tag":"li","lines":"21,22"}}],"payload":{"tag":"li","lines":"18,22"}}],"payload":{"tag":"li","lines":"17,22","listIndex":2}},{"content":"3. <strong>Anaphase</strong>","children":[{"content":"<strong>Events</strong>","children":[{"content":"Spindle fibers separate sister chromatids at centromere","children":[],"payload":{"tag":"li","lines":"24,25"}},{"content":"Each chromatid becomes a chromosome (V-shaped)","children":[],"payload":{"tag":"li","lines":"25,26"}},{"content":"Chromosomes pulled to opposite poles by shortening spindle fibers","children":[],"payload":{"tag":"li","lines":"26,27"}}],"payload":{"tag":"li","lines":"23,27"}}],"payload":{"tag":"li","lines":"22,27","listIndex":3}},{"content":"4. <strong>Telophase</strong>","children":[{"content":"<strong>Events</strong>","children":[{"content":"Nuclear membrane reforms around each chromosome set","children":[],"payload":{"tag":"li","lines":"29,30"}},{"content":"Chromosomes revert to chromatin","children":[],"payload":{"tag":"li","lines":"30,31"}},{"content":"Nucleolus reappears","children":[],"payload":{"tag":"li","lines":"31,32"}}],"payload":{"tag":"li","lines":"28,32"}}],"payload":{"tag":"li","lines":"27,32","listIndex":4}}],"payload":{"tag":"li","lines":"5,32"}},{"content":"<strong>Completion</strong>: Mitosis ends, nucleus divided","children":[],"payload":{"tag":"li","lines":"32,34"}}],"payload":{"tag":"h3","lines":"4,5"}},{"content":"3. Cytokinesis: Cytoplasmic Division","children":[{"content":"<strong>Animal Cells</strong>","children":[{"content":"<strong>Process</strong>: Cell membrane moves inward, separating cytoplasm into two identical daughter cells","children":[],"payload":{"tag":"li","lines":"36,37"}}],"payload":{"tag":"li","lines":"35,37"}},{"content":"<strong>Outcome</strong>: Two identical daughter cells","children":[],"payload":{"tag":"li","lines":"37,38"}}],"payload":{"tag":"h3","lines":"34,35"}}],"payload":{"tag":"h2","lines":"2,3"}}],"payload":{"tag":"h1","lines":"0,1"}},null)</script>
+<style>
+    .back-button {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      display: inline-flex;
+      align-items: center;
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #4a90e2 0%, #1b5aa4 100%);
+      color: white;
+      text-decoration: none;
+      border-radius: 30px;
+      font-size: 16px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      border: none;
+      cursor: pointer;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    }
+    
+    .back-button::before {
+      content: '←';
+      margin-right: 8px;
+      font-size: 18px;
+      transition: transform 0.2s ease;
+    }
+    
+    .back-button:hover {
+      background: linear-gradient(135deg, #3b7cc0 0%, #14487d 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    .back-button:hover::before {
+      transform: translateX(-4px);
+    }
+    
+    .back-button:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    @keyframes bounceLeft {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(-6px); }
+    }
+    
+    .back-button:hover::before {
+      animation: bounceLeft 1.2s infinite;
+    }
+</style>
+
+<footer>
+    <div class="button-container">
+      <a href="mindmappings11thgrade.html" class="back-button">Back to Topics</a>
+    </div>
+</footer>
+
+</body>
+</html>
+

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>Markmap</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+}
+#mindmap {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+}
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/markmap-toolbar@0.18.10/dist/style.css">
+</head>
+<body>
+<svg id="mindmap"></svg>
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script><script src="https://cdn.jsdelivr.net/npm/markmap-view@0.18.10/dist/browser/index.js"></script><script src="https://cdn.jsdelivr.net/npm/markmap-toolbar@0.18.10/dist/index.js"></script><script>(()=>{setTimeout(()=>{const{markmap:x,mm:K}=window,P=new x.Toolbar;P.attach(K);const F=P.render();F.setAttribute("style","position:absolute;bottom:20px;right:20px"),document.body.append(F)})})()</script><script>((b,L,T,D)=>{const H=b();window.mm=H.Markmap.create("svg#mindmap",(L||H.deriveOptions)(D),T)})(()=>window.markmap,null,{"content":"Mutations","children":[{"content":"Main Concepts","children":[{"content":"1. Definition of Mutations","children":[{"content":"<strong>What It Is</strong>: Any alteration in an organism&apos;s DNA","children":[],"payload":{"tag":"li","lines":"5,6"}},{"content":"<strong>Impact</strong>","children":[{"content":"Many have no effect (especially in eukaryotes, where much DNA is non-coding)","children":[],"payload":{"tag":"li","lines":"7,8"}},{"content":"Some affect traits and are often lethal (most genes vital for survival)","children":[],"payload":{"tag":"li","lines":"8,9"}},{"content":"Minority cause visible, non-lethal changes in appearance","children":[],"payload":{"tag":"li","lines":"9,11"}}],"payload":{"tag":"li","lines":"6,11"}}],"payload":{"tag":"h3","lines":"4,5"}},{"content":"2. Characteristics of Mutations","children":[{"content":"<strong>Site</strong>: &quot;Hot spots&quot; (500-1000 mutational sites); sensitive to changes","children":[],"payload":{"tag":"li","lines":"12,14"}}],"payload":{"tag":"h3","lines":"11,12"}},{"content":"3. Types of Mutations","children":[{"content":"\n<p data-lines=\"15,16\"><strong>Missense Mutation</strong></p>","children":[{"content":"<strong>Description</strong>: Single base pair change substitutes one amino acid for another","children":[],"payload":{"tag":"li","lines":"16,18"}}],"payload":{"tag":"li","lines":"15,18"}},{"content":"\n<p data-lines=\"18,19\"><strong>Nonsense Mutation</strong></p>","children":[{"content":"<strong>Description</strong>: Single base pair change creates a premature stop signal, shortening protein","children":[],"payload":{"tag":"li","lines":"19,21"}}],"payload":{"tag":"li","lines":"18,21"}},{"content":"\n<p data-lines=\"21,22\"><strong>Insertion</strong></p>","children":[{"content":"<strong>Description</strong>: Adds DNA bases, disrupting protein function","children":[],"payload":{"tag":"li","lines":"22,24"}}],"payload":{"tag":"li","lines":"21,24"}},{"content":"\n<p data-lines=\"24,25\"><strong>Deletion</strong></p>","children":[{"content":"<strong>Description</strong>: Removes DNA bases (details incomplete in text)","children":[],"payload":{"tag":"li","lines":"25,27"}}],"payload":{"tag":"li","lines":"24,27"}},{"content":"\n<p data-lines=\"27,28\"><strong>Frameshift Mutation</strong></p>","children":[{"content":"<strong>Description</strong>: Addition/loss of bases shifts reading frame, altering amino acid code","children":[],"payload":{"tag":"li","lines":"28,31"}}],"payload":{"tag":"li","lines":"27,31"}}],"payload":{"tag":"h3","lines":"14,15"}}],"payload":{"tag":"h2","lines":"2,3"}}],"payload":{"tag":"h1","lines":"0,1"}},null)</script>
+<style>
+    .back-button {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      display: inline-flex;
+      align-items: center;
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #4a90e2 0%, #1b5aa4 100%);
+      color: white;
+      text-decoration: none;
+      border-radius: 30px;
+      font-size: 16px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      border: none;
+      cursor: pointer;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    }
+    
+    .back-button::before {
+      content: '←';
+      margin-right: 8px;
+      font-size: 18px;
+      transition: transform 0.2s ease;
+    }
+    
+    .back-button:hover {
+      background: linear-gradient(135deg, #3b7cc0 0%, #14487d 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    .back-button:hover::before {
+      transform: translateX(-4px);
+    }
+    
+    .back-button:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    @keyframes bounceLeft {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(-6px); }
+    }
+    
+    .back-button:hover::before {
+      animation: bounceLeft 1.2s infinite;
+    }
+</style>
+
+<footer>
+    <div class="button-container">
+      <a href="mindmappings11thgrade.html" class="back-button">Back to Topics</a>
+    </div>
+</footer>
+
+</body>
+</html>
+
