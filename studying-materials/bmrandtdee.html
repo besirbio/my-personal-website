@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>Markmap</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+}
+#mindmap {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+}
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/markmap-toolbar@0.18.10/dist/style.css">
+</head>
+<body>
+<svg id="mindmap"></svg>
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script><script src="https://cdn.jsdelivr.net/npm/markmap-view@0.18.10/dist/browser/index.js"></script><script src="https://cdn.jsdelivr.net/npm/markmap-toolbar@0.18.10/dist/index.js"></script><script>(()=>{setTimeout(()=>{const{markmap:x,mm:K}=window,P=new x.Toolbar;P.attach(K);const F=P.render();F.setAttribute("style","position:absolute;bottom:20px;right:20px"),document.body.append(F)})})()</script><script>((b,L,T,D)=>{const H=b();window.mm=H.Markmap.create("svg#mindmap",(L||H.deriveOptions)(D),T)})(()=>window.markmap,null,{"content":"Basal Metabolic Rate (BMR)","children":[{"content":"Main Ideas","children":[{"content":"1. What is Basal Metabolic Rate (BMR)?","children":[{"content":"<strong>What It Means</strong>: The energy (calories) your body uses when you&#x2019;re resting, like when you&#x2019;re just sitting or sleeping","children":[],"payload":{"tag":"li","lines":"5,6"}},{"content":"<strong>Easy Version</strong>: It&#x2019;s like the gas a car uses when it&#x2019;s parked but still turned on&#x2014;keeps your body running (breathing, heart beating, staying warm)","children":[],"payload":{"tag":"li","lines":"6,7"}},{"content":"<strong>When It&#x2019;s Measured</strong>: After resting in a comfy room (not too hot or cold) and not eating for 12 hours (like overnight)","children":[],"payload":{"tag":"li","lines":"7,8"}},{"content":"<strong>What Affects It</strong>: Your age, if you&#x2019;re a boy or girl, how much you weigh, how tall you are, and how much muscle you have","children":[],"payload":{"tag":"li","lines":"8,10"}}],"payload":{"tag":"h3","lines":"4,5"}},{"content":"2. How to Figure Out BMR (Harris-Benedict Equation)","children":[{"content":"<strong>What It Does</strong>: A math way to guess your BMR","children":[],"payload":{"tag":"li","lines":"11,12"}},{"content":"<strong>For Boys</strong>:","children":[{"content":"BMR = 88.4 + (13.4 &#xd7; weight in kg) + (4.8 &#xd7; height in cm) - (5.7 &#xd7; age in years)","children":[],"payload":{"tag":"li","lines":"13,14"}}],"payload":{"tag":"li","lines":"12,14"}},{"content":"<strong>For Girls</strong>:","children":[{"content":"BMR = 447.6 + (9.2 &#xd7; weight in kg) + (3.1 &#xd7; height in cm) - (4.3 &#xd7; age in years)","children":[],"payload":{"tag":"li","lines":"15,17"}}],"payload":{"tag":"li","lines":"14,17"}}],"payload":{"tag":"h3","lines":"10,11"}},{"content":"3. Total Daily Energy Expenditure (TDEE)","children":[{"content":"<strong>What It Means</strong>: All the calories you use in a day, not just resting","children":[],"payload":{"tag":"li","lines":"18,19"}},{"content":"<strong>How to Get It</strong>: Multiply your BMR by a number based on how active you are","children":[],"payload":{"tag":"li","lines":"19,20"}},{"content":"<strong>Activity Numbers</strong>","children":[{"content":"Not active (no exercise): BMR &#xd7; 1.2","children":[],"payload":{"tag":"li","lines":"21,22"}},{"content":"A little active (exercise 1-3 days/week): BMR &#xd7; 1.375","children":[],"payload":{"tag":"li","lines":"22,23"}},{"content":"Medium active (exercise 3-5 days/week): BMR &#xd7; 1.55","children":[],"payload":{"tag":"li","lines":"23,24"}},{"content":"Very active (exercise 6-7 days/week): BMR &#xd7; 1.725","children":[],"payload":{"tag":"li","lines":"24,25"}},{"content":"Super active (hard exercise every day + tough job): BMR &#xd7; 1.9","children":[],"payload":{"tag":"li","lines":"25,26"}}],"payload":{"tag":"li","lines":"20,26"}},{"content":"<strong>Formula</strong>: TDEE = BMR &#xd7; Activity Number","children":[],"payload":{"tag":"li","lines":"26,28"}}],"payload":{"tag":"h3","lines":"17,18"}},{"content":"4. Example: Alexa&#x2019;s Calories","children":[{"content":"<strong>Who She Is</strong>: 30-year-old girl, weighs 70 kg, 165 cm tall, exercises 3-5 days/week","children":[],"payload":{"tag":"li","lines":"29,30"}},{"content":"<strong>Step 1: Find BMR (Girls&#x2019; Formula)</strong>","children":[{"content":"BMR = 447.6 + (9.2 &#xd7; 70) + (3.1 &#xd7; 165) - (4.3 &#xd7; 30)","children":[],"payload":{"tag":"li","lines":"31,32"}},{"content":"= 447.6 + 644 + 511.5 - 129","children":[],"payload":{"tag":"li","lines":"32,33"}},{"content":"&#x2248; 1474 calories/day","children":[],"payload":{"tag":"li","lines":"33,34"}}],"payload":{"tag":"li","lines":"30,34"}},{"content":"<strong>Step 2: Find TDEE</strong>","children":[{"content":"She&#x2019;s medium active, so use 1.55","children":[],"payload":{"tag":"li","lines":"35,36"}},{"content":"TDEE = 1474 &#xd7; 1.55","children":[],"payload":{"tag":"li","lines":"36,37"}},{"content":"&#x2248; 2285 calories/day","children":[],"payload":{"tag":"li","lines":"37,39"}}],"payload":{"tag":"li","lines":"34,39"}}],"payload":{"tag":"h3","lines":"28,29"}}],"payload":{"tag":"h2","lines":"2,3"}}],"payload":{"tag":"h1","lines":"0,1"}},null)</script>
+<style>
+    .back-button {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      display: inline-flex;
+      align-items: center;
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #4a90e2 0%, #1b5aa4 100%);
+      color: white;
+      text-decoration: none;
+      border-radius: 30px;
+      font-size: 16px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      border: none;
+      cursor: pointer;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    }
+    
+    .back-button::before {
+      content: '←';
+      margin-right: 8px;
+      font-size: 18px;
+      transition: transform 0.2s ease;
+    }
+    
+    .back-button:hover {
+      background: linear-gradient(135deg, #3b7cc0 0%, #14487d 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    .back-button:hover::before {
+      transform: translateX(-4px);
+    }
+    
+    .back-button:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    @keyframes bounceLeft {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(-6px); }
+    }
+    
+    .back-button:hover::before {
+      animation: bounceLeft 1.2s infinite;
+    }
+</style>
+
+<footer>
+    <div class="button-container">
+      <a href="mindmappings8thgrade.html" class="back-button">Back to Topics</a>
+    </div>
+</footer>
+
+</body>
+</html>
