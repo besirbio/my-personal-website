@@ -22,31 +22,65 @@
 <svg id="mindmap"></svg>
 <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script><script src="https://cdn.jsdelivr.net/npm/markmap-view@0.18.10/dist/browser/index.js"></script><script src="https://cdn.jsdelivr.net/npm/markmap-toolbar@0.18.10/dist/index.js"></script><script>(()=>{setTimeout(()=>{const{markmap:x,mm:K}=window,P=new x.Toolbar;P.attach(K);const F=P.render();F.setAttribute("style","position:absolute;bottom:20px;right:20px"),document.body.append(F)})})()</script><script>((b,L,T,D)=>{const H=b();window.mm=H.Markmap.create("svg#mindmap",(L||H.deriveOptions)(D),T)})(()=>window.markmap,null,{"content":"Excretory System Disorders","children":[{"content":"Main Concepts","children":[{"content":"1. Urinary Tract Infection (UTI)","children":[{"content":"<pre data-lines=\"5,8\"><code> - Caused by bacteria (e.g., E. coli)\n - Symptoms: Frequent urination, burning sensation\n - Treatment: Antibiotics\n</code></pre>","children":[],"payload":{"tag":"pre","lines":"5,8"}}],"payload":{"tag":"h3","lines":"4,5"}},{"content":"2. Kidney Stones","children":[{"content":"<strong>Definition</strong>: Crystalline formations in the kidneys","children":[],"payload":{"tag":"li","lines":"10,11"}},{"content":"<strong>Causes</strong>","children":[{"content":"Excess calcium in urine","children":[],"payload":{"tag":"li","lines":"12,14"}}],"payload":{"tag":"li","lines":"11,14"}}],"payload":{"tag":"h3","lines":"9,10"}},{"content":"3. Kidney Failure (Renal Insufficiency)","children":[{"content":"<strong>Definition</strong>: Kidneys cannot maintain homeostasis due to nephron damage","children":[],"payload":{"tag":"li","lines":"15,16"}},{"content":"<strong>Severity</strong>: Requires transplant if &#x2265;75% nephrons destroyed","children":[],"payload":{"tag":"li","lines":"16,17"}},{"content":"<strong>Causes</strong>","children":[{"content":"Kidney infection","children":[],"payload":{"tag":"li","lines":"18,19"}},{"content":"High blood pressure (major cause)","children":[],"payload":{"tag":"li","lines":"19,20"}},{"content":"Polycystic kidney disease (genetic)","children":[],"payload":{"tag":"li","lines":"20,21"}},{"content":"Trauma near kidneys","children":[],"payload":{"tag":"li","lines":"21,22"}},{"content":"Heavy metal poisoning (mercury, lead)","children":[],"payload":{"tag":"li","lines":"22,23"}},{"content":"Atherosclerosis (reduced kidney blood flow)","children":[],"payload":{"tag":"li","lines":"23,24"}},{"content":"Tubule blockage","children":[],"payload":{"tag":"li","lines":"24,25"}},{"content":"Diabetes mellitus","children":[],"payload":{"tag":"li","lines":"25,27"}}],"payload":{"tag":"li","lines":"17,27"}}],"payload":{"tag":"h3","lines":"14,15"}},{"content":"4. Dialysis","children":[{"content":"<strong>Definition</strong>: Diffusion of substances across a semipermeable membrane to remove waste/fluid when kidneys fail","children":[],"payload":{"tag":"li","lines":"28,29"}},{"content":"<strong>Types</strong>","children":[{"content":"<strong>Hemodialysis</strong>","children":[{"content":"Device connects to artery/vein in arm","children":[],"payload":{"tag":"li","lines":"31,32"}},{"content":"Filters blood to remove waste/excess fluid","children":[],"payload":{"tag":"li","lines":"32,33"}}],"payload":{"tag":"li","lines":"30,33"}},{"content":"<strong>Peritoneal Dialysis</strong>","children":[{"content":"Uses peritoneum (intestinal lining) as membrane","children":[],"payload":{"tag":"li","lines":"34,35"}},{"content":"<strong>Process</strong>: Catheter in abdominal cavity delivers/removes dialysate","children":[],"payload":{"tag":"li","lines":"35,36"}},{"content":"<strong>Benefit</strong>: Continuous blood filtration","children":[],"payload":{"tag":"li","lines":"36,38"}}],"payload":{"tag":"li","lines":"33,38"}}],"payload":{"tag":"li","lines":"29,38"}}],"payload":{"tag":"h3","lines":"27,28"}},{"content":"5. Kidney Transplants","children":[{"content":"<strong>Indication</strong>: Required when kidney function &lt;10%","children":[],"payload":{"tag":"li","lines":"39,40"}},{"content":"<strong>Success Rate</strong>: 95-98%","children":[],"payload":{"tag":"li","lines":"40,41"}},{"content":"<strong>Challenge</strong>: Demand exceeds supply","children":[],"payload":{"tag":"li","lines":"41,43"}}],"payload":{"tag":"h3","lines":"38,39"}},{"content":"6. Diagnostic Tools","children":[{"content":"<strong>Urinalysis</strong>","children":[{"content":"<strong>Purpose</strong>: Assesses kidney function and health via urine composition","children":[],"payload":{"tag":"li","lines":"45,46"}},{"content":"<strong>Variability</strong>: Affected by diet, activity, stress, fatigue","children":[],"payload":{"tag":"li","lines":"46,47"}}],"payload":{"tag":"li","lines":"44,47"}},{"content":"<strong>Blood Tests</strong>","children":[{"content":"<strong>Urea</strong>: High levels indicate poor kidney function","children":[],"payload":{"tag":"li","lines":"48,49"}},{"content":"<strong>Creatinine</strong>: Muscle waste; high levels show filtration failure","children":[],"payload":{"tag":"li","lines":"49,50"}}],"payload":{"tag":"li","lines":"47,50"}}],"payload":{"tag":"h3","lines":"43,44"}}],"payload":{"tag":"h2","lines":"2,3"}}],"payload":{"tag":"h1","lines":"0,1"}},null)</script>
 
-<footer>
-    <div class="button-container">
-      <a href="grade12.html" class="back-button">Back to 12th Grade</a>
-    </div>
-  </footer>
-
 <style>
     .back-button {
-      display: inline-block;
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      display: inline-flex;
+      align-items: center;
       padding: 12px 24px;
-      background-color: #007BFF; /* Button background color */
-      color: #ffffff; /* Text color */
+      background: linear-gradient(135deg, #4a90e2 0%, #1b5aa4 100%);
+      color: white;
       text-decoration: none;
-      border-radius: 5px;
+      border-radius: 30px;
       font-size: 16px;
-      font-weight: bold;
-      transition: background-color 0.3s ease, transform 0.3s ease;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      font-weight: 500;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      border: none;
+      cursor: pointer;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    }
+    
+    .back-button::before {
+      content: '←';
+      margin-right: 8px;
+      font-size: 18px;
+      transition: transform 0.2s ease;
     }
     
     .back-button:hover {
-      background-color: #0056b3;
+      background: linear-gradient(135deg, #3b7cc0 0%, #14487d 100%);
       transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
     }
-  </style>
+    
+    .back-button:hover::before {
+      transform: translateX(-4px);
+    }
+    
+    .back-button:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    @keyframes bounceLeft {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(-6px); }
+    }
+    
+    .back-button:hover::before {
+      animation: bounceLeft 1.2s infinite;
+    }
+</style>
+
+<footer>
+    <div class="button-container">
+      <a href="mindmappings12thgrade.html" class="back-button">Back to Topics</a>
+    </div>
+</footer>
 
 
 </body>
