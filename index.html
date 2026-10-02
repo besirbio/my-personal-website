@@ -2,91 +2,244 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>My Personal Website</title>
-  
-  <!-- Open Graph Meta Tags -->
-  <meta property="og:title" content="Besir Zeneli - Biologist & Educator">
-  <meta property="og:description" content="Explore my journey in biology, education, and athletics. Learn, engage, and connect.">
-  <meta property="og:image" content="https://besirbio.github.io/my-personal-website/besir.jpeg">
-  <meta property="og:url" content="https://besirbio.github.io/my-personal-website/">
-  <meta property="og:type" content="website">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0b1614" />
+  <meta name="description" content="Besir Zeneli — biologist, educator, writer, and athletics veteran. Science, education, ideas, and meaningful work." />
+  <title>Besir Zeneli — Biologist • Educator • Writer</title>
 
-  <!-- Twitter Card Meta Tags -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Besir Zeneli - Biologist & Educator">
-  <meta name="twitter:description" content="Explore my journey in biology, education, and athletics. Learn, engage, and connect.">
-  <meta name="twitter:image" content="https://besirbio.github.io/my-personal-website/besir.jpeg">
-  <meta name="twitter:site" content="@besir_zeneli">
+  <meta property="og:title" content="Besir Zeneli — Biologist • Educator • Writer" />
+  <meta property="og:description" content="Science, education, ideas, and meaningful work." />
+  <meta property="og:image" content="https://besirbio.github.io/my-personal-website/besir.jpeg" />
+  <meta property="og:url" content="https://besirbio.github.io/my-personal-website/" />
+  <meta property="og:type" content="website" />
 
-  <!-- Link to the external CSS file -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Besir Zeneli — Biologist • Educator • Writer" />
+  <meta name="twitter:description" content="Science, education, ideas, and meaningful work." />
+  <meta name="twitter:image" content="https://besirbio.github.io/my-personal-website/besir.jpeg" />
+  <meta name="twitter:site" content="@besir_zeneli" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/index.css" />
-  <link rel="icon" type="image/png" href="android-chrome-192x192.png">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <link rel="icon" type="image/png" href="android-chrome-192x192.png" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
 </head>
 <body>
-  <header>
-    <h1>Welcome to My Personal Website</h1>
+  <div class="site-glow site-glow-a" aria-hidden="true"></div>
+  <div class="site-glow site-glow-b" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <a class="brand" href="#top" aria-label="Besir Zeneli home">
+      <span class="brand-mark">BZ</span>
+      <span class="brand-name">BIOBESIR</span>
+    </a>
+
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Open navigation">
+      <span></span><span></span><span></span>
+    </button>
+
+    <nav id="site-nav" class="site-nav" aria-label="Main navigation">
+      <a href="#about">About</a>
+      <a href="#work">Explore</a>
+      <a href="#science">Science</a>
+      <a href="#connect">Connect</a>
+      <a class="nav-cta" href="Portfolio.html">View CV <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+    </nav>
   </header>
 
-  <div class="container">
-    <section id="navigation">
-      <!-- Added CV Button Here -->
-      <button onclick="location.href='Portfolio.html'">
-        <i class="fas fa-file-alt"></i> My CV
-      </button>
-      <button onclick="location.href='studying-materials/studyingmaterials.html'">
-        <i class="fas fa-book-open"></i> Studying Materials
-      </button>
-      <button onclick="location.href='writings.html'">
-        <i class="fas fa-feather"></i> The Pen
-      </button>
-            <button onclick="location.href='chat.html'">
-        <i class="fas fa-robot"></i> Biology Chat
-      </button>
-    </section>
+  <main id="top">
+    <section class="hero section-shell">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="eyebrow-dot"></span> Biology · Education · Ideas</p>
+        <h1>I study life.<br /><em>I teach curiosity.</em></h1>
+        <p class="hero-lead">
+          I’m Besir Zeneli, a biologist and educator from North Macedonia. I build bridges between scientific knowledge,
+          human growth, and the questions that make learning worth pursuing.
+        </p>
 
-    <section id="about">
-      <img src="Besir.png" alt="Your Picture" />
-      <p>I’m Besir Zeneli, a biologist, educator, and athletics veteran from North Macedonia with a deep passion for science, youth development, and making meaningful connections across cultures. My journey began at Hacettepe University, where I earned my degree in biology, and since then, I’ve dedicated myself to helping students discover the wonders of the natural world. As a biology teacher at Marif International School, I’m not just teaching facts—I’m guiding the next generation of thinkers and innovators, helping them understand the impact they can have on the world around them.
+        <div class="hero-actions">
+          <a class="button button-primary" href="#work">Explore my work <i class="fa-solid fa-arrow-down"></i></a>
+          <a class="button button-ghost" href="Portfolio.html">Read my CV <i class="fa-solid fa-file-lines"></i></a>
+        </div>
 
-Outside the classroom, my heart has always been in athletics. As a former national team runner and veteran of the sport, I know firsthand the power of discipline, perseverance, and teamwork. My involvement in North Macedonia's athletic community goes beyond just competing; it’s about inspiring others and contributing to a legacy of growth and excellence in our sport.</p>
-    </section>
+        <div class="hero-meta" aria-label="Profile highlights">
+          <div>
+            <span class="meta-value">Biologist</span>
+            <span class="meta-label">Science & research</span>
+          </div>
+          <div>
+            <span class="meta-value">Educator</span>
+            <span class="meta-label">Teaching & youth</span>
+          </div>
+          <div>
+            <span class="meta-value">Athlete</span>
+            <span class="meta-label">Discipline in motion</span>
+          </div>
+        </div>
+      </div>
 
-    <section id="video">
-      <h2>Science is Beautiful</h2>
-      <p>Enjoy this amazing Symphony of Science video!</p>
-      <div class="video-container">
-        <iframe width="560" height="315" src="https://www.youtube.com/embed/9Cd36WJ79z4" 
-                title="Symphony of Science - The Poetry of Reality (An Anthem for Science)" 
-                frameborder="0" allow="accelerometer; autoplay; clipboard-write; 
-                encrypted-media; gyroscope; picture-in-picture; web-share" 
-                referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
-        </iframe>
+      <div class="hero-visual">
+        <div class="portrait-frame">
+          <div class="portrait-orbit orbit-one" aria-hidden="true"></div>
+          <div class="portrait-orbit orbit-two" aria-hidden="true"></div>
+          <div class="portrait-glass" aria-hidden="true"></div>
+          <img src="Besir.png" alt="Portrait of Besir Zeneli" onerror="this.onerror=null;this.src='besir.jpeg';" />
+          <div class="portrait-tag"><span class="live-dot"></span> Curious by nature</div>
+        </div>
+        <div class="floating-note note-top"><i class="fa-solid fa-dna"></i><span>Understand<br />the living world</span></div>
+        <div class="floating-note note-bottom"><i class="fa-solid fa-feather-pointed"></i><span>Write ideas<br />worth remembering</span></div>
       </div>
     </section>
 
-    <section id="quote" style="text-align: center; font-style: italic; margin: 20px;">
-      <p>"Science is the poetry of reality." - Richard Dawkins</p>
+    <section id="about" class="section-shell section about-section">
+      <div class="section-heading compact-heading">
+        <p class="eyebrow">01 · About</p>
+        <h2>More than a profession,<br /><span>an ecosystem of interests.</span></h2>
+      </div>
+      <div class="about-grid">
+        <div class="about-lede">
+          <p>
+            My path began with biology at Hacettepe University and grew through teaching, athletics, writing, and a continuing
+            fascination with how living systems—and people—work.
+          </p>
+          <p>
+            In the classroom, I care less about memorizing isolated facts and more about helping students learn how to observe,
+            question, connect evidence, and think independently.
+          </p>
+        </div>
+        <div class="about-side">
+          <div class="quote-card">
+            <i class="fa-solid fa-quote-left"></i>
+            <blockquote>Science is the poetry of reality.</blockquote>
+            <cite>— Richard Dawkins</cite>
+          </div>
+          <div class="micro-line">Teacher · Researcher · Writer · Former national-team runner</div>
+        </div>
+      </div>
     </section>
-  </div>
 
-  <footer>
-    <a href="https://www.linkedin.com/in/besir-zeneli-0174688b/?originalSubdomain=mk" target="_blank">
-      <img src="icons/linkedin.png" alt="LinkedIn" width="30" height="30">
-    </a>
-    <a href="https://www.facebook.com/besirxx" target="_blank">
-      <img src="icons/facebook.png" alt="Facebook" width="30" height="30">
-    </a>
-    <a href="https://www.instagram.com/besirzeneli/" target="_blank">
-      <img src="icons/instagram.png" alt="Instagram" width="30" height="30">
-    </a>
-    <a href="https://x.com/besir_zeneli?lang=ar" target="_blank">
-      <img src="icons/twitter.png" alt="Twitter" width="30" height="30">
-    </a>
+    <section id="work" class="section-shell section work-section">
+      <div class="section-heading">
+        <p class="eyebrow">02 · Explore</p>
+        <h2>Four doors into<br /><span>my world.</span></h2>
+      </div>
+
+      <div class="work-grid">
+        <a class="work-card card-dark" href="Portfolio.html">
+          <div class="card-icon"><i class="fa-regular fa-id-card"></i></div>
+          <div class="card-copy">
+            <span class="card-kicker">01 · Profile</span>
+            <h3>My CV</h3>
+            <p>Education, experience, projects, and the story behind the work.</p>
+          </div>
+          <span class="card-arrow"><i class="fa-solid fa-arrow-up-right-from-square"></i></span>
+        </a>
+
+        <a class="work-card card-light" href="studying-materials/studyingmaterials.html">
+          <div class="card-icon"><i class="fa-solid fa-book-open-reader"></i></div>
+          <div class="card-copy">
+            <span class="card-kicker">02 · Learn</span>
+            <h3>Studying Materials</h3>
+            <p>Resources, notes, and learning material gathered for curious minds.</p>
+          </div>
+          <span class="card-arrow"><i class="fa-solid fa-arrow-up-right-from-square"></i></span>
+        </a>
+
+        <a class="work-card card-accent" href="writings.html">
+          <div class="card-icon"><i class="fa-solid fa-feather-pointed"></i></div>
+          <div class="card-copy">
+            <span class="card-kicker">03 · Think</span>
+            <h3>The Pen</h3>
+            <p>Reflections on science, philosophy, education, humanity, and life.</p>
+          </div>
+          <span class="card-arrow"><i class="fa-solid fa-arrow-up-right-from-square"></i></span>
+        </a>
+
+        <a class="work-card card-light" href="chat.html">
+          <div class="card-icon"><i class="fa-solid fa-robot"></i></div>
+          <div class="card-copy">
+            <span class="card-kicker">04 · Ask</span>
+            <h3>Biology Chat</h3>
+            <p>Explore biology through conversation, questions, and guided curiosity.</p>
+          </div>
+          <span class="card-arrow"><i class="fa-solid fa-arrow-up-right-from-square"></i></span>
+        </a>
+      </div>
+    </section>
+
+    <section id="science" class="section-shell section science-section">
+      <div class="science-header">
+        <div>
+          <p class="eyebrow">03 · Science</p>
+          <h2>Wonder is a<br /><span>serious way to learn.</span></h2>
+        </div>
+        <p class="science-intro">A small corner of the site for the feeling behind the facts: awe, evidence, scale, and the poetry of understanding.</p>
+      </div>
+
+      <div class="video-card">
+        <div class="video-copy">
+          <span class="video-label">Symphony of Science</span>
+          <h3>The Poetry of Reality</h3>
+          <p>An anthem for science—and a reminder that understanding the universe can be intellectually rigorous and deeply beautiful.</p>
+          <a class="text-link" href="https://www.youtube.com/watch?v=9Cd36WJ79z4" target="_blank" rel="noopener">Open on YouTube <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+        </div>
+        <div class="video-wrap">
+          <iframe src="https://www.youtube.com/embed/9Cd36WJ79z4" title="Symphony of Science - The Poetry of Reality" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+      </div>
+    </section>
+
+    <section class="statement-section">
+      <div class="section-shell statement-inner">
+        <span class="statement-mark">“</span>
+        <p>I want students to leave the room not only knowing more—but <em>wanting to know more.</em></p>
+      </div>
+    </section>
+
+    <section id="connect" class="section-shell section connect-section">
+      <div class="connect-card">
+        <div>
+          <p class="eyebrow">04 · Connect</p>
+          <h2>Stay curious.<br /><span>Stay connected.</span></h2>
+          <p>For teaching, science, projects, ideas, or simply a good conversation.</p>
+        </div>
+        <div class="social-grid">
+          <a href="https://www.linkedin.com/in/besir-zeneli-0174688b/?originalSubdomain=mk" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i><span>LinkedIn</span></a>
+          <a href="https://www.facebook.com/besirxx" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i><span>Facebook</span></a>
+          <a href="https://www.instagram.com/besirzeneli/" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram"></i><span>Instagram</span></a>
+          <a href="https://x.com/besir_zeneli?lang=ar" target="_blank" rel="noopener" aria-label="X"><i class="fa-brands fa-x-twitter"></i><span>X / Twitter</span></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer section-shell">
+    <div class="footer-brand">
+      <span class="brand-mark">BZ</span>
+      <span>BIOBESIR</span>
+    </div>
+    <p>Biology · Education · Ideas</p>
+    <p class="copyright">© <span id="year"></span> Besir Zeneli</p>
   </footer>
 
-  <p style="text-align: center;">&copy; 2025 Your Website</p>
+  <script>
+    const menuToggle = document.querySelector('.menu-toggle');
+    const siteNav = document.querySelector('#site-nav');
+    const navLinks = document.querySelectorAll('#site-nav a');
+
+    menuToggle?.addEventListener('click', () => {
+      const open = siteNav.classList.toggle('is-open');
+      menuToggle.setAttribute('aria-expanded', String(open));
+    });
+
+    navLinks.forEach(link => link.addEventListener('click', () => {
+      siteNav.classList.remove('is-open');
+      menuToggle.setAttribute('aria-expanded', 'false');
+    }));
+
+    document.querySelector('#year').textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
