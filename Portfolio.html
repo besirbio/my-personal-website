@@ -1,306 +1,266 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Besir Zeneli - Molecular Biologist</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            line-height: 1.6;
-            color: #333;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            background: #f5f6fa;
-        }
-
-        .header {
-            display: flex;
-            align-items: center;
-            gap: 40px;
-            margin-bottom: 30px;
-            padding: 30px;
-            background: #2c3e50;
-            color: white;
-            border-radius: 8px;
-            flex-wrap: wrap;
-        }
-
-        .profile-picture {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            border: 4px solid #3498db;
-            object-fit: cover;
-        }
-
-        .header-content {
-            flex: 1;
-        }
-
-        .name {
-            font-size: 2.5em;
-            margin-bottom: 5px;
-        }
-
-        .title {
-            font-size: 1.2em;
-            margin-bottom: 15px;
-            color: #bdc3c7;
-        }
-
-        .contact-info {
-            font-size: 0.9em;
-            margin-bottom: 20px;
-        }
-
-        .section {
-            margin-bottom: 30px;
-            padding: 20px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .section-title {
-            color: #2c3e50;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 5px;
-            margin-bottom: 15px;
-            font-size: 1.3em;
-        }
-
-        .two-column {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-        }
-
-        .star-rating {
-            color: #f1c40f;
-            margin: 5px 0;
-        }
-
-        .experience-item, .education-item {
-            margin-bottom: 25px;
-        }
-
-        .date {
-            color: #7f8c8d;
-            font-size: 0.9em;
-            margin: 5px 0;
-        }
-
-        .skills-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .skill {
-            background: #ecf0f1;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 0.9em;
-        }
-
-        ul {
-            padding-left: 20px;
-            margin: 10px 0;
-        }
-
-        li {
-            margin-bottom: 8px;
-        }
-
-        @media (max-width: 768px) {
-            .two-column {
-                grid-template-columns: 1fr;
-            }
-            
-            .header {
-                flex-direction: column;
-                text-align: center;
-                gap: 20px;
-            }
-            
-            .name {
-                font-size: 2em;
-            }
-            
-            .profile-picture {
-                width: 120px;
-                height: 120px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="CV and professional profile of Besir Zeneli — Molecular Biologist and Biology Educator." />
+  <title>Besir Zeneli — CV & Professional Profile</title>
+  <link rel="icon" type="image/png" href="android-chrome-192x192.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/portfolio.css" />
 </head>
 <body>
-    <div class="header">
-        <img src="Besir.png" alt="Besir Zeneli" class="profile-picture">
-        <div class="header-content">
-            <h1 class="name">Besir Zeneli</h1>
-            <div class="title">Molecular Biologist</div>
-            <div class="contact-info">Skopje | besirzeneli@gmail.com | besir-zeneli-1996@live.com</div>
-        </div>
-    </div>
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
 
-    <div class="section">
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="BioBesir home">
+      <span class="brand-mark">B</span>
+      <span>Biobesir</span>
+    </a>
+    <nav class="top-nav" aria-label="Primary navigation">
+      <a href="index.html">Home</a>
+      <a href="#experience">Experience</a>
+      <a href="#education">Education</a>
+      <a href="#skills">Skills</a>
+      <a class="nav-cta" href="index.html">Back to site <span>↗</span></a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero shell">
+      <div class="hero-copy">
+        <p class="eyebrow">CURRICULUM VITAE · SCIENCE · EDUCATION</p>
+        <h1>Besir<br /><span>Zeneli</span></h1>
+        <p class="hero-role">Molecular Biologist <span>·</span> Biology Educator</p>
+        <p class="hero-intro">A laboratory-trained molecular biologist and educator working at the intersection of molecular diagnostics, scientific communication, and student development.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="mailto:besirzeneli@gmail.com">Get in touch <span>↗</span></a>
+          <a class="button button-secondary" href="index.html">Explore BioBesir <span>→</span></a>
+        </div>
+      </div>
+
+      <div class="hero-card">
+        <div class="portrait-frame">
+          <img src="Besir.png" alt="Portrait of Besir Zeneli" />
+        </div>
+        <div class="hero-card-meta">
+          <div>
+            <span class="meta-label">Based in</span>
+            <strong>Skopje</strong>
+          </div>
+          <div>
+            <span class="meta-label">Focus</span>
+            <strong>Molecular Biology</strong>
+          </div>
+          <div>
+            <span class="meta-label">Availability</span>
+            <strong>Relocation · Remote</strong>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="summary shell">
+      <div class="section-kicker">01 · PROFILE</div>
+      <div class="summary-grid">
+        <h2>Science with a human dimension.</h2>
         <p>Dynamic Molecular Biologist with 3 years of experience in diagnostic laboratories, driving impact research and diagnostic projects. Expertise encompasses Real-Time PCR, DNA/RNA extraction, and molecular diagnostics for infectious diseases, ensuring high-quality outcomes through meticulous laboratory management. Proven ability to design engaging curricula and facilitate interactive learning experiences, fostering the next generation of scientists. Dedicated to advancing medical diagnostics through innovative methodologies and a strong commitment to research excellence.</p>
-    </div>
+      </div>
+    </section>
 
-    <div class="two-column">
+    <section id="experience" class="content-section shell">
+      <div class="section-heading">
         <div>
-            <!-- Work Experience -->
-            <div class="section">
-                <h2 class="section-title">WORK EXPERIENCE</h2>
-                
-                <div class="experience-item">
-                    <div class="date">April 2021 – August 2023</div>
-                    <h3>Molecular Biologist at VFV laboratory, Skopje</h3>
-                    <ul>
-                        <li>Led the Molecular Biology Department, overseeing research and diagnostic projects</li>
-                        <li>Conducted Real-Time PCR analysis for SARS-CoV-2, HPV, and Chlamydia detection</li>
-                        <li>Managed DNA/RNA isolation, sample preparation, and thermocycler operations</li>
-                        <li>Ensured accurate master mix preparation and utilized diagnostic kits from Viasure, Algimed, Bio-Speedy, AmpliSens, and GeneProof</li>
-                        <li>Provided training and supervision to laboratory staff</li>
-                    </ul>
-                </div>
-
-                <div class="experience-item">
-                    <div class="date">September 2021 – Present</div>
-                    <h3>Teacher of Biology at Maarif International Schools</h3>
-                    <ul>
-                        <li>Designed and implemented engaging biology curricula aligned with international standards</li>
-                        <li>Conducted laboratory experiments and interactive learning activities</li>
-                        <li>Mentored students in research projects and science fairs</li>
-                        <li>Guided students to 1st place in national Biology competitions</li>
-                    </ul>
-                </div>
-
-                <div class="experience-item">
-                    <div class="date">January 2020 – July 2020</div>
-                    <h3>Medical Translator at Liv Hospital, Ankara</h3>
-                    <ul>
-                        <li>Provided Turkish-Albanian medical translations for professionals and patients</li>
-                        <li>Assisted in accurate medical communication and patient care coordination</li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Education -->
-            <div class="section">
-                <h2 class="section-title">EDUCATION</h2>
-                <div class="education-item">
-                    <div class="date">October 2015 – July 2019</div>
-                    <h3>Hacettepe University, Ankara</h3>
-                    <p>Bachelor of Science in Molecular Biology</p>
-                    <p>GPA: 3.43 (Honors Student)</p>
-                    <p>Relevant Coursework: Molecular Biology, Biochemistry, Histology, Ecology</p>
-                    <p>Key Research Areas: PCR, Electrophoresis, Protein Purification, DNA Extraction, Spectrophotometry</p>
-                </div>
-            </div>
-
-            <!-- Internships -->
-            <div class="section">
-                <h2 class="section-title">INTERNSHIPS</h2>
-                
-                <div class="experience-item">
-                    <div class="date">July 2019 – July 2020</div>
-                    <h3>Biochemistry Intern at Clinical Center Tetovo</h3>
-                    <ul>
-                        <li>Performed urine microscopic examinations and equipment calibration</li>
-                        <li>Worked with TOSOH AIA-360, SmartLyte Plus, and Architect c4000 systems</li>
-                    </ul>
-                </div>
-
-                <div class="experience-item">
-                    <div class="date">June 2018 – August 2018</div>
-                    <h3>Microbiology Intern at Center for Public Health</h3>
-                    <ul>
-                        <li>Conducted bacterial cultures and antimicrobial susceptibility testing</li>
-                        <li>Assisted in sanitary inspections and microbial analysis</li>
-                    </ul>
-                </div>
-            </div>
+          <div class="section-kicker">02 · EXPERIENCE</div>
+          <h2>Professional journey</h2>
         </div>
+        <p>Laboratory practice, education, communication, and scientific responsibility.</p>
+      </div>
 
+      <div class="timeline">
+        <article class="timeline-item featured">
+          <div class="timeline-marker">01</div>
+          <div class="timeline-main">
+            <div class="timeline-topline"><span>APR 2021 — AUG 2023</span><span>SKOPJE</span></div>
+            <h3>Molecular Biologist</h3>
+            <p class="company">VFV Laboratory</p>
+            <ul>
+              <li>Led the Molecular Biology Department, overseeing research and diagnostic projects.</li>
+              <li>Conducted Real-Time PCR analysis for SARS-CoV-2, HPV, and Chlamydia detection.</li>
+              <li>Managed DNA/RNA isolation, sample preparation, and thermocycler operations.</li>
+              <li>Ensured accurate master mix preparation and utilized diagnostic kits from Viasure, Algimed, Bio-Speedy, AmpliSens, and GeneProof.</li>
+              <li>Provided training and supervision to laboratory staff.</li>
+            </ul>
+            <div class="tags"><span>PCR</span><span>Diagnostics</span><span>Laboratory Management</span></div>
+          </div>
+        </article>
+
+        <article class="timeline-item">
+          <div class="timeline-marker">02</div>
+          <div class="timeline-main">
+            <div class="timeline-topline"><span>SEP 2021 — PRESENT</span><span>SKOPJE</span></div>
+            <h3>Teacher of Biology</h3>
+            <p class="company">Maarif International Schools</p>
+            <ul>
+              <li>Designed and implemented engaging biology curricula aligned with international standards.</li>
+              <li>Conducted laboratory experiments and interactive learning activities.</li>
+              <li>Mentored students in research projects and science fairs.</li>
+              <li>Guided students to 1st place in national Biology competitions.</li>
+            </ul>
+            <div class="tags"><span>Education</span><span>Curriculum Design</span><span>Mentoring</span></div>
+          </div>
+        </article>
+
+        <article class="timeline-item">
+          <div class="timeline-marker">03</div>
+          <div class="timeline-main">
+            <div class="timeline-topline"><span>JAN 2020 — JUL 2020</span><span>ANKARA</span></div>
+            <h3>Medical Translator</h3>
+            <p class="company">Liv Hospital</p>
+            <ul>
+              <li>Provided Turkish-Albanian medical translations for professionals and patients.</li>
+              <li>Assisted in accurate medical communication and patient care coordination.</li>
+            </ul>
+            <div class="tags"><span>Translation</span><span>Medical Communication</span></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="education" class="content-section split-section shell">
+      <div class="section-heading compact">
         <div>
-            <!-- Personal Information -->
-            <div class="section">
-                <h2 class="section-title">PERSONAL INFORMATION</h2>
-                <p>
-                Date of birth: 24.06.1996 Skopje<br>
-                Nationality: Macedonian<br>
-                Driving License: B<br>
-                Hobbies: Running, Writing, Reading, Translation, Poetry, Movies</p>
-            </div>
-
-            <!-- Languages -->
-            <div class="section">
-                <h2 class="section-title">LANGUAGES</h2>
-                <div class="star-rating">★★★★★ Albanian</div>
-                <div class="star-rating">★★★★☆ Macedonian</div>
-                <div class="star-rating">★★★★☆ English</div>
-                <div class="star-rating">★★★★☆ Turkish</div>
-            </div>
-
-            <!-- Skills -->
-            <div class="section">
-                <h2 class="section-title">SKILLS</h2>
-                <div class="skills-container">
-                    <span class="skill">Teamwork</span>
-                    <span class="skill">Molecular Biology</span>
-                    <span class="skill">PCR</span>
-                    <span class="skill">DNA/RNA Extraction</span>
-                    <span class="skill">Microsoft Office</span>
-                    <span class="skill">Adaptability</span>
-                    <span class="skill">Laboratory Management</span>
-                    <span class="skill">Data Analysis</span>
-                    <span class="skill">Curriculum Development</span>
-                    <span class="skill">Quality Control</span>
-                    <span class="skill">Biotechnology</span>
-                    <span class="skill">Scientific Writing</span>
-                    <span class="skill">Adobe Photoshop</span>
-                    <span class="skill">Fast Learner</span>
-                    <span class="skill">Pressure Management</span>
-                </div>
-            </div>
-
-            <!-- Extracurricular -->
-            <div class="section">
-                <h2 class="section-title">EXTRA-CURRICULAR</h2>
-                <div class="experience-item">
-                    <div class="date">2015 – 2019</div>
-                    <h3>Albanian Cultural Center, Ankara</h3>
-                    <p>Community Volunteer Recognition Award<br>
-                    5 years contribution to cultural and educational activities</p>
-                </div>
-            </div>
-
-            <!-- Courses -->
-            <div class="section">
-                <h2 class="section-title">COURSES</h2>
-                <div class="experience-item">
-                    <div class="date">2021</div>
-                    <h3>COVID-19 & SARS-CoV-2 Course</h3>
-                    <p>Massachusetts Institute of Technology (MIT)</p>
-                </div>
-            </div>
-
-            <!-- Availability -->
-            <div class="section">
-                <h2 class="section-title">AVAILABILITY</h2>
-                <p>Open to relocation & remote opportunities</p>
-            </div>
+          <div class="section-kicker">03 · EDUCATION</div>
+          <h2>Academic foundation</h2>
         </div>
-    </div>
+      </div>
+      <article class="education-card">
+        <div class="education-year">2015<br /><span>—</span><br />2019</div>
+        <div>
+          <p class="company">Hacettepe University · Ankara</p>
+          <h3>Bachelor of Science in Molecular Biology</h3>
+          <p class="education-detail"><strong>GPA 3.43</strong> · Honors Student</p>
+          <div class="education-columns">
+            <div><span class="mini-label">Relevant coursework</span><p>Molecular Biology, Biochemistry, Histology, Ecology</p></div>
+            <div><span class="mini-label">Research areas</span><p>PCR, Electrophoresis, Protein Purification, DNA Extraction, Spectrophotometry</p></div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="content-section shell">
+      <div class="section-heading compact">
+        <div>
+          <div class="section-kicker">04 · INTERNSHIPS</div>
+          <h2>Early laboratory practice</h2>
+        </div>
+      </div>
+      <div class="cards-grid two">
+        <article class="info-card">
+          <span class="card-date">JUL 2019 — JUL 2020</span>
+          <h3>Biochemistry Intern</h3>
+          <p class="company">Clinical Center Tetovo</p>
+          <ul>
+            <li>Performed urine microscopic examinations and equipment calibration.</li>
+            <li>Worked with TOSOH AIA-360, SmartLyte Plus, and Architect c4000 systems.</li>
+          </ul>
+        </article>
+        <article class="info-card">
+          <span class="card-date">JUN 2018 — AUG 2018</span>
+          <h3>Microbiology Intern</h3>
+          <p class="company">Center for Public Health</p>
+          <ul>
+            <li>Conducted bacterial cultures and antimicrobial susceptibility testing.</li>
+            <li>Assisted in sanitary inspections and microbial analysis.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section id="skills" class="content-section shell">
+      <div class="section-heading">
+        <div>
+          <div class="section-kicker">05 · CAPABILITIES</div>
+          <h2>Skills & tools</h2>
+        </div>
+        <p>A blend of laboratory technique, scientific practice, education, and digital tools.</p>
+      </div>
+      <div class="skills-grid">
+        <div class="skills-group"><span class="mini-label">Laboratory & science</span><div class="tags large"><span>Molecular Biology</span><span>PCR</span><span>DNA/RNA Extraction</span><span>Biotechnology</span><span>Data Analysis</span><span>Quality Control</span><span>Laboratory Management</span></div></div>
+        <div class="skills-group"><span class="mini-label">Education & communication</span><div class="tags large"><span>Curriculum Development</span><span>Scientific Writing</span><span>Teamwork</span><span>Adaptability</span><span>Pressure Management</span><span>Fast Learner</span></div></div>
+        <div class="skills-group"><span class="mini-label">Digital</span><div class="tags large"><span>Microsoft Office</span><span>Adobe Photoshop</span></div></div>
+      </div>
+    </section>
+
+    <section class="lower-grid shell">
+      <article class="panel">
+        <div class="section-kicker">06 · LANGUAGES</div>
+        <h2>Languages</h2>
+        <div class="language-list">
+          <div><span>Albanian</span><strong>★★★★★</strong></div>
+          <div><span>Macedonian</span><strong>★★★★☆</strong></div>
+          <div><span>English</span><strong>★★★★☆</strong></div>
+          <div><span>Turkish</span><strong>★★★★☆</strong></div>
+        </div>
+      </article>
+
+      <article class="panel">
+        <div class="section-kicker">07 · PERSONAL</div>
+        <h2>Beyond the laboratory</h2>
+        <div class="personal-list">
+          <div><span>Date of birth</span><strong>24.06.1996 · Skopje</strong></div>
+          <div><span>Nationality</span><strong>Macedonian</strong></div>
+          <div><span>Driving license</span><strong>Category B</strong></div>
+          <div><span>Interests</span><strong>Running · Writing · Reading · Translation · Poetry · Movies</strong></div>
+        </div>
+      </article>
+
+      <article class="panel">
+        <div class="section-kicker">08 · COMMUNITY</div>
+        <h2>Extracurricular</h2>
+        <span class="card-date">2015 — 2019</span>
+        <h3>Albanian Cultural Center · Ankara</h3>
+        <p>Community Volunteer Recognition Award</p>
+        <p>5 years contribution to cultural and educational activities.</p>
+      </article>
+
+      <article class="panel">
+        <div class="section-kicker">09 · COURSE</div>
+        <h2>Selected training</h2>
+        <span class="card-date">2021</span>
+        <h3>COVID-19 & SARS-CoV-2 Course</h3>
+        <p>Massachusetts Institute of Technology (MIT)</p>
+      </article>
+    </section>
+
+    <section class="availability shell">
+      <div>
+        <div class="section-kicker">10 · AVAILABILITY</div>
+        <h2>Open to relocation & remote opportunities.</h2>
+      </div>
+      <a class="button button-primary" href="mailto:besirzeneli@gmail.com">Start a conversation <span>↗</span></a>
+    </section>
+  </main>
+
+  <footer class="site-footer shell">
+    <div class="footer-brand"><span class="brand-mark">B</span><span>BioBesir</span></div>
+    <div class="footer-meta">Molecular Biology · Education · Science</div>
+    <a href="index.html">Back to homepage ↑</a>
+  </footer>
+
+  <script>
+    document.querySelectorAll('a[href^="#"]').forEach(link => {
+      link.addEventListener('click', event => {
+        const target = document.querySelector(link.getAttribute('href'));
+        if (target) {
+          event.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
 </body>
 </html>
