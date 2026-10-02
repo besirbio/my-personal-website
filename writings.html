@@ -2,88 +2,172 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>The Pen (القلم, al-qalam)</title>
-  <!-- Link to the external CSS file -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0b1614" />
+  <meta name="description" content="The Pen — essays and reflections by Besir Zeneli on science, philosophy, life, and the human experience." />
+  <title>The Pen — BioBesir</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/writings.css" />
-  <link rel="icon" type="image/png" href="android-chrome-192x192.png">
-  <!-- Font Awesome for icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" type="image/png" href="android-chrome-192x192.png" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
 </head>
-
 <body>
+  <div class="ambient ambient-one" aria-hidden="true"></div>
+  <div class="ambient ambient-two" aria-hidden="true"></div>
 
-  <header>
-    <h1><i class="fas fa-feather"></i> The Pen </h1>
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="BioBesir home">
+      <span class="brand-mark">BZ</span>
+      <span class="brand-name">BIOBESIR</span>
+    </a>
+
+    <nav class="top-nav" aria-label="Main navigation">
+      <a href="index.html">Home</a>
+      <a href="Portfolio.html">CV</a>
+      <a href="studying-materials/studyingmaterials.html">Study</a>
+      <a class="active" href="writings.html">The Pen</a>
+      <a class="nav-cta" href="chat.html">Biology Chat <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+    </nav>
   </header>
 
-  <!-- Rest of the content remains the same -->
-  <section id="writings-content">
-    
-    <style>
-.truncate-text {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
+  <main>
+    <section class="hero shell">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="eyebrow-dot"></span> 03 · The Pen</p>
+        <h1>Thoughts that<br /><em>stay with you.</em></h1>
+        <p class="hero-intro">
+          Essays and reflections where science meets philosophy, nature, humanity, and the questions that keep curiosity alive.
+        </p>
+        <div class="hero-meta">
+          <div><strong>04</strong><span>essays</span></div>
+          <div><strong>03</strong><span>science-led</span></div>
+          <div><strong>∞</strong><span>questions</span></div>
+        </div>
+      </div>
 
-.read-more {
-    color: blue;
-    text-decoration: underline;
-    cursor: pointer;
-    display: inline-block;
-    margin-top: 5px;
-}
-</style>
+      <div class="hero-card">
+        <div class="hero-glyph"><i class="fa-solid fa-feather-pointed"></i></div>
+        <div>
+          <span class="mini-label">القلم · al-qalam</span>
+          <h2>The pen is more than a tool.</h2>
+          <p>It is a way of looking closely, asking honestly, and giving an idea enough shape to be remembered.</p>
+        </div>
+        <div class="hero-line"></div>
+        <span class="hero-signature">Besir Zeneli</span>
+      </div>
+    </section>
 
+    <section class="intro-band">
+      <div class="shell intro-grid">
+        <p class="section-kicker">A small archive of ideas</p>
+        <p class="intro-text">Read slowly. Some pieces explain a biological mystery. Others open a philosophical door. Together, they reflect a single habit: <em>to stay curious.</em></p>
+      </div>
+    </section>
 
-<div class="writing-item">
-  <h3><a href="essay4.html" class="essay-title">Silent Killers: The Enigmatic World of Prions</a></h3>
-  <p class="truncate-text">
-    This article explores the mysterious realm of prions—infectious protein particles that defy the central dogma of biology by transmitting disease without any genetic material. It explains how these misfolded proteins can convert normal proteins in the brain into their abnormal form, leading to devastating neurodegenerative disorders such as Creutzfeldt-Jakob disease and mad cow disease. The text highlights the resilience of prions, noting their resistance to heat, radiation, and chemical treatments, which makes them exceptionally difficult to destroy. It further discusses their unique replication mechanism, which challenges traditional definitions of life. Finally, the piece reflects on how prion research not only deepens our understanding of protein chemistry but also raises profound questions about the boundaries between living and nonliving entities.
-  </p>
-</div>
+    <section class="writing-section shell">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">Selected writings</p>
+          <h2>Four ways of<br /><span>seeing the world.</span></h2>
+        </div>
+        <div class="filters" role="group" aria-label="Filter writings">
+          <button class="filter active" data-filter="all">All</button>
+          <button class="filter" data-filter="science">Science</button>
+          <button class="filter" data-filter="philosophy">Philosophy</button>
+        </div>
+      </div>
 
+      <div class="writings-list">
+        <article class="writing-card featured" data-category="science">
+          <div class="card-index">01</div>
+          <div class="card-main">
+            <div class="card-topline"><span class="card-type">Science</span><span>Protein · Disease · Life</span></div>
+            <h3><a href="essay4.html">Silent Killers: <em>The Enigmatic World of Prions</em></a></h3>
+            <p class="truncate-text">This article explores the mysterious realm of prions—infectious protein particles that defy the central dogma of biology by transmitting disease without any genetic material. It explains how these misfolded proteins can convert normal proteins in the brain into their abnormal form, leading to devastating neurodegenerative disorders such as Creutzfeldt-Jakob disease and mad cow disease. The text highlights the resilience of prions, noting their resistance to heat, radiation, and chemical treatments, which makes them exceptionally difficult to destroy. It further discusses their unique replication mechanism, which challenges traditional definitions of life. Finally, the piece reflects on how prion research not only deepens our understanding of protein chemistry but also raises profound questions about the boundaries between living and nonliving entities.</p>
+            <button class="read-more" type="button">Read more <i class="fa-solid fa-arrow-right"></i></button>
+          </div>
+          <div class="card-mark"><i class="fa-solid fa-dna"></i></div>
+        </article>
 
-<div class="writing-item">
-    <h3><a href="essay3.html" class="essay-title">Cosmic Building Blocks: Tracing the Origins of Life</a></h3>
-    <p class="truncate-text">This article explores groundbreaking discoveries in space research that shed light on the cosmic origins of life's building blocks. It discusses how recent samples from the asteroid Bennu, uniquely protected from Earthly contamination, revealed surprisingly high levels of ammonia and a mix of familiar and novel amino acids. These findings suggest that essential ingredients for life—notably those involved in creating DNA, RNA, and proteins—may be more widespread in the solar system than previously thought. The article delves into the implications of these discoveries, questioning whether the ingredients delivered by asteroids could have played a role in seeding life on Earth, while also emphasizing that the mystery of life’s origin remains unsolved. It highlights the anticipation for future technological advancements that will allow scientists to analyze these samples even further. Additionally, the piece points to upcoming space missions like the Europa Clipper, aimed at exploring water-rich worlds such as Jupiter’s moon Europa, as promising sites for uncovering more clues about the potential for extraterrestrial life. Overall, the article presents a captivating journey through the latest research, inviting readers to consider how even the tiniest fragments of space rocks might one day unlock the secrets of our cosmic origins.</p>
-</div>
+        <article class="writing-card" data-category="science">
+          <div class="card-index">02</div>
+          <div class="card-main">
+            <div class="card-topline"><span class="card-type">Science</span><span>Space · Chemistry · Origins</span></div>
+            <h3><a href="essay3.html">Cosmic Building Blocks: <em>Tracing the Origins of Life</em></a></h3>
+            <p class="truncate-text">This article explores groundbreaking discoveries in space research that shed light on the cosmic origins of life's building blocks. It discusses how recent samples from the asteroid Bennu, uniquely protected from Earthly contamination, revealed surprisingly high levels of ammonia and a mix of familiar and novel amino acids. These findings suggest that essential ingredients for life—notably those involved in creating DNA, RNA, and proteins—may be more widespread in the solar system than previously thought. The article delves into the implications of these discoveries, questioning whether the ingredients delivered by asteroids could have played a role in seeding life on Earth, while also emphasizing that the mystery of life’s origin remains unsolved. It highlights the anticipation for future technological advancements that will allow scientists to analyze these samples even further. Additionally, the piece points to upcoming space missions like the Europa Clipper, aimed at exploring water-rich worlds such as Jupiter’s moon Europa, as promising sites for uncovering more clues about the potential for extraterrestrial life.</p>
+            <button class="read-more" type="button">Read more <i class="fa-solid fa-arrow-right"></i></button>
+          </div>
+          <div class="card-mark"><i class="fa-solid fa-atom"></i></div>
+        </article>
 
-<div class="writing-item">
-    <h3><a href="essay1.html" class="essay-title">Understanding Stress: The Balance Between Survival Mechanism and Health Risk</a></h3>
-    <p class="truncate-text">This essay explores the biological mechanisms of stress, emphasizing its evolutionary role in human survival. It explains how stress triggers physiological responses, such as the release of hormones like cortisol, adrenaline, and noradrenaline, which prepare the body for "fight or flight." While these processes are beneficial in the short term, the essay highlights the dangers of chronic stress, including its potential to cause various health issues like diabetes, heart disease, and autoimmune disorders. The piece also addresses the modern challenges that contribute to chronic stress and discusses strategies for managing it to avoid long-term health consequences.</p>
-</div>
+        <article class="writing-card" data-category="science">
+          <div class="card-index">03</div>
+          <div class="card-main">
+            <div class="card-topline"><span class="card-type">Science + Human Biology</span><span>Stress · Adaptation · Health</span></div>
+            <h3><a href="essay1.html">Understanding Stress: <em>Survival Mechanism &amp; Health Risk</em></a></h3>
+            <p class="truncate-text">This essay explores the biological mechanisms of stress, emphasizing its evolutionary role in human survival. It explains how stress triggers physiological responses, such as the release of hormones like cortisol, adrenaline, and noradrenaline, which prepare the body for “fight or flight.” While these processes are beneficial in the short term, the essay highlights the dangers of chronic stress, including its potential to cause various health issues like diabetes, heart disease, and autoimmune disorders. The piece also addresses the modern challenges that contribute to chronic stress and discusses strategies for managing it to avoid long-term health consequences.</p>
+            <button class="read-more" type="button">Read more <i class="fa-solid fa-arrow-right"></i></button>
+          </div>
+          <div class="card-mark"><i class="fa-solid fa-wave-square"></i></div>
+        </article>
 
-<div class="writing-item">
-    <h3><a href="essay2.html" class="essay-title">Beyond the Horizon and Beyond from a Metaphysical Perspective</a></h3>
-    <p class="truncate-text">"Beyond the Horizon and Beyond from a Metaphysical Perspective" by <strong>Sezai Karakoç</strong> is a reflective piece that delves into the ethical and spiritual implications of humanity’s relationship with the natural world. It examines the act of consuming animals, urging readers to consider it not as a natural right but as a blessing granted by the Creator. Through philosophical and religious lenses, Karakoç explores themes of responsibility, sacrifice, and the interconnectedness of all life, challenging readers to rethink their role in the natural order and the moral consequences of their actions. The work invites deep reflection on existence, purpose, and the greater responsibilities humanity holds in the world.</p>
-</div>
+        <article class="writing-card" data-category="philosophy">
+          <div class="card-index">04</div>
+          <div class="card-main">
+            <div class="card-topline"><span class="card-type">Philosophy</span><span>Ethics · Nature · Responsibility</span></div>
+            <h3><a href="essay2.html">Beyond the Horizon and Beyond <em>from a Metaphysical Perspective</em></a></h3>
+            <p class="truncate-text">“Beyond the Horizon and Beyond from a Metaphysical Perspective” by <strong>Sezai Karakoç</strong> is a reflective piece that delves into the ethical and spiritual implications of humanity’s relationship with the natural world. It examines the act of consuming animals, urging readers to consider it not as a natural right but as a blessing granted by the Creator. Through philosophical and religious lenses, Karakoç explores themes of responsibility, sacrifice, and the interconnectedness of all life, challenging readers to rethink their role in the natural order and the moral consequences of their actions. The work invites deep reflection on existence, purpose, and the greater responsibilities humanity holds in the world.</p>
+            <button class="read-more" type="button">Read more <i class="fa-solid fa-arrow-right"></i></button>
+          </div>
+          <div class="card-mark"><i class="fa-solid fa-feather"></i></div>
+        </article>
+      </div>
+    </section>
 
+    <section class="closing-note">
+      <div class="shell closing-inner">
+        <span class="closing-mark">“</span>
+        <p>Write to understand.<br /><em>Read to become.</em></p>
+        <a class="button" href="index.html"><i class="fa-solid fa-arrow-left"></i> Back to BioBesir</a>
+      </div>
+    </section>
+  </main>
 
+  <footer class="site-footer shell">
+    <div class="footer-brand"><span class="brand-mark">BZ</span><span>BIOBESIR</span></div>
+    <p>The Pen · Science · Philosophy · Ideas</p>
+    <p>© <span id="year"></span> Besir Zeneli</p>
+  </footer>
 
-<script>
-document.querySelectorAll('.writing-item p').forEach(p => {
-    const readMoreLink = document.createElement('a');
-    readMoreLink.className = 'read-more';
-    readMoreLink.textContent = 'Read More';
-    
-    p.parentNode.insertBefore(readMoreLink, p.nextSibling);
-    
-    readMoreLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        p.classList.toggle('truncate-text');
-        readMoreLink.textContent = p.classList.contains('truncate-text') 
-            ? 'Read More' 
-            : 'Read Less';
+  <script>
+    document.querySelectorAll('.read-more').forEach(button => {
+      button.addEventListener('click', () => {
+        const paragraph = button.previousElementSibling;
+        const expanded = paragraph.classList.toggle('expanded');
+        button.innerHTML = expanded
+          ? 'Read less <i class="fa-solid fa-arrow-up"></i>'
+          : 'Read more <i class="fa-solid fa-arrow-right"></i>';
+      });
     });
-});
-</script>
 
-   
-    <a href="index.html" class="back-button">Back to Home</a>
-  </section>
+    const filters = document.querySelectorAll('.filter');
+    const cards = document.querySelectorAll('.writing-card');
+    filters.forEach(filter => {
+      filter.addEventListener('click', () => {
+        filters.forEach(item => item.classList.remove('active'));
+        filter.classList.add('active');
+        const selected = filter.dataset.filter;
+        cards.forEach(card => {
+          const visible = selected === 'all' || card.dataset.category === selected;
+          card.hidden = !visible;
+        });
+      });
+    });
 
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
