@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Photosynthesis – The Plant's Food Factory · Grade 8</title>
+<style>
+:root{--ink:#2B2D42;--bg:#FAF8F3;--green:#2A9D8F;--gold:#FFB703;--navy:#14213D;--red:#E63946}
+*{box-sizing:border-box}
+body{margin:0;background:#E9E4D8;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink)}
+.app{max-width:1200px;margin:0 auto;padding:12px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:var(--navy);color:#fff;border-radius:16px 16px 0 0;padding:10px 18px;border:3px solid var(--ink);border-bottom:none}
+header h1{font-size:19px;margin:0;line-height:1.2}
+header .sub{font-size:13px;opacity:.75;font-weight:500}
+.dots{display:flex;gap:6px;flex-wrap:wrap}
+.dot{width:32px;height:32px;border-radius:50%;border:2px solid #ffffff66;background:transparent;color:#fff;font-weight:700;cursor:pointer;font-size:13px;font-family:inherit}
+.dot:hover{border-color:#fff}
+.dot.done{background:var(--green);border-color:var(--green)}
+.dot.on{background:var(--gold);color:var(--ink);border-color:#fff}
+.stage{position:relative;background:var(--bg);border:3px solid var(--ink);border-top:none;border-bottom:none;overflow:hidden}
+canvas{display:block;width:100%;height:auto}
+.ov{position:absolute;display:none;font-size:clamp(12px,1.45vw,17px)}
+.ov.show{display:block}
+.btn{font-family:inherit;font-weight:700;border:2.5px solid var(--ink);background:#fff;color:var(--ink);border-radius:999px;padding:.45em 1em;cursor:pointer;font-size:inherit}
+.btn:hover{background:#FFF3D6}
+.btn.primary{background:var(--gold)}
+.btn.sel{background:var(--green);color:#fff}
+/* question card */
+#qcard{left:50%;top:50%;transform:translate(-50%,-50%);width:min(64%,640px);background:#fff;border:3px solid var(--ink);border-radius:20px;padding:1.1em 1.3em;box-shadow:0 8px 0 #2B2D4222}
+#qcard .tag{display:inline-block;background:#FFB70333;border:2px solid var(--ink);border-radius:999px;padding:.1em .7em;font-weight:800;font-size:.8em;letter-spacing:.06em}
+#qcard h3{margin:.5em 0 .7em;font-size:1.25em;line-height:1.3}
+#qcard .opts{display:flex;flex-direction:column;gap:.45em}
+#qcard .opt{text-align:left;border-radius:14px}
+#qcard .opt.right{background:#2A9D8F;color:#fff}
+#qcard .opt.wrong{background:#E63946;color:#fff}
+#qcard .fb{margin-top:.8em;line-height:1.45;display:none}
+#qcard .fb.show{display:block}
+/* popup */
+#pop{width:min(36%,330px);background:#fff;border:3px solid var(--ink);border-radius:16px;padding:.8em 1em;box-shadow:0 6px 0 #2B2D4222;z-index:5}
+#pop h4{margin:0 0 .35em;font-size:1.08em;padding-right:1.4em}
+#pop p{margin:0;line-height:1.45}
+#pop .x{position:absolute;right:.5em;top:.35em;border:none;background:none;font-size:1.3em;cursor:pointer;color:var(--ink)}
+/* balance */
+#bal{left:50%;bottom:2.5%;transform:translateX(-50%);display:none;gap:.8em;align-items:center;background:#fff;border:3px solid var(--ink);border-radius:18px;padding:.45em .9em;white-space:nowrap}
+#bal.show{display:flex}
+.stp{display:flex;align-items:center;gap:.35em;font-weight:800;font-size:1.1em}
+.stp button{width:1.8em;height:1.8em;border-radius:50%;border:2.5px solid var(--ink);background:#FFF3D6;font-weight:800;cursor:pointer;font-size:.9em;font-family:inherit}
+.stp .n{min-width:1.1em;text-align:center;color:var(--red);font-size:1.15em}
+.sep{font-weight:800;font-size:1.2em}
+/* factors */
+#fac{right:1.5%;bottom:2.5%;width:44%;background:#fff;border:3px solid var(--ink);border-radius:18px;padding:.6em .8em}
+#fac .row{display:flex;align-items:center;justify-content:space-between;gap:.4em;margin:.25em 0}
+#fac .lab{font-weight:800;min-width:7.5em}
+#fac .seg{display:flex;gap:.25em}
+#fac .seg .btn{padding:.25em .65em;font-size:.88em}
+#fac .scen{display:flex;flex-wrap:wrap;gap:.3em;margin-top:.45em;padding-top:.45em;border-top:2px dashed #2B2D4255}
+#fac .scen .btn{padding:.25em .6em;font-size:.82em;background:#F1F8EA}
+/* quiz */
+#quiz{left:4%;right:4%;top:4%;bottom:4%;background:#fff;border:3px solid var(--ink);border-radius:20px;padding:1em 1.4em;overflow:auto}
+#quiz h3{margin:.1em 0 .2em}
+#quiz .qq{margin:.45em 0;padding:.4em .8em;border:2px solid #2B2D4233;border-radius:14px}
+#quiz .qq b{display:block;margin-bottom:.35em}
+#quiz .ch{display:inline-flex;margin:.15em .3em .15em 0}
+#quiz .ch .btn{font-weight:600;padding:.3em .9em}
+#quiz .ex{display:none;margin-top:.35em;font-size:.92em}
+#quiz.checked .ex{display:block}
+#quiz .score{font-weight:800;font-size:1.2em;margin-left:.6em}
+/* controls */
+.controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:#fff;border:3px solid var(--ink);border-top:2px solid #2B2D4233;padding:8px 12px}
+.controls .btn{font-size:15px;padding:6px 14px}
+.controls .sp{flex:1}
+.controls select{font-family:inherit;font-weight:700;border:2.5px solid var(--ink);border-radius:999px;padding:5px 10px;font-size:14px;background:#fff}
+.stepc{font-weight:700;font-size:14px;opacity:.75}
+.info{background:#fff;border:3px solid var(--ink);border-top:none;border-radius:0 0 16px 16px;padding:12px 18px 14px;min-height:96px}
+.info .ptitle{font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--green)}
+.info h2{margin:2px 0 6px;font-size:21px}
+.info p,.info li{margin:0;font-size:16.5px;line-height:1.5}
+.info ol{margin:4px 0 0;padding-left:22px}
+.info .hint{margin-top:6px;font-size:14px;opacity:.7}
+@media (max-width:700px){#fac{width:62%}#qcard{width:86%}#pop{width:60%}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div><h1>🌿 Photosynthesis – The Plant's Food Factory</h1><div class="sub">Grade 8 Biology · Reactants, products &amp; the chemical equation</div></div>
+    <div class="dots" id="dots"></div>
+  </header>
+  <div class="stage" id="stage">
+    <canvas id="cv" width="1280" height="720" aria-label="Photosynthesis simulation"></canvas>
+    <div class="ov" id="qcard"></div>
+    <div class="ov" id="pop"><button class="x" aria-label="Close">×</button><h4></h4><p></p></div>
+    <div class="ov" id="bal">
+      <div class="stp"><button data-k="a" data-d="-1">−</button><span class="n" id="na">1</span><span>CO₂</span><button data-k="a" data-d="1">+</button></div>
+      <span class="sep">+</span>
+      <div class="stp"><button data-k="b" data-d="-1">−</button><span class="n" id="nb">1</span><span>H₂O</span><button data-k="b" data-d="1">+</button></div>
+      <span class="sep">→</span>
+      <div class="stp"><span class="n" style="color:var(--ink)">1</span><span>C₆H₁₂O₆</span></div>
+      <span class="sep">+</span>
+      <div class="stp"><button data-k="c" data-d="-1">−</button><span class="n" id="nc">1</span><span>O₂</span><button data-k="c" data-d="1">+</button></div>
+    </div>
+    <div class="ov" id="fac">
+      <div class="row"><span class="lab">☀️ Light</span><div class="seg" data-f="L"></div></div>
+      <div class="row"><span class="lab">💨 CO₂</span><div class="seg" data-f="C"></div></div>
+      <div class="row"><span class="lab">💧 Water</span><div class="seg" data-f="W"></div></div>
+      <div class="scen">
+        <button class="btn" data-s="dark">🌑 Almost no light</button>
+        <button class="btn" data-s="dry">🏜️ Dry soil</button>
+        <button class="btn" data-s="co2">💨 Very little CO₂</button>
+        <button class="btn" data-s="all">✅ All high</button>
+      </div>
+    </div>
+    <div class="ov" id="quiz"></div>
+  </div>
+  <div class="controls">
+    <button class="btn" id="bBack">◀ Back</button>
+    <button class="btn primary" id="bNext">Next ▶</button>
+    <span class="stepc" id="stepc"></span>
+    <span class="sp"></span>
+    <button class="btn" id="bPause">⏸ Pause</button>
+    <button class="btn" id="bReset">⟲ Restart</button>
+    <select id="speed" aria-label="Speed"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="1.5">1.5×</option></select>
+    <button class="btn" id="bVoice">🔇 Narration off</button>
+    <button class="btn" id="bSound">🔈 Sound on</button>
+  </div>
+  <div class="info" id="info"></div>
+</div>
+<script>
+"use strict";
+const cv=document.getElementById('cv'),ctx=cv.getContext('2d');
+const W=1280,H=720;
+function fit(){const r=Math.min(window.devicePixelRatio||1,2);cv.width=W*r;cv.height=H*r;ctx.setTransform(r,0,0,r,0,0);}
+fit();window.addEventListener('resize',fit);
+
+const C={ink:'#2B2D42',bg:'#FAF8F3',navy:'#14213D',chl:'#2A9D8F',leaf:'#6BBF73',glu:'#FFB703',water:'#8ECAE6',o2:'#4CC9F0',co2:'#6C757D',co2l:'#ADB5BD',light:'#FFE066',sun:'#FFD166',sky:'#E8F4FA',red:'#E63946',wall:'#8AB17D',cyto:'#FFF3D6'};
+const FONT='Inter,system-ui,-apple-system,"Segoe UI",sans-serif';
+
+/* ---------- drawing helpers ---------- */
+function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+function fs(fill,lw=2.5,stroke=C.ink){if(fill){ctx.fillStyle=fill;ctx.fill();}if(lw){ctx.lineWidth=lw;ctx.strokeStyle=stroke;ctx.stroke();}}
+function ball(x,y,r,fill,lw=2.2){ctx.beginPath();ctx.arc(x,y,r,0,7);fs(fill,lw);ctx.beginPath();ctx.arc(x-r*.35,y-r*.35,r*.28,0,7);ctx.fillStyle='rgba(255,255,255,.55)';ctx.fill();}
+function txt(s,x,y,size=18,color=C.ink,align='center',weight=700){ctx.font=`${weight} ${size}px ${FONT}`;ctx.fillStyle=color;ctx.textAlign=align;ctx.textBaseline='middle';ctx.fillText(s,x,y);}
+function tw(s,size,weight=700){ctx.font=`${weight} ${size}px ${FONT}`;return ctx.measureText(s).width;}
+function pill(s,x,y,o={}){const size=o.size||17,w=tw(s,size,o.weight||700)+size*1.3,h=size*1.9;let px=x-w/2;if(o.align==='left')px=x;if(o.align==='right')px=x-w;rr(px,y-h/2,w,h,h/2);fs(o.bg||'#fff',o.lw||2.5);txt(s,px+w/2,y+1,size,o.color||C.ink,'center',o.weight||700);return{x:px,y:y-h/2,w,h};}
+function leader(s,tx,ty,lx,ly,o={}){ctx.beginPath();ctx.moveTo(tx,ty);ctx.lineTo(lx,ly);ctx.lineWidth=2;ctx.strokeStyle=C.ink;ctx.stroke();ctx.beginPath();ctx.arc(tx,ty,4.5,0,7);ctx.fillStyle=C.ink;ctx.fill();pill(s,lx,ly,o);}
+function arrow(x1,y1,x2,y2,lw=5,col=C.ink){const a=Math.atan2(y2-y1,x2-x1),hl=lw*3.2;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2-Math.cos(a)*hl*.8,y2-Math.sin(a)*hl*.8);ctx.lineWidth=lw;ctx.strokeStyle=col;ctx.lineCap='round';ctx.stroke();ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-Math.cos(a-.45)*hl,y2-Math.sin(a-.45)*hl);ctx.lineTo(x2-Math.cos(a+.45)*hl,y2-Math.sin(a+.45)*hl);ctx.closePath();ctx.fillStyle=col;ctx.fill();ctx.lineCap='butt';}
+function caption(s){pill(s,640,44,{size:22,bg:'#fff',lw:3});}
+function mix(a,b,f){const p=h=>[1,3,5].map(i=>parseInt(h.substr(i,2),16));const A=p(a),B=p(b);return'rgb('+A.map((v,i)=>Math.round(v+(B[i]-v)*f)).join(',')+')';}
+
+/* molecules */
+function drawCO2(x,y,s=1){ctx.save();ctx.translate(x,y);ctx.scale(s,s);ball(-14,0,9,C.co2l,2);ball(14,0,9,C.co2l,2);ball(0,0,11,C.co2,2);ctx.restore();}
+function drawO2(x,y,s=1){ctx.save();ctx.translate(x,y);ctx.scale(s,s);ball(-8,0,9,C.o2,2);ball(8,0,9,C.o2,2);ctx.restore();}
+function drawDrop(x,y,s=1){ctx.save();ctx.translate(x,y);ctx.scale(s,s);ctx.beginPath();ctx.moveTo(0,-15);ctx.quadraticCurveTo(10,-2,9,5);ctx.arc(0,5,9,0,Math.PI);ctx.quadraticCurveTo(-10,-2,0,-15);ctx.closePath();fs(C.water,2);ctx.beginPath();ctx.arc(-3,3,2.6,0,7);ctx.fillStyle='rgba(255,255,255,.7)';ctx.fill();ctx.restore();}
+function drawGlu(x,y,s=1){ctx.save();ctx.translate(x,y);ctx.scale(s,s);ctx.beginPath();for(let i=0;i<6;i++){const a=Math.PI/6+i*Math.PI/3;ctx.lineTo(Math.cos(a)*13,Math.sin(a)*13);}ctx.closePath();fs(C.glu,2.2);ctx.beginPath();ctx.arc(-4,-4,3,0,7);ctx.fillStyle='rgba(255,255,255,.6)';ctx.fill();ctx.restore();}
+function drawPhoton(x,y,s=1){ctx.save();ctx.shadowColor='#FFE066';ctx.shadowBlur=16;ctx.beginPath();ctx.arc(x,y,7*s,0,7);ctx.fillStyle=C.light;ctx.fill();ctx.restore();ctx.beginPath();ctx.arc(x,y,7*s,0,7);ctx.lineWidth=1.5;ctx.strokeStyle='#C9A400';ctx.stroke();}
+function atom(x,y,el,r=15){const f={C:'#6C757D',H:'#FFFFFF',O:C.o2}[el];ball(x,y,r,f,2.2);txt(el,x,y+1,r*1.05,el==='C'?'#fff':C.ink,'center',800);}
+
+/* ---------- plant scene ---------- */
+const SX=330,GY=560;
+const LEAVES=[{y:485,side:-1,L:125},{y:425,side:1,L:150},{y:365,side:-1,L:140},{y:305,side:1,L:118},{y:255,side:-1,L:88}];
+function leafAng(l,d){return l.side>0?-0.45+d:Math.PI+0.45-d;}
+function leafC(i,d=0){const l=LEAVES[i],a=leafAng(l,d);return[SX+Math.cos(a)*l.L*.55,l.y+Math.sin(a)*l.L*.55];}
+function drawLeaf(a,L,fill){ctx.save();ctx.rotate(a);ctx.beginPath();ctx.moveTo(0,0);ctx.quadraticCurveTo(L*.5,-L*.34,L,0);ctx.quadraticCurveTo(L*.5,L*.34,0,0);fs(fill,2.5);ctx.beginPath();ctx.moveTo(4,0);ctx.lineTo(L*.86,0);ctx.lineWidth=1.8;ctx.strokeStyle='rgba(43,45,66,.4)';ctx.stroke();ctx.restore();}
+function drawSky(col){ctx.fillStyle=col||C.sky;ctx.fillRect(0,0,W,GY);}
+function drawSun(x,y,t,b=1){ctx.save();ctx.globalAlpha=.25+.75*b;ctx.translate(x,y);ctx.rotate(t*.15);for(let i=0;i<12;i++){ctx.rotate(Math.PI/6);ctx.beginPath();ctx.moveTo(0,-58);ctx.lineTo(7,-74);ctx.lineTo(-7,-74);ctx.closePath();fs('#FFD166',2);}ctx.restore();ctx.save();ctx.globalAlpha=.3+.7*b;ctx.beginPath();ctx.arc(x,y,48,0,7);fs(b>.5?'#FFD166':'#E9D8A6',3);ctx.restore();addHit(x,y,60,'sun');}
+const ROOTS=[[SX,GY,SX-60,GY+50,SX-118,GY+118],[SX,GY,SX+55,GY+60,SX+125,GY+105],[SX,GY,SX-6,GY+80,SX-18,GY+142],[SX-38,GY+38,SX-85,GY+66,SX-160,GY+74],[SX+30,GY+40,SX+92,GY+48,SX+165,GY+56]];
+function drawGround(moist=1){const soil=['#C9A27A','#A0785A','#7F5B41'][moist];ctx.fillStyle=soil;ctx.fillRect(0,GY,W,H-GY);ctx.fillStyle='#8AB17D';ctx.fillRect(0,GY-6,W,10);ctx.beginPath();ctx.moveTo(0,GY-6);ctx.lineTo(W,GY-6);ctx.lineWidth=2.5;ctx.strokeStyle=C.ink;ctx.stroke();
+ for(const r of ROOTS){ctx.beginPath();ctx.moveTo(r[0],r[1]);ctx.quadraticCurveTo(r[2],r[3],r[4],r[5]);ctx.lineWidth=7;ctx.strokeStyle=C.ink;ctx.stroke();ctx.lineWidth=3.5;ctx.strokeStyle='#E9D8A6';ctx.stroke();}
+ const n=[1,5,10][moist];for(let i=0;i<n;i++){const x=60+((i*137)%520),y=GY+40+((i*71)%120);drawDrop(x,y,.55);}
+ addHit(SX-60,GY+80,55,'root');}
+function drawPlant(o={}){const d=o.droop||0,fill=o.fill||C.leaf;
+ ctx.beginPath();ctx.moveTo(SX,GY);ctx.quadraticCurveTo(SX-8,400,SX,215);ctx.lineWidth=14;ctx.strokeStyle=C.ink;ctx.stroke();ctx.lineWidth=9;ctx.strokeStyle='#7CB66B';ctx.stroke();
+ LEAVES.forEach((l,i)=>{ctx.save();ctx.translate(SX,l.y);drawLeaf(leafAng(l,d),l.L,fill);ctx.restore();const c=leafC(i,d);addHit(c[0],c[1],30,'leaf');});
+ ctx.save();ctx.translate(SX,218);drawLeaf(-Math.PI/2,38,fill);ctx.restore();}
+
+/* magnifier: inside a leaf */
+const MX=910,MY=345,MR=235;
+const CHL=[],PAL=[],SPO=[];
+(function(){for(let x=664;x<1160;x+=50){PAL.push(x);[[12,190],[32,216],[12,246],[32,272],[14,300]].forEach(p=>{const cx=x+p[0],cy=p[1];if(Math.hypot(cx-MX,cy-MY)<MR-18)CHL.push([cx,cy]);});}
+ let k=0;for(let row=0;row<3;row++)for(let x=684+(row%2)*31;x<1150;x+=62){k++;if(k%4===2)continue;const y=362+row*52;if(Math.hypot(x-760,y-415)<55)continue;SPO.push([x,y,22+(k%3)*2]);}})();
+function drawMag(t,showLabels){
+ const c=leafC(1);ctx.save();ctx.setLineDash([7,6]);ctx.lineWidth=2;ctx.strokeStyle=C.ink;ctx.beginPath();ctx.moveTo(c[0],c[1]-14);ctx.lineTo(MX-150,MY-181);ctx.moveTo(c[0],c[1]+14);ctx.lineTo(MX-150,MY+181);ctx.stroke();ctx.restore();
+ ctx.beginPath();ctx.arc(c[0],c[1],18,0,7);fs(null,3);
+ ctx.save();ctx.beginPath();ctx.arc(MX,MY,MR,0,7);ctx.clip();
+ ctx.fillStyle=C.sky;ctx.fillRect(MX-MR,MY-MR,MR*2,MR*2);
+ ctx.fillStyle='#E9F5DB';ctx.fillRect(MX-MR,122,MR*2,425);
+ ctx.fillStyle='#C9E4A8';ctx.fillRect(MX-MR,118,MR*2,8);
+ for(let x=650;x<1170;x+=50){rr(x,127,48,34,6);fs('#F7FBF2',2);}
+ for(const x of PAL){rr(x,166,44,152,10);fs('#D8EEC5',2);}
+ for(const s of SPO){ctx.beginPath();ctx.arc(s[0],s[1],s[2],0,7);fs('#D8EEC5',2);ctx.beginPath();ctx.ellipse(s[0]-6,s[1]-4,6,4,.4,0,7);fs(C.chl,1.5);ctx.beginPath();ctx.ellipse(s[0]+7,s[1]+6,6,4,-.3,0,7);fs(C.chl,1.5);}
+ for(const p of CHL){ctx.beginPath();ctx.ellipse(p[0],p[1],9,6,.3,0,7);fs(C.chl,1.8);}
+ // vein
+ ctx.beginPath();ctx.arc(760,415,38,0,7);fs('#F1E3C3',2.5);for(const p of [[748,402],[764,398],[778,408],[752,416]]){ctx.beginPath();ctx.arc(p[0],p[1],7,0,7);fs(C.water,1.5);}for(const p of [[756,434],[772,430]]){ctx.beginPath();ctx.arc(p[0],p[1],6,0,7);fs('#FFE8A3',1.5);}
+ // lower epidermis + stoma
+ for(let x=650;x<1170;x+=50){if(x>850&&x<950)continue;rr(x,512,48,30,6);fs('#F7FBF2',2);}
+ ctx.beginPath();ctx.ellipse(892,527,17,14,0,0,7);fs(C.chl,2.2);ctx.beginPath();ctx.ellipse(928,527,17,14,0,0,7);fs(C.chl,2.2);
+ ctx.beginPath();ctx.ellipse(910,527,4,10,0,0,7);fs('#1B263B',1);
+ ctx.fillStyle='#C9E4A8';ctx.fillRect(MX-MR,543,MR*2,4);
+ drawParts(true);
+ ctx.restore();
+ ctx.beginPath();ctx.arc(MX,MY,MR,0,7);fs(null,6);
+ pill('🔍 inside a leaf · not to scale',MX,MY-MR-4,{size:13,bg:'#fff'});
+ addHit(910,527,26,'stoma');addHit(CHL[6][0],CHL[6][1],16,'chloroplast');addHit(CHL[12][0],CHL[12][1],16,'chloroplast');addHit(760,415,36,'vein');
+ if(showLabels){leader('chloroplast',CHL[CHL.length-3][0],CHL[CHL.length-3][1],1215,180,{size:15});leader('stoma',928,535,1180,590,{size:15});leader('vein',740,440,640,560,{size:15});}
+}
+function legend(items){const x0=640,w=600;rr(x0,650,w,54,27);fs('#fff',2.5);const step=w/items.length;items.forEach((k,i)=>{const cx=x0+step*i+26,cy=677;({co2:()=>drawCO2(cx,cy,.8),water:()=>drawDrop(cx,cy,.8),light:()=>drawPhoton(cx,cy,1),glucose:()=>drawGlu(cx,cy,.9),o2:()=>drawO2(cx,cy,.9)})[k]();txt({co2:'CO₂',water:'H₂O',light:'light',glucose:'glucose',o2:'O₂'}[k],cx+22,cy+1,16,C.ink,'left',700);addHit(cx+20,cy,32,k==='light'?'sun':k);});}
+
+/* ---------- particles ---------- */
+let parts=[];
+function mkPath(pts){const L=[0];for(let i=1;i<pts.length;i++)L.push(L[i-1]+Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]));return{pts,L,total:L[L.length-1]||1};}
+function along(p,f){const d=f*p.total;let i=1;while(i<p.L.length-1&&p.L[i]<d)i++;const s=(d-p.L[i-1])/((p.L[i]-p.L[i-1])||1),a=p.pts[i-1],b=p.pts[i];return[a[0]+(b[0]-a[0])*s,a[1]+(b[1]-a[1])*s];}
+function spawn(type,pts,dur,mag=false,s=1){if(parts.length>280)return;parts.push({type,path:mkPath(pts),dur,age:0,mag,s});}
+function updParts(dt){for(const p of parts)p.age+=dt;parts=parts.filter(p=>p.age<p.dur);}
+function drawParts(mag){for(const p of parts){if(p.mag!==mag)continue;const f=p.age/p.dur,[x,y]=along(p.path,f);ctx.save();ctx.globalAlpha=Math.max(0,Math.min(1,f*6,(1-f)*6));
+ ({co2:()=>drawCO2(x,y,.75*p.s),water:()=>drawDrop(x,y,.75*p.s),photon:()=>drawPhoton(x,y,.9*p.s),glu:()=>drawGlu(x,y,.8*p.s),o2:()=>drawO2(x,y,.8*p.s)})[p.type]();ctx.restore();}}
+let acc={};
+function every(k,iv,dt){acc[k]=(acc[k]||0)+dt;if(acc[k]>=iv){acc[k]-=iv;return true;}return false;}
+const rnd=(a,b)=>a+Math.random()*(b-a);
+const pick=a=>a[(Math.random()*a.length)|0];
+function rootTip(){const r=pick(ROOTS);return[r[4],r[5]];}
+function waterPath(){const tip=rootTip(),c=leafC(1);return[tip,[SX,GY],[SX-5,470],[SX,425],c];}
+
+/* reactant & product spawners */
+function spCO2(dt){if(every('co2p',.7,dt)){const c=leafC(1);spawn('co2',[[rnd(560,640),rnd(140,460)],[c[0]+rnd(-10,10),c[1]+8]],3.2);}
+ if(every('co2m',.55,dt)){const ch=pick(CHL);spawn('co2',[[rnd(870,950),600],[910,545],[910,505],[ch[0],ch[1]]],3.6,true);}}
+function spWater(dt){if(every('wp',.5,dt))spawn('water',waterPath(),3.6);if(every('wm',.55,dt)){const ch=pick(CHL);spawn('water',[[760,402],[ch[0],ch[1]]],2.6,true);}}
+function spLight(dt){if(every('lp',.35,dt)){const c=leafC((Math.random()*5)|0);spawn('photon',[[140,125],c],1.4);}if(every('lm',.3,dt)){const ch=pick(CHL);spawn('photon',[[ch[0]-170,ch[1]-230],[ch[0],ch[1]]],1.1,true);}}
+function spGlu(dt){if(every('gm',.6,dt)){const ch=pick(CHL);spawn('glu',[[ch[0],ch[1]],[766,432]],3,true);}}
+function spO2(dt){if(every('om',.45,dt)){const ch=pick(CHL);spawn('o2',[[ch[0],ch[1]],[rnd(895,925),490],[910,527],[rnd(880,940),610]],3.6,true);}
+ if(every('op',.6,dt)){const c=leafC((Math.random()*5)|0);spawn('o2',[c,[c[0]+rnd(30,140),c[1]-rnd(140,260)]],3);}}
+function rays(n,b=1){ctx.save();ctx.globalAlpha=.55*b;ctx.setLineDash([10,9]);ctx.lineWidth=3;ctx.strokeStyle='#F4B400';for(let i=0;i<n;i++){const c=leafC(i);ctx.beginPath();ctx.moveTo(150,130);ctx.lineTo(c[0],c[1]);ctx.stroke();}ctx.restore();}
+
+/* ---------- hits & popups ---------- */
+let hits=[];function addHit(x,y,r,k){hits.push({x,y,r,k});}
+const INFO={
+ sun:['☀️ Light energy','Usually from the Sun. Chlorophyll in chloroplasts absorbs it. Light gives the ENERGY that drives photosynthesis – it is not a chemical reactant.'],
+ co2:['💨 Carbon dioxide (CO₂)','A reactant. Comes from the air and enters the leaf through tiny pores called stomata. It provides the carbon and oxygen atoms for glucose.'],
+ water:['💧 Water (H₂O)','A reactant. Absorbed by the roots, then carried up through the xylem to the leaves. It provides hydrogen (and electrons) for photosynthesis.'],
+ chloroplast:['🟢 Chloroplast','The plant\'s "food factory". It contains chlorophyll, a green pigment that absorbs light energy. Photosynthesis happens here.'],
+ stoma:['🕳️ Stoma (plural: stomata)','A tiny opening, mostly on the underside of the leaf. CO₂ goes in and O₂ comes out. Two guard cells open and close it.'],
+ vein:['🧵 Vein','Contains xylem (blue – brings water to the leaf) and phloem (yellow – carries sugars away to the rest of the plant).'],
+ root:['🌱 Roots','Absorb water and minerals from the soil. Roots do NOT absorb glucose – the plant makes its own glucose in its leaves.'],
+ glucose:['🍯 Glucose (C₆H₁₂O₆)','A simple sugar – a product. It stores chemical energy. Used in respiration, stored as starch, or used to build substances like cellulose.'],
+ o2:['🫧 Oxygen (O₂)','A product. It is made when water molecules are split. Released into the air through the stomata. Many organisms use it for aerobic respiration.'],
+ leaf:['🍃 Leaf','The main place where photosynthesis happens. Leaves are broad and thin to catch lots of light and let gases in and out.'],
+ tree:['🌳 Where does a tree\'s mass come from?','Mostly from carbon dioxide in the air! The carbon atoms in wood come from CO₂. Water adds hydrogen. The soil only gives small amounts of minerals.'],
+ eqCO2:['6CO₂ – carbon dioxide','Reactant. Six molecules of carbon dioxide, taken in from the air.'],
+ eqH2O:['6H₂O – water','Reactant. Six molecules of water, absorbed by the roots.'],
+ eqGlu:['C₆H₁₂O₆ – glucose','Product. One molecule of glucose: 6 carbon, 12 hydrogen and 6 oxygen atoms.'],
+ eqO2:['6O₂ – oxygen','Product. Six molecules of oxygen, released into the air.'],
+ eqArrow:['The arrow →','Means "turns into". Light energy and chlorophyll are written on the arrow: they make the reaction happen but are not reactants.']
+};
+const pop=document.getElementById('pop');
+pop.querySelector('.x').onclick=()=>pop.classList.remove('show');
+function showPop(k,x,y){const d=INFO[k];if(!d)return;pop.querySelector('h4').textContent=d[0];pop.querySelector('p').textContent=d[1];pop.style.left=(x/W*100)+'%';pop.style.top=(y/H*100)+'%';pop.style.transform=`translate(${x>W*.55?'-105%':'5%'},${y>H*.55?'-105%':'5%'})`;pop.classList.add('show');beep(660,.08);}
+function toCanvas(e){const r=cv.getBoundingClientRect();return[(e.clientX-r.left)*W/r.width,(e.clientY-r.top)*H/r.height];}
+function hitAt(x,y){let best=null,bd=1e9;for(const h of hits){const d=Math.hypot(h.x-x,h.y-y);if(d<h.r&&d<bd){bd=d;best=h;}}return best;}
+cv.addEventListener('click',e=>{const[x,y]=toCanvas(e),h=hitAt(x,y);if(h)showPop(h.k,x,y);else pop.classList.remove('show');});
+cv.addEventListener('mousemove',e=>{const[x,y]=toCanvas(e);cv.style.cursor=hitAt(x,y)?'pointer':'default';});
+
+/* ---------- sound & voice ---------- */
+let AC=null,soundOn=true,voiceOn=false;
+function beep(f,d=.12,type='sine',v=.08){if(!soundOn)return;try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();const o=AC.createOscillator(),g=AC.createGain();o.type=type;o.frequency.value=f;g.gain.setValueAtTime(v,AC.currentTime);g.gain.exponentialRampToValueAtTime(.0001,AC.currentTime+d);o.connect(g).connect(AC.destination);o.start();o.stop(AC.currentTime+d);}catch(e){}}
+function chime(ok){if(ok){beep(660,.12);setTimeout(()=>beep(880,.18),110);}else beep(200,.25,'triangle',.07);}
+function say(s){if(!voiceOn||!window.speechSynthesis)return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(s.replace(/₂/g,' 2').replace(/₆/g,'6').replace(/₁₂/g,'12').replace(/CO 2/g,'C O 2').replace(/H 2O/g,'H 2 O'));u.lang='en-GB';u.rate=.92;speechSynthesis.speak(u);}catch(e){}}
+
+/* ---------- question card ---------- */
+const answered={};
+const qcard=document.getElementById('qcard');
+function showQ(id,q,opts,correct,explain,onAns){qcard.innerHTML=`<span class="tag">🤔 PREDICT</span><h3>${q}</h3><div class="opts">${opts.map((o,i)=>`<button class="btn opt" data-i="${i}">${String.fromCharCode(65+i)}. ${o}</button>`).join('')}</div><div class="fb"></div>`;
+ const fb=qcard.querySelector('.fb');
+ const reveal=i=>{qcard.querySelectorAll('.opt').forEach((b,j)=>{b.disabled=true;if(j===correct)b.classList.add('right');else if(j===i)b.classList.add('wrong');});fb.innerHTML=(i===correct?'<b>✅ Correct!</b> ':'<b>Not quite.</b> ')+explain+'<br><span style="opacity:.7">Press <b>Next ▶</b> to continue.</span>';fb.classList.add('show');};
+ qcard.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{const i=+b.dataset.i;answered[id]=i;chime(i===correct);reveal(i);onAns&&onAns(i);});
+ if(answered[id]!==undefined)reveal(answered[id]);
+ qcard.classList.add('show');}
+
+/* ---------- balance game ---------- */
+const BAL={a:1,b:1,c:1};
+document.querySelectorAll('#bal button').forEach(b=>b.onclick=()=>{const k=b.dataset.k;BAL[k]=Math.max(1,Math.min(9,BAL[k]+ +b.dataset.d));['a','b','c'].forEach(q=>document.getElementById('n'+q).textContent=BAL[q]);const ok=balanced();beep(ok?880:520,.08);if(ok)setTimeout(()=>chime(true),120);});
+function balanced(){return BAL.a===6&&2*BAL.b===12&&2*BAL.a+BAL.b===6+2*BAL.c;}
+
+/* ---------- factors ---------- */
+const F={L:2,C:2,W:2};const LV=['Low','Medium','High'],LVV=[.15,.55,1];
+let gluMade=0,rateShown=1;
+document.querySelectorAll('#fac .seg').forEach(seg=>{const f=seg.dataset.f;LV.forEach((n,i)=>{const b=document.createElement('button');b.className='btn';b.textContent=n;b.onclick=()=>{F[f]=i;syncFac();beep(440+i*120,.07);};seg.appendChild(b);});});
+document.querySelectorAll('#fac .scen .btn').forEach(b=>b.onclick=()=>{const s=b.dataset.s;Object.assign(F,{L:2,C:2,W:2});if(s==='dark')F.L=0;if(s==='dry')F.W=0;if(s==='co2')F.C=0;syncFac();beep(520,.08);});
+function syncFac(){document.querySelectorAll('#fac .seg').forEach(seg=>{[...seg.children].forEach((b,i)=>b.classList.toggle('sel',i===F[seg.dataset.f]));});}
+function rateNow(){return Math.min(LVV[F.L],LVV[F.C],LVV[F.W]);}
+function facMsg(){if(F.L===2&&F.C===2&&F.W===2)return'All inputs are high, so the photosynthesis rate is high';const m=Math.min(F.L,F.C,F.W),names=[];if(F.L===m)names.push('light');if(F.C===m)names.push('CO₂');if(F.W===m)names.push('water');const s=names.join(' and ');return(s[0].toUpperCase()+s.slice(1))+(names.length>1?' are':' is')+' limiting the rate';}
+
+/* ---------- quiz ---------- */
+const QUIZ=[
+ ['Which two substances are the chemical reactants of photosynthesis?',['Glucose and oxygen','Carbon dioxide and water','Oxygen and water'],1,'CO₂ and water go IN. Glucose and oxygen are the products.'],
+ ['What is the main sugar produced during photosynthesis?',['Glucose','Starch','Protein'],0,'Glucose is made first. Starch is a store made from many glucose units joined together.'],
+ ['Where does a plant obtain carbon dioxide?',['From the soil','From the roots','From the air'],2,'CO₂ comes from the air and enters the leaves through the stomata.'],
+ ['What is released as a product of photosynthesis?',['Nitrogen','Oxygen','Carbon dioxide'],1,'Oxygen is released into the air through the stomata.'],
+ ['What is the role of sunlight?',['It provides energy','It provides glucose','It provides carbon dioxide'],0,'Light is the energy source. It is not a chemical reactant.']];
+const quizSel={};const quizEl=document.getElementById('quiz');
+function buildQuiz(){quizEl.classList.remove('checked');quizEl.innerHTML=`<h3>📝 Exit quiz – Knowledge check</h3><div style="opacity:.75">Answer on your own, without looking at your notes. <span id="qcount">0/5 answered</span></div>`+QUIZ.map((q,i)=>`<div class="qq" data-q="${i}"><b>${i+1}. ${q[0]}</b>${q[1].map((o,j)=>`<span class="ch"><button class="btn" data-q="${i}" data-j="${j}">${o}</button></span>`).join('')}<div class="ex"></div></div>`).join('')+`<div style="margin:.6em 0 .2em"><button class="btn primary" id="qcheck">Check answers</button> <button class="btn" id="qretry">Try again</button><span class="score" id="qscore"></span></div>`;
+ quizEl.querySelectorAll('.ch .btn').forEach(b=>b.onclick=()=>{if(quizEl.classList.contains('checked'))return;const i=+b.dataset.q;quizSel[i]=+b.dataset.j;quizEl.querySelectorAll(`.ch .btn[data-q="${i}"]`).forEach(x=>x.classList.toggle('sel',+x.dataset.j===quizSel[i]));document.getElementById('qcount').textContent=Object.keys(quizSel).length+'/5 answered';beep(500,.05);});
+ document.getElementById('qcheck').onclick=()=>{let s=0;QUIZ.forEach((q,i)=>{const box=quizEl.querySelector(`.qq[data-q="${i}"]`),ok=quizSel[i]===q[2];if(ok)s++;box.querySelectorAll('.ch .btn').forEach(x=>{const j=+x.dataset.j;x.classList.remove('sel');if(j===q[2])x.style.background='#2A9D8F',x.style.color='#fff';else if(j===quizSel[i])x.style.background='#E63946',x.style.color='#fff';});box.querySelector('.ex').innerHTML=(ok?'✅ ':'❌ ')+q[3];});quizEl.classList.add('checked');document.getElementById('qscore').textContent=`Score: ${s}/5 ${s===5?'🌟':''}`;chime(s>=4);};
+ document.getElementById('qretry').onclick=()=>{for(const k in quizSel)delete quizSel[k];buildQuiz();};}
+buildQuiz();
+
+/* ---------- scenes ---------- */
+const SCENES=[
+{title:'Starter',part:'Part 1 · Starter (0–4 min)',steps:[
+ {h:'Where does a plant get its food?',p:'Look at the small plant and the big tree. Think about the three questions, then discuss with a partner.',cap:'Where does a plant get its food?'},
+ {h:'Where does a tree\'s mass come from?',p:'Make a prediction first. Then click the tree to find out more.',cap:'Predict!',q:1},
+ {h:'Plants make their own food',p:'Plants do NOT absorb glucose from the soil. They make glucose themselves, in their leaves, through a process called photosynthesis.',cap:'Plants make their own food: PHOTOSYNTHESIS'}]},
+{title:'Reactants',part:'Part 2 · Reactants – what does a plant need? (4–9 min)',steps:[
+ {h:'Reactant 1: carbon dioxide (CO₂)',p:'Reactants are the substances that go into a chemical reaction. CO₂ comes from the air and enters the leaf through tiny openings called stomata. It provides carbon and oxygen atoms for glucose.',cap:'1. Carbon dioxide enters through the stomata'},
+ {h:'Reactant 2: water (H₂O)',p:'Roots absorb water from the soil. Water travels up through the xylem to the leaves. It provides hydrogen (and electrons) used in photosynthesis.',cap:'2. Water travels from roots to leaves'},
+ {h:'Energy: light',p:'Light usually comes from the Sun. It is absorbed by chlorophyll inside chloroplasts. Light provides the energy needed to drive photosynthesis.',cap:'3. Chlorophyll absorbs light energy'},
+ {h:'Important: reactants vs energy',p:'Carbon dioxide and water are the chemical reactants. Light is the energy source that drives the reaction – it is NOT a chemical reactant. Click anything in the picture to learn more.',cap:'CO₂ + H₂O = reactants  ·  light = energy'}]},
+{title:'Products',part:'Part 3 · Products – what does the plant produce? (9–15 min)',steps:[
+ {h:'Product 1: glucose (C₆H₁₂O₆)',p:'In the chloroplasts, carbon dioxide and water are turned into glucose – a simple sugar that stores chemical energy. Glucose is carried away in the phloem of the veins.',cap:'1. Chloroplasts make glucose'},
+ {h:'What happens to glucose?',p:'Glucose is used in respiration to release energy, stored as starch (for example in roots, seeds and potatoes), or used to build other substances such as cellulose for cell walls.',cap:'Glucose: energy, storage and building'},
+ {h:'Product 2: oxygen (O₂)',p:'Oxygen is produced when water molecules are split during photosynthesis. It leaves the leaf through the stomata. Many organisms use it in aerobic respiration.',cap:'2. Oxygen is released'},
+ {h:'Where does the oxygen go?',p:'Answer the question, then watch the oxygen molecules leave the leaf.',cap:'Predict!',q:2}]},
+{title:'Equation',part:'Part 4 · The chemical equation (15–21 min) – most important part',steps:[
+ {h:'The word equation',p:'Carbon dioxide + water → glucose + oxygen. Light energy and chlorophyll are written above and below the arrow because they make the reaction happen, but they are not reactants.',cap:'The word equation'},
+ {h:'The symbol equation',p:'"Six molecules of carbon dioxide combine with six molecules of water, using light energy, to produce one molecule of glucose and six molecules of oxygen." Click each part of the equation.',cap:'The balanced symbol equation'},
+ {h:'Big numbers and small numbers',p:'The big 6 in front of CO₂ means six molecules of carbon dioxide. The small numbers in C₆H₁₂O₆ tell us one glucose molecule has 6 carbon, 12 hydrogen and 6 oxygen atoms.',cap:'What do the numbers mean?'},
+ {h:'Balance it yourself!',p:'Atoms cannot disappear or be created in a chemical reaction. Use the − and + buttons until every type of atom is the same on both sides.',cap:'Balance the equation!'}]},
+{title:'Conditions',part:'Part 5 · What happens if we change the conditions? (21–26 min)',steps:[
+ {h:'Make a prediction',p:'A plant has plenty of water and carbon dioxide, but very little sunlight. What do you think happens?',cap:'Predict!',q:5},
+ {h:'Explore: limiting factors',p:'Change light, CO₂ and water. If one essential factor is in short supply, it can limit the rate of photosynthesis. Try the three quick scenarios.',cap:''}]},
+{title:'Exit quiz',part:'Part 6 · Exit quiz (26–30 min)',steps:[
+ {h:'Exit quiz',p:'Answer individually, without looking at your notes. Then press "Check answers".',cap:''}]},
+{title:'Summary',part:'Final summary',steps:[
+ {h:'The story of photosynthesis: INPUT → TRANSFORMATION → OUTPUT',html:'<ol><li>Photosynthesis is the process by which plants produce glucose.</li><li>Carbon dioxide comes from the air.</li><li>Water is absorbed by the roots.</li><li>Light energy is absorbed by chlorophyll.</li><li>Glucose and oxygen are the products.</li></ol>',p:'Plants use light energy to transform water and carbon dioxide into glucose, releasing oxygen.',cap:''}]}
+];
+let S=0,P=0,T=0,paused=false,speed=1,sceneT=0;
+
+/* scene renderers */
+function scene1(dt){const st=P;
+ drawSky();drawSun(110,95,T);drawGround(1);drawPlant();
+ // tree
+ rr(1042,320,40,GY-320,8);fs('#8D6346',2.5);
+ for(const c of [[1062,250,105],[985,292,68],[1140,292,68],[1062,170,78]]){ctx.beginPath();ctx.arc(c[0],c[1],c[2],0,7);fs('#57A773',2.5);}
+ addHit(1062,250,120,'tree');
+ if(st===0){const qs=['Does a plant eat food like humans do?','Does the soil provide all the food a plant needs?','Where does the mass of a large tree come from?'];
+  qs.forEach((q,i)=>{const a=Math.min(1,Math.max(0,(sceneT-.4-i*1.6)*2));if(a>0){ctx.save();ctx.globalAlpha=a;pill('❓ '+q,690,130+i*62,{size:18});ctx.restore();}});}
+ if(st===1&&answered[1]!==undefined){if(every('tc',.35,dt))spawn('co2',[[rnd(1180,1270),rnd(90,420)],[1062+rnd(-60,60),230+rnd(-60,60)]],2.6);if(every('tw',.6,dt))spawn('water',[[1062+rnd(-60,60),GY+rnd(40,140)],[1062,GY],[1062,300]],3);}
+ if(st===2){drawGlu(560,640,1.5);ctx.beginPath();ctx.moveTo(538,618);ctx.lineTo(582,662);ctx.moveTo(582,618);ctx.lineTo(538,662);ctx.lineWidth=6;ctx.strokeStyle=C.red;ctx.lineCap='round';ctx.stroke();ctx.lineCap='butt';pill('No glucose from the soil!',700,640,{size:16,align:'left'});
+  if(every('lp',.4,dt)){const c=leafC((Math.random()*5)|0);spawn('photon',[[140,125],c],1.3);}
+  if(every('g1',.5,dt)){const c=leafC((Math.random()*5)|0);spawn('glu',[c,[c[0]+rnd(-25,25),c[1]-rnd(30,60)]],1.6,false,1.1);}
+  pill('🍃 + ☀️ → 🍯 glucose made in the leaves',690,150,{size:19,bg:'#FFF3D6'});}
+ drawParts(false);caption(SCENES[0].steps[st].cap);}
+function plantMagScene(dt,mode){const st=P;
+ drawSky();drawSun(110,95,T);drawGround(1);drawPlant();
+ const R=mode==='R';
+ const showCO2=R?st>=0:true,showW=R?st>=1:true,showL=R?st>=2:true;
+ if(showL)rays(5,R?1:.5);
+ if(R){if(showCO2)spCO2(dt);if(showW)spWater(dt);if(showL)spLight(dt);}
+ else{ // products: reactants faint, products strong
+  if(every('rr',.9,dt)){const ch=pick(CHL);spawn('co2',[[rnd(870,950),600],[910,545],[ch[0],ch[1]]],3.4,true);spawn('water',[[760,402],[pick(CHL)[0],pick(CHL)[1]]],2.6,true);}
+  spLight(dt*.5);
+  if(st===0||st===1)spGlu(dt);
+  if(st>=2){spO2(dt);spGlu(dt*.4);}
+  if(st===1&&every('gd',.5,dt)){const c=leafC(1),tip=rootTip();spawn('glu',[c,[SX,425],[SX-4,470],[SX,GY],tip],3.6,false,.8);}
+ }
+ drawParts(false);
+ if(mode==='P'&&st===1){usesBoard();}
+ else drawMag(T,R?st===3:st===0);
+ // labels
+ if(R){if(st===0)leader('stoma: CO₂ goes in',910,540,1110,612,{size:15,bg:'#E9ECEF'});
+  if(st===1){leader('roots absorb water',SX-110,GY+110,140,GY+130,{size:15,bg:'#DFF1FA'});leader('xylem in the stem',SX,470,170,420,{size:15,bg:'#DFF1FA'});}
+  if(st===2){leader('chlorophyll absorbs light',CHL[2][0],CHL[2][1],1080,105,{size:15,bg:'#FFF6CC'});}
+  if(st===3){pill('REACTANTS: CO₂ + H₂O',290,120,{size:17,bg:'#E9ECEF',align:'left'});pill('ENERGY: light ☀️ (not a reactant)',290,165,{size:17,bg:'#FFF6CC',align:'left'});}
+  legend(['co2','water','light']);}
+ else{if(st===0)leader('glucose → phloem',766,440,560,520,{size:15,bg:'#FFF3D6'});
+  if(st===2){leader('O₂ leaves through the stoma',910,545,1060,612,{size:15,bg:'#DDF6FD'});pill('2 H₂O → 4 H + O₂ (water is split)',560,110,{size:15,bg:'#DDF6FD'});}
+  if(st===3&&answered[2]!==undefined)pill('O₂ → stomata → atmosphere',560,110,{size:17,bg:'#DDF6FD'});
+  legend(['glucose','o2','co2','water']);}
+ caption(SCENES[S].steps[st].cap);}
+function usesBoard(){rr(620,110,630,470,24);fs('#FFFDF7',3);
+ drawGlu(720,345,2.4);txt('glucose',720,400,18);addHit(720,345,40,'glucose');
+ const cards=[[180,'⚡ Respiration','releases energy for the plant'],[345,'🔗 Stored as starch','many glucose units joined'],[510,'🧱 Building material','e.g. cellulose for cell walls']];
+ cards.forEach(([y,a,b],i)=>{const k=Math.min(1,Math.max(0,(sceneT-.4-i*.9)*2));if(!k)return;ctx.save();ctx.globalAlpha=k;arrow(762,345,880,y,4);rr(890,y-52,340,104,18);fs(['#FFE5E5','#FFF3D6','#EAF4E1'][i],2.5);txt(a,1060,y-20,21);txt(b,1060,y+14,16,C.ink,'center',500);
+  if(i===1)for(let j=0;j<5;j++){drawGlu(980+j*24,y+40,.6);}
+  ctx.restore();});
+ addHit(1060,345,60,'starch');}
+INFO.starch=['🔗 Starch','Many glucose units joined in a long chain. It is the plant\'s food store – for example in potatoes, seeds and roots.'];
+
+function formula(parts,x,y,size){let w=0;parts.forEach(p=>w+=tw(p.t,size,800));let cx=x-w/2;const pos=[];parts.forEach(p=>{const pw=tw(p.t,size,800);if(p.hl){rr(cx-3,y-size*.5,pw+6,size*1.05,8);fs(p.hl,2);}txt(p.t,cx,y,size,p.c||C.ink,'left',800);pos.push([cx,pw]);cx+=pw;});return pos;}
+function scene4(dt){const st=P;ctx.fillStyle=C.bg;ctx.fillRect(0,0,W,H);
+ if(st===0||st===1){const y=330,X=[150,290,420,900,1040,1150];
+  const words=st===0?['carbon dioxide','+','water','glucose','+','oxygen']:['6CO₂','+','6H₂O','C₆H₁₂O₆','+','6O₂'];
+  const size=st===0?32:46;
+  drawCO2(X[0],235,1.6);drawDrop(X[2],235,1.7);drawGlu(X[3],235,1.9);drawO2(X[5],235,1.7);
+  words.forEach((w,i)=>txt(w,X[i],y,w==='+'?44:size,C.ink,'center',800));
+  arrow(530,y,740,y,6);txt('light energy',635,y-38,19,'#B8860B','center',800);txt('chlorophyll',635,y+38,19,C.chl,'center',800);
+  rr(50,400,440,58,18);fs('#E9ECEF',2.5);txt('REACTANTS – go in',270,429,21);rr(790,400,440,58,18);fs('#FFF3D6',2.5);txt('PRODUCTS – come out',1010,429,21);
+  if(st===1){['carbon dioxide','water','glucose','oxygen'].forEach((n,i)=>txt(n,[X[0],X[2],X[3],X[5]][i],y+70+ (i<2?100:100),16,'#2B2D42aa','center',600));
+   addHit(X[0],y,70,'eqCO2');addHit(X[2],y,70,'eqH2O');addHit(X[3],y,95,'eqGlu');addHit(X[5],y,60,'eqO2');addHit(635,y,80,'eqArrow');
+   pill('👆 Click each part of the equation',640,560,{size:18,bg:'#FFF6CC'});}
+  else{pill('Light + chlorophyll make it happen – they are not used up as reactants',640,560,{size:17,bg:'#FFF6CC'});addHit(635,y,80,'eqArrow');}
+ }
+ if(st===2){formula([{t:'6',hl:'#FFD6D9',c:C.red},{t:'CO₂ + 6H₂O  →  C'},{t:'₆',hl:'#DDF6FD'},{t:'H'},{t:'₁₂',hl:'#DDF6FD'},{t:'O'},{t:'₆',hl:'#DDF6FD'},{t:' + 6O₂'}],640,120,40);
+  rr(60,180,540,400,22);fs('#fff',3);txt('BIG number in front',330,215,22,C.red);txt('= number of MOLECULES',330,247,19);
+  for(let i=0;i<6;i++){const x=200+(i%3)*130,y=340+((i/3)|0)*90;const k=Math.min(1,Math.max(0,(sceneT-.3-i*.35)*3));if(k){ctx.save();ctx.globalAlpha=k;drawCO2(x,y,1.7);txt(String(i+1),x,y+38,16,C.red);ctx.restore();}}
+  txt('6CO₂ = six carbon dioxide molecules',330,545,18,C.ink,'center',600);
+  rr(680,180,540,400,22);fs('#fff',3);txt('small numbers below',950,215,22,'#0077B6');txt('= ATOMS inside ONE molecule',950,247,19);
+  const rows=[['C',6],['H',12],['O',6]];rows.forEach(([el,n],r)=>{const y=310+r*75;txt(el+' × '+n,740,y,20,C.ink,'left',800);for(let i=0;i<n;i++){const k=Math.min(1,Math.max(0,(sceneT-.5-r*.6-i*.06)*4));if(k){ctx.save();ctx.globalAlpha=k;atom(825+i*30,y,el,el==='H'?11:14);ctx.restore();}}});
+  txt('1 glucose = 6 C + 12 H + 6 O = 24 atoms',950,545,18,C.ink,'center',600);}
+ if(st===3){const a=BAL.a,b=BAL.b,c=BAL.c;
+  txt('LEFT (reactants)',300,110,20,C.ink,'center',800);txt('RIGHT (products)',960,110,20,C.ink,'center',800);
+  for(let i=0;i<a;i++){const x=140+(i%5)*92,y=170+((i/5)|0)*58;atom(x-24,y,'O',12);atom(x,y,'C',13);atom(x+24,y,'O',12);}
+  for(let i=0;i<b;i++){const x=140+(i%5)*92,y=310+((i/5)|0)*58;atom(x,y,'O',13);atom(x-19,y+14,'H',9);atom(x+19,y+14,'H',9);}
+  txt('CO₂',40,170,16,'#2B2D42aa','left',700);txt('H₂O',40,310,16,'#2B2D42aa','left',700);
+  arrow(590,265,690,265,6);
+  drawGlu(810,180,2.6);txt('C₆H₁₂O₆',900,180,20,C.ink,'left',800);
+  for(let i=0;i<c;i++){const x=780+(i%5)*92,y=310+((i/5)|0)*58;atom(x-12,y,'O',12);atom(x+12,y,'O',12);}
+  const L={C:a,H:2*b,O:2*a+b},R={C:6,H:12,O:6+2*c};
+  rr(390,425,500,180,18);fs('#fff',3);txt('Atom',470,450,17,C.ink,'center',800);txt('Left',620,450,17,C.ink,'center',800);txt('Right',760,450,17,C.ink,'center',800);
+  ['C','H','O'].forEach((el,i)=>{const y=488+i*38,ok=L[el]===R[el];atom(470,y,el,13);txt(String(L[el]),620,y,22,ok?C.chl:C.red,'center',800);txt(String(R[el]),760,y,22,ok?C.chl:C.red,'center',800);txt(ok?'✓':'✗',845,y,24,ok?C.chl:C.red,'center',800);});
+  if(balanced()){pill('🎉 Balanced! 6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂',640,72,{size:20,bg:'#C7F0D8'});}
+  else caption(SCENES[3].steps[3].cap);
+  return;}
+ caption(SCENES[3].steps[st].cap);}
+
+function scene5(dt){const lf=F.L/2,r=rateNow();
+ drawSky(mix('#7D8FA6',C.sky,lf));drawSun(110,95,T,LVV[F.L]);drawGround(F.W);
+ const fill=F.W===0?'#A7C957':C.leaf;drawPlant({droop:[0.55,.18,0][F.W],fill});
+ if(F.L>0)rays(5,lf);
+ // CO2 in air
+ const n=[3,8,15][F.C];for(let i=0;i<n;i++){const x=480+((i*97)%330)+Math.sin(T*.7+i)*14,y=150+((i*61)%330)+Math.cos(T*.6+i*2)*10;drawCO2(x,y,.8);}
+ addHit(640,300,70,'co2');
+ rateShown+=(r-rateShown)*Math.min(1,dt*3);
+ gluMade+=rateShown*dt*1.5;
+ if(every('ob',.22/Math.max(rateShown,.05),dt)){const c=leafC((Math.random()*5)|0,[0.55,.18,0][F.W]);spawn('o2',[c,[c[0]+rnd(20,90),c[1]-rnd(150,230)]],2.6);}
+ drawParts(false);
+ // gauge
+ const gx=1010,gy=260,gr=135;rr(gx-190,100,380,250,22);fs('#fff',3);
+ [[Math.PI,Math.PI*1.33,'#E63946'],[Math.PI*1.33,Math.PI*1.66,'#FFB703'],[Math.PI*1.66,Math.PI*2,'#2A9D8F']].forEach(([a,b,c])=>{ctx.beginPath();ctx.arc(gx,gy,gr-22,a,b);ctx.lineWidth=26;ctx.strokeStyle=c;ctx.stroke();});
+ ctx.beginPath();ctx.arc(gx,gy,gr-8,Math.PI,0);ctx.lineWidth=2.5;ctx.strokeStyle=C.ink;ctx.stroke();ctx.beginPath();ctx.arc(gx,gy,gr-36,Math.PI,0);ctx.stroke();
+ const na=Math.PI+Math.PI*rateShown;ctx.beginPath();ctx.moveTo(gx,gy);ctx.lineTo(gx+Math.cos(na)*(gr-30),gy+Math.sin(na)*(gr-30));ctx.lineWidth=6;ctx.strokeStyle=C.ink;ctx.lineCap='round';ctx.stroke();ctx.lineCap='butt';ball(gx,gy,10,C.ink,0);
+ txt('Photosynthesis rate',gx,gy+30,19);txt(r>=.99?'HIGH':r>=.5?'MEDIUM':'LOW',gx,gy+60,22,r>=.99?C.chl:r>=.5?'#B8860B':C.red,'center',800);
+ drawGlu(gx-80,384,1.1);txt('glucose made: '+Math.floor(gluMade),gx-58,384,17,C.ink,'left',700);
+ drawO2(gx-80,414,1);txt('oxygen bubbles = rate',gx-58,414,15,'#2B2D42aa','left',600);
+ if(P===1)caption(facMsg());else caption('Predict!');}
+
+function scene6(){ctx.fillStyle=C.bg;ctx.fillRect(0,0,W,H);}
+function scene7(dt){ctx.fillStyle=C.bg;ctx.fillRect(0,0,W,H);
+ const B=[[70,'INPUT','#E9ECEF'],[470,'TRANSFORMATION','#D8EEC5'],[870,'OUTPUT','#FFF3D6']];
+ B.forEach(([x,t,c])=>{rr(x,110,340,300,24);fs(c,3);txt(t,x+170,145,22,C.ink,'center',800);});
+ arrow(418,260,462,260,6);arrow(818,260,862,260,6);
+ drawCO2(140,210,1.4);txt('CO₂ from the air',185,210,17,C.ink,'left',600);
+ drawDrop(140,280,1.4);txt('H₂O from the roots',185,280,17,C.ink,'left',600);
+ drawPhoton(140,350,1.6);txt('light energy',185,350,17,C.ink,'left',600);
+ ctx.save();ctx.translate(560,290);drawLeaf(-0.35,170,C.leaf);ctx.restore();
+ for(let i=0;i<4;i++){ctx.beginPath();ctx.ellipse(600+i*30,272-i*10,9,6,.3,0,7);fs(C.chl,1.8);}
+ txt('Photosynthesis',640,200,24,C.ink,'center',800);txt('in chloroplasts',640,375,17,C.ink,'center',600);
+ drawGlu(940,230,1.7);txt('glucose (food)',985,230,18,C.ink,'left',600);
+ drawO2(940,320,1.6);txt('oxygen (released)',985,320,18,C.ink,'left',600);
+ // flowing dots
+ for(let i=0;i<3;i++){const f=((T*.5)+i/3)%1;ball(418+44*f,260,5,'#FFD166',1.5);ball(818+44*f,260,5,'#FFD166',1.5);}
+ formula([{t:'6CO₂ + 6H₂O  —light, chlorophyll→  C₆H₁₂O₆ + 6O₂'}],640,470,32);
+ pill('"Plants use light energy to transform water and carbon dioxide into glucose, releasing oxygen."',640,545,{size:18,bg:'#FFF6CC'});
+ txt('Next lessons build on this: plant nutrition · cellular respiration · energy flow in ecosystems',640,620,16,'#2B2D42aa','center',600);
+ addHit(140,210,30,'co2');addHit(140,280,30,'water');addHit(140,350,30,'sun');addHit(940,230,30,'glucose');addHit(940,320,30,'o2');addHit(620,280,70,'chloroplast');}
+
+/* ---------- navigation ---------- */
+const dotsEl=document.getElementById('dots');
+SCENES.forEach((s,i)=>{const b=document.createElement('button');b.className='dot';b.textContent=i+1;b.title=s.title;b.onclick=()=>go(i,0);dotsEl.appendChild(b);});
+function go(s,p){S=s;P=p;sceneT=0;parts=[];acc={};pop.classList.remove('show');setOverlays();updateUI();beep(520,.06);const st=SCENES[S].steps[P];say(st.h+'. '+(st.p||''));}
+function next(){if(P<SCENES[S].steps.length-1)go(S,P+1);else if(S<SCENES.length-1)go(S+1,0);}
+function back(){if(P>0)go(S,P-1);else if(S>0)go(S-1,SCENES[S-1].steps.length-1);}
+function setOverlays(){['qcard','bal','fac','quiz'].forEach(id=>document.getElementById(id).classList.remove('show'));
+ const st=SCENES[S].steps[P];
+ if(st.q===1)showQ(1,'Where does most of the mass of a large tree come from?',['From the soil','From carbon dioxide in the air (and water)','From sunlight'],1,'Most of a tree\'s mass is made from carbon taken from <b>CO₂ in the air</b>, plus water. In the 1600s, van Helmont grew a willow tree that gained about 74 kg, while the soil lost only about 57 g!');
+ if(st.q===2)showQ(2,'If plants produce oxygen, where does that oxygen go?',['It stays inside the leaf','It is released into the atmosphere, mainly through the stomata','It goes down to the roots'],1,'Oxygen diffuses out of the leaf through the <b>stomata</b> and into the atmosphere.');
+ if(st.q===5){Object.assign(F,{L:2,C:2,W:2});if(answered[5]!==undefined)F.L=0;showQ(5,'A plant has plenty of water and CO₂, but very little sunlight. What happens?',['The rate stays high','The rate of photosynthesis becomes low','The plant makes more oxygen'],1,'Light is the <b>limiting factor</b>: without enough energy, the "food factory" slows down even if CO₂ and water are plentiful.',()=>{F.L=0;});}
+ if(S===4&&P===1){document.getElementById('fac').classList.add('show');syncFac();}
+ if(S===3&&P===3)document.getElementById('bal').classList.add('show');
+ if(S===5)document.getElementById('quiz').classList.add('show');}
+function updateUI(){[...dotsEl.children].forEach((d,i)=>{d.classList.toggle('on',i===S);d.classList.toggle('done',i<S);});
+ const sc=SCENES[S],st=sc.steps[P];
+ document.getElementById('stepc').textContent=`Part ${S+1}/${SCENES.length} · step ${P+1}/${sc.steps.length}`;
+ document.getElementById('info').innerHTML=`<div class="ptitle">${sc.part}</div><h2>${st.h}</h2>${st.html||''}<p${st.html?' style="margin-top:6px;font-weight:700"':''}>${st.html?'💡 Remember: “'+st.p+'”':st.p}</p>`+(S<5&&!st.q&&!(S===3&&P===3)?'<div class="hint">Tip: click molecules, leaves, the Sun or the stoma to learn more.</div>':'');
+ document.getElementById('bBack').disabled=S===0&&P===0;document.getElementById('bNext').disabled=S===SCENES.length-1;}
+document.getElementById('bNext').onclick=next;document.getElementById('bBack').onclick=back;
+document.getElementById('bReset').onclick=()=>{for(const k in answered)delete answered[k];Object.assign(BAL,{a:1,b:1,c:1});['a','b','c'].forEach(q=>document.getElementById('n'+q).textContent=1);Object.assign(F,{L:2,C:2,W:2});gluMade=0;for(const k in quizSel)delete quizSel[k];buildQuiz();T=0;go(0,0);};
+const bP=document.getElementById('bPause');bP.onclick=()=>{paused=!paused;bP.textContent=paused?'▶ Play':'⏸ Pause';};
+document.getElementById('speed').onchange=e=>speed=+e.target.value;
+const bV=document.getElementById('bVoice');bV.onclick=()=>{voiceOn=!voiceOn;bV.textContent=voiceOn?'🔊 Narration on':'🔇 Narration off';if(voiceOn){const st=SCENES[S].steps[P];say(st.h+'. '+st.p);}else try{speechSynthesis.cancel();}catch(e){}};
+const bS=document.getElementById('bSound');bS.onclick=()=>{soundOn=!soundOn;bS.textContent=soundOn?'🔈 Sound on':'🔇 Sound off';};
+document.addEventListener('keydown',e=>{if(e.target.tagName==='BUTTON'&&(e.key===' '))return;if(e.key==='ArrowRight')next();if(e.key==='ArrowLeft')back();});
+
+/* ---------- loop ---------- */
+let last=performance.now();
+function frame(now){const raw=Math.min(.05,(now-last)/1000);last=now;const dt=paused?0:raw*speed;T+=dt;sceneT+=dt;updParts(dt);
+ ctx.clearRect(0,0,W,H);hits=[];
+ [scene1,d=>plantMagScene(d,'R'),d=>plantMagScene(d,'P'),scene4,scene5,scene6,scene7][S](dt);
+ requestAnimationFrame(frame);}
+go(0,0);requestAnimationFrame(frame);
+</script>
+</body>
+</html>

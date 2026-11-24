@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chloroplast and Chlorophyll Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* layout: one column, five numbered stations in lesson order, each a stage on top and controls below */
+  --bg:#0f2b2d; --panel:#163a3c; --line:#2c5a5b; --ink:#ecf5ee; --muted:#a5c2b8;
+  --leaf:#57c268; --sun:#f6c445; --water:#62b9ea; --bad:#f08a7a;
+  --display:"Bricolage Grotesque","Trebuchet MS",sans-serif;
+  --body:"Atkinson Hyperlegible",Verdana,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:17px/1.5 var(--body)}
+main{max-width:860px;margin:0 auto;padding:16px 16px 48px;display:flex;flex-direction:column;gap:16px}
+header h1{font:800 clamp(26px,6vw,40px)/1.05 var(--display);margin:8px 0 4px;text-wrap:balance}
+header p{margin:0;color:var(--muted);max-width:60ch}
+nav{position:sticky;top:0;z-index:5;background:var(--bg);display:flex;gap:8px;overflow-x:auto;padding:8px 0;scrollbar-width:none}
+nav button{flex:0 0 auto;font:700 15px var(--body);color:var(--muted);background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:9px 14px;cursor:pointer}
+nav button b{color:var(--sun);margin-right:6px}
+nav button[aria-selected="true"]{background:var(--leaf);border-color:var(--leaf);color:#08240f}
+nav button[aria-selected="true"] b{color:#08240f}
+button:focus-visible,input:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+section{display:flex;flex-direction:column;gap:14px}
+section[hidden]{display:none}
+h2{font:800 24px/1.15 var(--display);margin:0;text-wrap:balance}
+.lead{margin:0;color:var(--muted);max-width:65ch}
+.stage{background:#0a2022;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.stage svg,.stage canvas{display:block;width:100%}
+.stage svg{height:auto}
+#fc{height:300px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.card h3{font:800 19px var(--display);margin:0 0 4px}
+.card p{margin:0}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{font:700 16px var(--body);color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 16px;cursor:pointer}
+.btn.primary{background:var(--sun);border-color:var(--sun);color:#2a1e00}
+.btn[aria-pressed="true"]{background:var(--leaf);border-color:var(--leaf);color:#08240f}
+.btn:disabled{opacity:.4;cursor:default}
+.dots{display:flex;gap:6px;margin-left:auto}
+.dots i{width:10px;height:10px;border-radius:50%;background:var(--line)}
+.dots i.on{background:var(--sun)}
+.scale{font-variant-numeric:tabular-nums;color:var(--sun);font-weight:700}
+.zoomin{animation:zi .45s ease-out}
+@keyframes zi{from{transform:scale(.55);opacity:.2}to{transform:none;opacity:1}}
+.pin circle{fill:var(--panel);stroke:var(--ink);stroke-width:2}
+.pin text{fill:var(--ink);font:700 18px var(--body);text-anchor:middle;dominant-baseline:central;pointer-events:none}
+.pin{cursor:pointer}
+.pin.on circle{fill:var(--sun)} .pin.on text{fill:#2a1e00}
+.pin.ok circle{fill:var(--leaf)} .pin.ok text{fill:#08240f}
+.lead-line{stroke:var(--ink);stroke-width:1.5;opacity:.7}
+.p-outer.hl,.p-inner.hl{stroke:var(--sun);stroke-width:9}
+.p-stroma.hl{fill:#9ad98f}
+.p-thyl.hl{fill:var(--sun)}
+.p-granum.hl{stroke:var(--sun)}
+.meter{height:14px;background:#0a2022;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.meter span{display:block;height:100%;width:0;background:var(--leaf);transition:width .4s}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.stats div{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.stats small{display:block;color:var(--muted)}
+.stats strong{font:800 22px var(--display);font-variant-numeric:tabular-nums}
+.swatch{display:inline-block;width:22px;height:22px;border-radius:6px;border:1px solid var(--ink);vertical-align:middle;margin-right:8px}
+.ctl{display:grid;grid-template-columns:110px 1fr 48px;gap:10px;align-items:center}
+.ctl output{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
+input[type=range]{width:100%;accent-color:var(--sun)}
+.eq{font:800 clamp(16px,4.2vw,22px) var(--display);text-align:center}
+.eq small{display:block;font:400 13px var(--body);color:var(--sun)}
+.q{display:flex;flex-direction:column;gap:8px}
+.q p{margin:0;font-weight:700}
+.q button{text-align:left;font:400 16px var(--body);color:var(--ink);background:#0a2022;border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer}
+.q button.right{background:#1d5a2c;border-color:var(--leaf)}
+.q button.wrong{background:#5a2620;border-color:var(--bad)}
+.q em{color:var(--muted);font-style:normal}
+table{border-collapse:collapse;width:100%}
+td,th{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--sun)}
+@media (prefers-reduced-motion:reduce){.zoomin{animation:none}.meter span{transition:none}}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <h1>Chloroplast and Chlorophyll Lab</h1>
+  <p>Grade 8 Biology. Work through the five stations in order to find out how a plant makes its own food.</p>
+</header>
+
+<nav role="tablist" aria-label="Stations">
+  <button role="tab" data-s="zoom"><b>1</b>Zoom into a leaf</button>
+  <button role="tab" data-s="structure"><b>2</b>Chloroplast parts</button>
+  <button role="tab" data-s="light"><b>3</b>Why green?</button>
+  <button role="tab" data-s="factory"><b>4</b>Food factory</button>
+  <button role="tab" data-s="quiz"><b>5</b>Check yourself</button>
+</nav>
+
+<section id="s-zoom">
+  <h2>Where does photosynthesis happen?</h2>
+  <p class="lead">Animals eat food. Plants make theirs. Zoom in five times to find the exact place.</p>
+  <div class="stage"><svg id="zsvg" viewBox="0 0 600 360" role="img" aria-label="Zoom view"></svg></div>
+  <div class="row">
+    <button class="btn" id="zout">Zoom out</button>
+    <button class="btn primary" id="zin">Zoom in</button>
+    <div class="dots" id="zdots"></div>
+  </div>
+  <div class="card"><h3 id="zname"></h3><p class="scale" id="zscale"></p><p id="ztext"></p></div>
+</section>
+
+<section id="s-structure" hidden>
+  <h2>Structure of a chloroplast</h2>
+  <p class="lead">Think of a chloroplast as a small solar-powered factory. Tap a number to see what each part does.</p>
+  <div class="row">
+    <button class="btn" id="mExplore" aria-pressed="true">Explore</button>
+    <button class="btn" id="mTest" aria-pressed="false">Test me</button>
+  </div>
+  <div class="stage"><svg id="csvg" viewBox="0 -30 600 420" role="img" aria-label="Labelled chloroplast"></svg></div>
+  <div class="card" id="cinfo"><h3>Tap a number</h3><p>There are five parts to find.</p></div>
+</section>
+
+<section id="s-light" hidden>
+  <h2>Why are leaves green?</h2>
+  <p class="lead">Chlorophyll is a green pigment in the thylakoid membranes. Shine different colours of light on a leaf and watch what is absorbed and what bounces back.</p>
+  <div class="row" id="lbtns">
+    <button class="btn" data-l="white">White light</button>
+    <button class="btn" data-l="red">Red light</button>
+    <button class="btn" data-l="blue">Blue light</button>
+    <button class="btn" data-l="green">Green light</button>
+  </div>
+  <div class="stage"><svg id="lsvg" viewBox="0 0 600 280" role="img" aria-label="Light hitting a leaf"></svg></div>
+  <div class="stats">
+    <div><small>Light absorbed</small><strong id="labs"></strong></div>
+    <div><small>Light reflected</small><strong id="lref"></strong></div>
+    <div><small>The leaf looks</small><strong id="lsee"></strong></div>
+  </div>
+  <div class="card">
+    <h3>Photosynthesis rate</h3>
+    <div class="meter"><span id="lrate"></span></div>
+    <p id="ltext" style="margin-top:8px"></p>
+    <p style="color:var(--muted);font-size:14px;margin-top:6px">Percentages are rounded, for comparing colours.</p>
+  </div>
+</section>
+
+<section id="s-factory" hidden>
+  <h2>The food factory</h2>
+  <p class="lead">Sunlight gives the energy. Chlorophyll absorbs it. Change the supplies and see how much glucose the chloroplast makes.</p>
+  <div class="stage"><canvas id="fc" aria-label="Chloroplast taking in light, water and carbon dioxide"></canvas></div>
+  <div class="card" style="display:flex;flex-direction:column;gap:10px">
+    <div class="ctl"><label for="rL">Sunlight</label><input type="range" id="rL" min="0" max="100" value="80"><output id="oL"></output></div>
+    <div class="ctl"><label for="rW">Water</label><input type="range" id="rW" min="0" max="100" value="80"><output id="oW"></output></div>
+    <div class="ctl"><label for="rC">Carbon dioxide</label><input type="range" id="rC" min="0" max="100" value="80"><output id="oC"></output></div>
+    <div class="row"><button class="btn" id="chl" aria-pressed="true">Chlorophyll: present</button><button class="btn" id="freset">Reset counters</button></div>
+  </div>
+  <div class="card"><h3>Rate</h3><div class="meter"><span id="frate"></span></div><p id="ftext" style="margin-top:8px"></p></div>
+  <div class="stats">
+    <div><small>Glucose made</small><strong id="nG">0</strong></div>
+    <div><small>Oxygen released</small><strong id="nO">0</strong></div>
+  </div>
+  <div class="card eq"><small>light energy, absorbed by chlorophyll</small>6CO<sub>2</sub> + 6H<sub>2</sub>O &rarr; C<sub>6</sub>H<sub>12</sub>O<sub>6</sub> + 6O<sub>2</sub></div>
+</section>
+
+<section id="s-quiz" hidden>
+  <h2>Check yourself</h2>
+  <p class="lead">Eight questions from the lesson. Answer alone or with a partner.</p>
+  <div id="qs" style="display:flex;flex-direction:column;gap:14px"></div>
+  <div class="card"><h3 id="qscore">Score: 0 of 8</h3><p id="qmsg">Answer every question to finish.</p>
+    <div class="row" style="margin-top:10px"><button class="btn" id="qreset">Start again</button></div></div>
+  <div class="card">
+    <h3>Three words to keep apart</h3>
+    <table>
+      <tr><th>Chloroplast</th><td>The organelle where photosynthesis occurs</td></tr>
+      <tr><th>Chlorophyll</th><td>The green pigment that absorbs light</td></tr>
+      <tr><th>Photosynthesis</th><td>The process of producing glucose using light energy</td></tr>
+    </table>
+  </div>
+</section>
+</main>
+
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- tabs ---------- */
+const names=['zoom','structure','light','factory','quiz'];
+let current='zoom';
+function show(n){
+  if(!names.includes(n)) n='zoom';
+  current=n;
+  names.forEach(k=>{$('#s-'+k).hidden=k!==n});
+  $$('nav button').forEach(b=>b.setAttribute('aria-selected',b.dataset.s===n));
+  if(n==='factory'){sizeCanvas();startLoop();}
+}
+$$('nav button').forEach(b=>b.onclick=()=>{try{location.hash=b.dataset.s}catch(e){} show(b.dataset.s); scrollTo(0,0);});
+addEventListener('hashchange',()=>show(location.hash.slice(1)));
+
+/* ---------- chloroplast drawing ---------- */
+const XS=[150,240,340,440], NS=[4,5,5,4];
+function chloro(){
+  let s='<ellipse class="p-outer" cx="300" cy="180" rx="250" ry="140" fill="#2a6f3b" stroke="#c4e8a4" stroke-width="5"/>'+
+        '<ellipse class="p-stroma" cx="300" cy="180" rx="234" ry="124" fill="#5aa862"/>'+
+        '<ellipse class="p-inner" cx="300" cy="180" rx="236" ry="126" fill="none" stroke="#184d28" stroke-width="4"/>';
+  for(let k=0;k<3;k++) for(const dy of [-14,14])
+    s+=`<line x1="${XS[k]+30}" x2="${XS[k+1]-30}" y1="${180+dy}" y2="${180+dy}" stroke="#1d6a33" stroke-width="5"/>`;
+  XS.forEach((x,k)=>{const n=NS[k],y0=180-(n-1)*7;
+    for(let i=0;i<n;i++){const cls=(k===0&&i===n-1)?' class="p-thyl"':'';
+      s+=`<rect${cls} x="${x-30}" y="${y0+i*14-5}" width="60" height="10" rx="5" fill="#1f8a3c" stroke="#0f4a20" stroke-width="1.5"/>`;}
+  });
+  s+='<rect class="p-granum" x="402" y="146" width="76" height="68" rx="10" fill="none" stroke="transparent" stroke-width="4" stroke-dasharray="7 5"/>';
+  return s;
+}
+
+/* ---------- 1 zoom ---------- */
+const target=(x,y,r)=>`<circle cx="${x}" cy="${y}" r="${r}" fill="none" stroke="#f6c445" stroke-width="3" stroke-dasharray="6 5"/>`;
+const levels=[
+ {name:'A green leaf',scale:'About 5 cm long',text:'Leaves are the main place where a plant makes food. Each leaf is built from millions of cells.',
+  draw:()=>'<line x1="20" y1="180" x2="90" y2="180" stroke="#7a5a2c" stroke-width="8" stroke-linecap="round"/>'+
+   '<path d="M80 180 C180 40,430 40,560 180 C430 320,180 320,80 180Z" fill="#3f9e4f" stroke="#1d5e2c" stroke-width="4"/>'+
+   '<path d="M80 180H560M200 180l60-70M200 180l60 70M320 180l60-75M320 180l60 75M440 180l45-50M440 180l45 50" stroke="#1d5e2c" stroke-width="3" fill="none"/>'+target(300,135,22)},
+ {name:'A plant cell',scale:'About 50 µm wide (0.05 mm)',text:'Inside each leaf cell are many small green organelles. These are chloroplasts. Animal cells do not have them.',
+  draw:()=>{let s='<rect x="60" y="30" width="480" height="300" rx="34" fill="#2f6f45" stroke="#a9d98a" stroke-width="10"/>'+
+   '<ellipse cx="320" cy="185" rx="130" ry="80" fill="#8fd0de" opacity=".55"/><circle cx="150" cy="110" r="36" fill="#b68ad0" stroke="#6d4a86" stroke-width="3"/>';
+   [[250,75],[380,70],[480,120],[490,230],[400,290],[260,295],[130,250],[120,190]].forEach(([x,y],i)=>
+     s+=`<ellipse cx="${x}" cy="${y}" rx="34" ry="17" fill="#57c268" stroke="#1d5e2c" stroke-width="3" transform="rotate(${i*40} ${x} ${y})"/>`);
+   return s+target(380,70,44)}},
+ {name:'A chloroplast',scale:'About 5 µm long',text:'This organelle is the site of photosynthesis. It has two membranes, a fluid called stroma, and stacks of green sacs.',
+  draw:()=>chloro()+target(240,180,52)},
+ {name:'A granum',scale:'About 0.5 µm across',text:'A granum is a stack of flattened sacs. Each sac is a thylakoid. More than one granum are called grana.',
+  draw:()=>{let s='';for(let i=0;i<5;i++)s+=`<rect x="140" y="${42+i*58}" width="320" height="44" rx="22" fill="#1f8a3c" stroke="#0f4a20" stroke-width="4"/>`;
+   return s+target(300,64,34)}},
+ {name:'Thylakoid membrane with chlorophyll',scale:'Chlorophyll molecule: about 1 nm',text:'Chlorophyll sits in the thylakoid membrane. It absorbs light energy from the Sun, like a tiny solar panel. Photosynthesis starts here.',
+  draw:()=>{let s='<rect x="0" y="150" width="600" height="90" fill="#274f33"/>';
+   for(let x=15;x<600;x+=30)s+=`<circle cx="${x}" cy="150" r="12" fill="#cfdcae"/><circle cx="${x}" cy="240" r="12" fill="#cfdcae"/>`;
+   [90,210,330,450,540].forEach((x,i)=>{s+=`<line x1="${x-50}" y1="0" x2="${x}" y2="170" stroke="#f6c445" stroke-width="4" stroke-dasharray="10 8"/>`+
+     `<circle cx="${x}" cy="195" r="30" fill="#f6c445" opacity=".25"/><circle cx="${x}" cy="195" r="19" fill="#57c268" stroke="#0f4a20" stroke-width="3"/>`;});
+   return s+'<text x="300" y="320" fill="#ecf5ee" font-size="20" text-anchor="middle" font-family="Atkinson Hyperlegible,Verdana,sans-serif">green = chlorophyll   yellow = light energy</text>'}}
+];
+let z=0;
+function drawZoom(anim){
+  const L=levels[z], svg=$('#zsvg');
+  svg.innerHTML='<g>'+L.draw()+'</g>';
+  if(anim){const g=svg.firstChild;g.style.transformOrigin='300px 180px';g.classList.add('zoomin');}
+  $('#zname').textContent=L.name; $('#zscale').textContent=L.scale; $('#ztext').textContent=L.text;
+  $('#zdots').innerHTML=levels.map((_,i)=>`<i class="${i<=z?'on':''}"></i>`).join('');
+  $('#zin').disabled=z===levels.length-1; $('#zout').disabled=z===0;
+}
+$('#zin').onclick=()=>{if(z<levels.length-1){z++;drawZoom(true)}};
+$('#zout').onclick=()=>{if(z>0){z--;drawZoom(false)}};
+
+/* ---------- 2 structure ---------- */
+const parts=[
+ {k:'outer',name:'Outer membrane',fn:'Protects the chloroplast. It is the outside wall of the factory.',pin:[84,4],to:[150,68]},
+ {k:'inner',name:'Inner membrane',fn:'Controls which substances enter and leave the chloroplast.',pin:[516,4],to:[450,83]},
+ {k:'stroma',name:'Stroma',fn:'The fluid-filled space inside the chloroplast. It is the fluid inside the factory.',pin:[300,0],to:[292,104]},
+ {k:'thyl',name:'Thylakoid',fn:'A flattened membrane sac. Its membrane contains chlorophyll, which captures light energy.',pin:[84,356],to:[140,203]},
+ {k:'granum',name:'Granum',fn:'A stack of thylakoids. The plural is grana.',pin:[516,356],to:[462,214]}
+];
+let mode='explore', order=[], qi=0, taps=0;
+function drawStructure(){
+  let s=chloro();
+  parts.forEach((p,i)=>{s+=`<line class="lead-line" x1="${p.pin[0]}" y1="${p.pin[1]}" x2="${p.to[0]}" y2="${p.to[1]}"/>`;});
+  parts.forEach((p,i)=>{s+=`<g class="pin" data-k="${p.k}" tabindex="0" role="button" aria-label="Part ${i+1}"><circle cx="${p.pin[0]}" cy="${p.pin[1]}" r="20"/><text x="${p.pin[0]}" y="${p.pin[1]}">${i+1}</text></g>`;});
+  $('#csvg').innerHTML=s;
+  $$('#csvg .pin').forEach(g=>{g.onclick=()=>tapPin(g.dataset.k);g.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();tapPin(g.dataset.k)}}});
+}
+function hl(k,cls){
+  $$('#csvg .hl').forEach(e=>e.classList.remove('hl'));
+  $$('#csvg .pin').forEach(g=>g.classList.remove('on'));
+  if(!k)return;
+  $('#csvg .p-'+k).classList.add('hl');
+  $(`#csvg .pin[data-k="${k}"]`).classList.add(cls||'on');
+}
+function info(h,p){$('#cinfo').innerHTML=`<h3>${h}</h3><p>${p}</p>`}
+function ask(){
+  if(qi>=order.length){info('All five found',`You needed ${taps} taps. ${taps===5?'A perfect run.':'Try again for a perfect 5.'}`);return;}
+  info('Find: '+order[qi].name,'Tap the number that points to this part.');
+}
+function tapPin(k){
+  const p=parts.find(x=>x.k===k);
+  if(mode==='explore'){hl(k);info(p.name,p.fn);return;}
+  if(qi>=order.length)return;
+  taps++;
+  if(order[qi].k===k){hl(k);$(`#csvg .pin[data-k="${k}"]`).classList.add('ok');
+    const done=p; qi++;
+    if(qi>=order.length) ask(); else info('Correct: '+done.name, done.fn+' <br><b>Next, find: '+order[qi].name+'</b>');
+  } else info('Not that one','That number points to the '+p.name.toLowerCase()+'. <b>Find: '+order[qi].name+'</b>');
+}
+function setMode(m){
+  mode=m; $('#mExplore').setAttribute('aria-pressed',m==='explore'); $('#mTest').setAttribute('aria-pressed',m==='test');
+  drawStructure();
+  if(m==='test'){order=parts.slice().sort(()=>Math.random()-.5);qi=0;taps=0;ask();}
+  else info('Tap a number','There are five parts to find.');
+}
+$('#mExplore').onclick=()=>setMode('explore'); $('#mTest').onclick=()=>setMode('test');
+
+/* ---------- 3 light ---------- */
+const lights={
+ white:{abs:65,rate:100,see:'Green',leaf:'#3fae52',text:'White sunlight is a mix of colours. Chlorophyll absorbs mainly the red and blue light and reflects the green. The reflected green light is what our eyes see.'},
+ red:{abs:90,rate:90,see:'Very dark',leaf:'#2b1512',text:'Chlorophyll absorbs red light very well, so photosynthesis is fast. Almost nothing is reflected, so the leaf looks dark.'},
+ blue:{abs:90,rate:85,see:'Very dark',leaf:'#11162c',text:'Chlorophyll absorbs blue light very well too. Photosynthesis is fast and the leaf looks dark.'},
+ green:{abs:15,rate:15,see:'Bright green',leaf:'#4fd062',text:'Most green light bounces off chlorophyll. The leaf looks bright green, but the plant captures little energy and makes little food.'}
+};
+const RC={red:'#ef5a4c',green:'#57c268',blue:'#5a8cf0'};
+function drawLight(n){
+  const L=lights[n]; const rays=n==='white'?['red','green','blue']:[n];
+  let s='<defs>'+Object.entries(RC).map(([k,c])=>`<marker id="a-${k}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L10 5L0 10z" fill="${c}"/></marker>`).join('')+'</defs>';
+  s+=`<circle cx="60" cy="50" r="30" fill="${n==='white'?'#fff7d6':RC[n]}"/><text x="60" y="105" fill="#a5c2b8" font-size="16" text-anchor="middle">lamp</text>`;
+  s+=`<path d="M180 215 C240 150,360 150,420 215 C360 262,240 262,180 215Z" fill="${L.leaf}" stroke="#1d5e2c" stroke-width="4"/><text x="300" y="272" fill="#a5c2b8" font-size="16" text-anchor="middle">leaf</text>`;
+  rays.forEach((c,i)=>{const o=(i-(rays.length-1)/2)*22;
+    s+=`<line x1="${92+o}" y1="${66-o*.4}" x2="${290+o}" y2="${188-o*.4}" stroke="${RC[c]}" stroke-width="6" marker-end="url(#a-${c})"/>`;
+    const refl=c==='green';
+    if(refl) s+=`<line x1="${310+o}" y1="${186}" x2="505" y2="72" stroke="${RC[c]}" stroke-width="6" marker-end="url(#a-${c})"/>`;
+    else s+=`<circle cx="${296+o}" cy="${196-o*.4}" r="12" fill="${RC[c]}" opacity=".45"/>`;
+  });
+  s+='<ellipse cx="540" cy="52" rx="34" ry="20" fill="#ecf5ee"/><circle cx="540" cy="52" r="12" fill="#3a2a1a"/><text x="540" y="100" fill="#a5c2b8" font-size="16" text-anchor="middle">eye</text>';
+  const svg=$('#lsvg'); svg.innerHTML=s; svg.setAttribute('font-family','Atkinson Hyperlegible,Verdana,sans-serif');
+  $('#labs').textContent=L.abs+'%'; $('#lref').textContent=(100-L.abs)+'%';
+  $('#lsee').innerHTML=`<span class="swatch" style="background:${L.leaf}"></span>${L.see}`;
+  $('#lrate').style.width=L.rate+'%'; $('#ltext').textContent=L.text;
+  $$('#lbtns .btn').forEach(b=>b.setAttribute('aria-pressed',b.dataset.l===n));
+}
+$$('#lbtns .btn').forEach(b=>b.onclick=()=>drawLight(b.dataset.l));
+
+/* ---------- 4 factory ---------- */
+const cv=$('#fc'), cx=cv.getContext('2d');
+let W=0,H=0,ps=[],acc={light:0,water:0,co2:0,o2:0,glu:0},gl=0,hasChl=true,running=false,last=0;
+const COL={light:'#f6c445',water:'#62b9ea',co2:'#b9c4c2',o2:'#e8fbff',glu:'#f39a3d'};
+function sizeCanvas(){const r=cv.getBoundingClientRect(),d=window.devicePixelRatio||1;W=r.width;H=r.height;cv.width=W*d;cv.height=H*d;cx.setTransform(d,0,0,d,0,0);}
+addEventListener('resize',()=>{if(current==='factory'){sizeCanvas();if(reduce)drawFactory();}});
+function vals(){return{L:+$('#rL').value,Wt:+$('#rW').value,C:+$('#rC').value}}
+function rate(){const v=vals();return hasChl?Math.min(v.L,v.Wt,v.C)/100:0}
+function updateFactory(){
+  const v=vals(); $('#oL').textContent=v.L+'%'; $('#oW').textContent=v.Wt+'%'; $('#oC').textContent=v.C+'%';
+  const r=rate(); $('#frate').style.width=(r*100)+'%';
+  let t;
+  if(!hasChl) t='No chlorophyll, so the light energy is not captured. The plant cannot make glucose and would slowly starve.';
+  else if(r===0) t='Production has stopped. '+(v.L===0?'There is no sunlight to supply energy.':v.Wt===0?'There is no water.':'There is no carbon dioxide.');
+  else{const m=Math.min(v.L,v.Wt,v.C); const lim=m===v.L?'Sunlight':m===v.Wt?'Water':'Carbon dioxide';
+    t=(v.L===v.Wt&&v.Wt===v.C)?'All three supplies are balanced. Raise them together to speed up.':lim+' is in shortest supply, so it limits how fast glucose is made.';}
+  $('#ftext').textContent=t;
+  $('#chl').textContent='Chlorophyll: '+(hasChl?'present':'missing'); $('#chl').setAttribute('aria-pressed',hasChl);
+  if(reduce&&current==='factory')drawFactory();
+}
+['rL','rW','rC'].forEach(id=>$('#'+id).oninput=updateFactory);
+$('#chl').onclick=()=>{hasChl=!hasChl;updateFactory()};
+$('#freset').onclick=()=>{gl=0;showCounts()};
+function showCounts(){$('#nG').textContent=Math.floor(gl);$('#nO').textContent=Math.floor(gl)*6}
+function spawn(type){
+  const c=[W/2+(Math.random()-.5)*W*.18,H/2+(Math.random()-.5)*H*.12];
+  const ends={light:[W*(.3+Math.random()*.4),0],water:[0,H*.8],co2:[0,H*.22],o2:[W,H*.22],glu:[W,H*.8]}[type];
+  const out=type==='o2'||type==='glu';
+  ps.push({a:out?c:ends,b:out?ends:c,t:0,type});
+}
+function drawFactory(){
+  cx.clearRect(0,0,W,H);
+  const rx=Math.min(W*.3,170),ry=Math.min(H*.3,90),X=W/2,Y=H/2;
+  cx.fillStyle=hasChl?'#2a6f3b':'#6f776c'; cx.strokeStyle='#c4e8a4'; cx.lineWidth=3;
+  cx.beginPath();cx.ellipse(X,Y,rx,ry,0,0,7);cx.fill();cx.stroke();
+  cx.fillStyle=hasChl?'#5aa862':'#9aa397';cx.beginPath();cx.ellipse(X,Y,rx-9,ry-9,0,0,7);cx.fill();
+  cx.fillStyle=hasChl?'#1f8a3c':'#d5d9cf';
+  [-.55,-.18,.18,.55].forEach((f,k)=>{const n=k%3?4:3;for(let i=0;i<n;i++)cx.fillRect(X+f*rx-rx*.13,Y-(n*9)/2+i*9,rx*.26,6);});
+  cx.font='700 13px Atkinson Hyperlegible,Verdana,sans-serif'; cx.textBaseline='middle';
+  cx.textAlign='center';cx.fillStyle=COL.light;cx.fillText('Sunlight',X,12);
+  cx.textAlign='left';cx.fillStyle=COL.co2;cx.fillText('CO₂ from air',6,H*.22-16);
+  cx.fillStyle=COL.water;cx.fillText('Water from roots',6,H*.8+18);
+  cx.textAlign='right';cx.fillStyle=COL.o2;cx.fillText('Oxygen',W-6,H*.22-16);
+  cx.fillStyle=COL.glu;cx.fillText('Glucose',W-6,H*.8+18);
+  for(const p of ps){const x=p.a[0]+(p.b[0]-p.a[0])*p.t,y=p.a[1]+(p.b[1]-p.a[1])*p.t;
+    cx.fillStyle=COL[p.type];cx.beginPath();
+    if(p.type==='glu'){for(let i=0;i<6;i++){const a=i*Math.PI/3;cx.lineTo(x+8*Math.cos(a),y+8*Math.sin(a));}cx.closePath();}
+    else cx.arc(x,y,p.type==='light'?3:5,0,7);
+    cx.fill();}
+}
+function loop(ts){
+  if(current!=='factory'){running=false;return;}
+  const dt=Math.min((ts-last)/1000||0,.05);last=ts;
+  const v=vals(),r=rate();
+  acc.light+=v.L/100*dt*7;acc.water+=v.Wt/100*dt*4;acc.co2+=v.C/100*dt*4;acc.o2+=r*dt*5;acc.glu+=r*dt*.9;
+  for(const k in acc)while(acc[k]>=1){acc[k]--;spawn(k);if(k==='glu'){gl++;showCounts();}}
+  ps.forEach(p=>p.t+=dt*.55);ps=ps.filter(p=>p.t<1);
+  drawFactory();requestAnimationFrame(loop);
+}
+function startLoop(){if(reduce){drawFactory();return;}if(!running){running=true;last=performance.now();requestAnimationFrame(loop);}}
+
+/* ---------- 5 quiz ---------- */
+const Q=[
+ ['What is a chloroplast?',['A green pigment','An organelle where photosynthesis takes place','A type of sugar','The wall around a plant cell'],1,'It is an organelle. The pigment inside it is chlorophyll.'],
+ ['Where are chloroplasts found?',['In all animal cells','Only in roots','Mainly in the cells of green plants','In the soil'],2,'Animal cells do not have chloroplasts.'],
+ ['What is chlorophyll?',['A green pigment that absorbs light energy','A stack of thylakoids','The fluid inside a chloroplast','A gas released by plants'],0,'Chlorophyll works like a solar panel for the plant.'],
+ ['Why do plants appear green?',['Chlorophyll absorbs green light','Chlorophyll reflects green light','Water in the leaf is green','Sunlight is green'],1,'Red and blue light are absorbed. Green is reflected to our eyes.'],
+ ['Where is chlorophyll located inside the chloroplast?',['In the outer membrane','In the stroma','In the thylakoid membranes','In the nucleus'],2,'Thylakoids are the flattened sacs that hold chlorophyll.'],
+ ['What are grana?',['Stacks of thylakoids','Grains of sugar','Holes in the leaf','Layers of the cell wall'],0,'One stack is a granum. Several are grana.'],
+ ['Which substances does photosynthesis produce?',['Water and carbon dioxide','Glucose and carbon dioxide','Oxygen and water','Glucose and oxygen'],3,'The plant uses the glucose and releases the oxygen.'],
+ ['What would happen to a plant whose leaves had no chlorophyll?',['It would grow faster','It could not capture light energy to make food','It would need less water','Nothing would change'],1,'Without chlorophyll there is nothing to absorb the light energy.']
+];
+let answered=0,score=0;
+function drawQuiz(){
+  answered=0;score=0;
+  $('#qs').innerHTML=Q.map((q,i)=>`<div class="card q" data-i="${i}"><p>${i+1}. ${q[0]}</p>${q[1].map((o,j)=>`<button data-j="${j}">${o}</button>`).join('')}<em></em></div>`).join('');
+  $$('#qs button').forEach(b=>b.onclick=()=>{
+    const box=b.parentElement,q=Q[+box.dataset.i]; if(box.dataset.done)return; box.dataset.done=1;
+    const ok=+b.dataset.j===q[2]; b.classList.add(ok?'right':'wrong');
+    if(!ok)box.querySelector(`button[data-j="${q[2]}"]`).classList.add('right');
+    box.querySelector('em').textContent=(ok?'Correct. ':'Not quite. ')+q[3];
+    answered++; if(ok)score++; qScore();
+  });
+  qScore();
+}
+function qScore(){
+  $('#qscore').textContent=`Score: ${score} of ${Q.length}`;
+  $('#qmsg').textContent=answered<Q.length?`${Q.length-answered} questions left.`:score===Q.length?'Full marks. You can explain chloroplasts and chlorophyll.':score>=6?'Good work. Revisit the stations for the ones you missed.':'Go back through stations 1 to 4, then try again.';
+}
+$('#qreset').onclick=drawQuiz;
+
+/* ---------- start ---------- */
+drawZoom(false); setMode('explore'); drawLight('white'); updateFactory(); drawQuiz();
+show(location.hash.slice(1)||'zoom');
+</script>
+</body>
+</html>

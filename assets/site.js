@@ -50,7 +50,7 @@
         return '<li class="lesson"><span class="code">' + esc(l.code || '') + '</span>' +
           '<span class="title">' + esc(l.title) + '<a class="where" href="' + esc(base + 'studying-materials/' + l.page) + '">' + esc(l.gradeLabel) + '</a></span>' +
           '<ul class="res">' + l.res.map(function (r) {
-            var ext = /^https?:/.test(r.href) || /\.(pdf|pptx)$/i.test(r.href);
+            var ext = /^(https?:|simulations\/)/.test(r.href) || /\.(pdf|pptx)$/i.test(r.href);
             return '<li><a class="t-' + r.type + '" href="' + esc(href(r.href)) + '"' + (ext ? ' target="_blank" rel="noopener"' : '') + '><span class="dot"></span>' + esc(r.label) + '</a></li>';
           }).join('') + '</ul></li>';
       }).join('') + '</ul>' : '';
