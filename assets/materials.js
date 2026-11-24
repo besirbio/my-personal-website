@@ -79,175 +79,75 @@ window.MATERIALS = [
 "page": "grade8.html"
 },
 {
-"code": "Exam",
-"title": "First exam material",
-"res": [
-{
-"type": "textbook",
-"label": "PDF",
-"href": "pdfs/grade9/9th Grade - 1st Exam Material.pdf"
-}
-],
-"gradeLabel": "Grade 9",
-"page": "grade9.html"
-},
-{
-"code": "9.1",
-"title": "Understanding the menstrual cycle",
-"res": [
-{
-"type": "textbook",
-"label": "PDF",
-"href": "pdfs/grade9/9.1 Understanding Menstrual Cycle.pdf"
-},
-{
-"type": "mindmap",
-"label": "Mind map",
-"href": "studying-materials/menstruation.html"
-}
-],
-"gradeLabel": "Grade 9",
-"page": "grade9.html"
-},
-{
-"code": "10.1",
-"title": "Fertilisation",
-"res": [
-{
-"type": "textbook",
-"label": "PDF",
-"href": "pdfs/grade9/10.1 Fertilization.pdf"
-},
-{
-"type": "mindmap",
-"label": "Mind map",
-"href": "studying-materials/fertilization.html"
-}
-],
-"gradeLabel": "Grade 9",
-"page": "grade9.html"
-},
-{
-"code": "10.2",
-"title": "Fetal development",
+"code": "1",
+"title": "Leaf structure",
 "res": [
 {
 "type": "textbook",
 "label": "Reading",
-"href": "pdfs/grade9/10.2 Fetal Development - READ.pdf"
-},
-{
-"type": "slides",
-"label": "Slides",
-"href": "pdfs/grade9/10.2 Fetal Developmentp - PRESENTATION.pdf"
-},
-{
-"type": "mindmap",
-"label": "Mind map",
-"href": "studying-materials/fetaldevelopment.html"
+"href": "pdfs/grade9/1. Leaf Structure.pdf"
 }
 ],
 "gradeLabel": "Grade 9",
 "page": "grade9.html"
 },
 {
-"code": "11.2",
-"title": "Respiratory system",
+"code": "2",
+"title": "Chloroplasts and photosynthesis",
 "res": [
 {
 "type": "textbook",
-"label": "PDF",
-"href": "pdfs/grade9/11.2 Respiratory System.pdf"
-},
-{
-"type": "mindmap",
-"label": "Mind map",
-"href": "studying-materials/MRespiratory System.html"
+"label": "Reading & worksheet",
+"href": "pdfs/grade9/2. Chloroplast and Photosynthesis.pdf"
 }
 ],
 "gradeLabel": "Grade 9",
 "page": "grade9.html"
 },
 {
-"code": "12.1",
-"title": "Breathing and ventilation",
+"code": "6",
+"title": "Flowering plants and pollination",
 "res": [
 {
 "type": "textbook",
-"label": "PDF",
-"href": "pdfs/grade9/12.1 Breathing and ventilation.pdf"
-},
-{
-"type": "mindmap",
-"label": "Mind map",
-"href": "studying-materials/MBreathing and Ventilation.html"
+"label": "Textbook",
+"href": "pdfs/grade9/6. Flowering Plants and Pollination.pdf"
 }
 ],
 "gradeLabel": "Grade 9",
 "page": "grade9.html"
 },
 {
-"code": "12.2",
-"title": "Dichotomous keys",
-"res": [
-{
-"type": "slides",
-"label": "Slides",
-"href": "pdfs/grade9/12.2B dichotomous_key_pp.pdf"
-}
-],
-"gradeLabel": "Grade 9",
-"page": "grade9.html"
-},
-{
-"code": "13.1",
-"title": "Adaptation of plants and animals",
+"code": "7",
+"title": "Pollen grains: structure and journey",
 "res": [
 {
 "type": "textbook",
-"label": "PDF",
-"href": "pdfs/grade9/13.1 Adaptation of plants and animals.pdf"
+"label": "Textbook",
+"href": "pdfs/grade9/7. Pollen Grains - Structure and Journey.pdf"
 },
 {
-"type": "mindmap",
-"label": "Mind map",
-"href": "studying-materials/MAdaptation of Plants and Animals.html"
+"type": "interactive",
+"label": "Interactive lab",
+"href": "simulations/grade9/7-pollen-grain-journey.html"
 }
 ],
 "gradeLabel": "Grade 9",
 "page": "grade9.html"
 },
 {
-"code": "13.2",
-"title": "Adaptation of detritivores",
+"code": "8",
+"title": "Seed germination",
 "res": [
 {
 "type": "textbook",
-"label": "PDF",
-"href": "pdfs/grade9/13.2 Adaptation of detritivores.pdf"
+"label": "Textbook",
+"href": "pdfs/grade9/8. Seed Germination.pdf"
 },
 {
-"type": "mindmap",
-"label": "Mind map",
-"href": "studying-materials/MDetritivores.html"
-}
-],
-"gradeLabel": "Grade 9",
-"page": "grade9.html"
-},
-{
-"code": "14.1",
-"title": "Decomposers",
-"res": [
-{
-"type": "textbook",
-"label": "PDF",
-"href": "pdfs/grade9/14.1 Decomposers.pdf"
-},
-{
-"type": "mindmap",
-"label": "Mind map",
-"href": "studying-materials/MDecomposers.html"
+"type": "interactive",
+"label": "Simulation",
+"href": "simulations/grade9/8-seed-germination.html"
 }
 ],
 "gradeLabel": "Grade 9",
