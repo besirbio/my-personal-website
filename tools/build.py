@@ -115,19 +115,12 @@ GRADES = [
      L('', 'How to log in to EduPage', pdf('grade7', 'EdupageLogin.pdf', 'Guide')),
   ])]},
  {'id': 'grade8', 'num': '8', 'label': 'Grade 8', 'mm_page': 'mindmappings8thgrade.html',
-  'intro': 'Energy and nutrition, the circulatory system, species and variation.',
+  'intro': 'Plants as food factories: inside the leaf, chloroplasts and chlorophyll, photosynthesis, and how light intensity changes its rate.',
   'terms': [('Lessons', [
-     L('Exam', 'First exam material', pdf('grade8', '8th Grade First Exam.pdf')),
-     L('7.2', 'The amount of energy in a type of food', pdf('grade8', '7.2 The amount of energy of a certain type of food.pdf'), mm('energycalories.html')),
-     L('8.2', 'Basal metabolic rate (BMR) and total daily energy expenditure (TDEE)', pdf('grade8', '8.2 Basal Metabolic Rate (BMR) and Total Daily Energy Expenditure.pdf'), mm('bmrandtdee.html'), ('interactive', 'BMR calculator', 'https://gemini.google.com/share/bb4677329f17')),
-     L('9.1', 'Proteins', pdf('grade8', '9.1 Proteins.pdf'), mm('proteins.html')),
-     L('9.2', 'Digestion', pdf('grade8', '9.2 Digestion.pdf'), mm('digestion.html')),
-     L('10.1', 'Circulatory system', pdf('grade8', '10.1 Circulatory System.pdf'), mm('MCirculatory System.html')),
-     L('10.2', 'Blood composition', pdf('grade8', '10.2 Blood composition.pdf'), mm('MBlood Composition.html')),
-     L('11.1', 'Species', pdf('grade8', '11.1 Species.pdf'), mm('MSpecies.html')),
-     L('11.2', 'Species and hybrids', pdf('grade8', '11.2 Species and hybrids.pdf'), mm('MSpecies and Hybrids.html')),
-     L('12.1', 'Types of variation', pdf('grade8', '12.1 Types of variations.pdf'), mm('MTypes of Variations.html')),
-     L('12.2', 'Measuring variation', pdf('grade8', '12.2 Measurement of variations.pdf'), mm('MMeasurement of variations.html')),
+     L('6', 'Internal structure of the leaf', ('interactive', '3D simulation', 'simulations/grade8/6-leaf-structure-3d.html')),
+     L('7', 'Chloroplast and chlorophyll', ('interactive', 'Interactive lab', 'simulations/grade8/7-chloroplast-chlorophyll-lab.html')),
+     L('9', 'Photosynthesis: the plant’s food factory', ('interactive', 'Simulation', 'simulations/grade8/9-photosynthesis-food-factory.html')),
+     L('10', 'Effect of light intensity on photosynthesis', ('interactive', 'Virtual lab', 'simulations/grade8/10-light-intensity-virtual-lab.html')),
   ])]},
  {'id': 'grade9', 'num': '9', 'label': 'Grade 9', 'mm_page': 'mindmappings9thgrade.html',
   'intro': 'Human reproduction and development, breathing, classification and adaptation.',
@@ -258,7 +251,7 @@ def res_html(res, b):
     out = []
     for r in res:
         h = r['href']
-        ext = h.startswith('http') or h.lower().endswith(('.pdf', '.pptx'))
+        ext = h.startswith(('http', 'simulations/')) or h.lower().endswith(('.pdf', '.pptx'))
         tgt = ' target="_blank" rel="noopener"' if ext else ''
         out.append(f'<li><a class="t-{r["type"]}" href="{E(b + u(h) if not h.startswith("http") else h)}"{tgt}><span class="dot"></span>{E(r["label"])}</a></li>')
     return '<ul class="res">' + ''.join(out) + '</ul>'

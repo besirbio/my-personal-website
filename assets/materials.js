@@ -27,198 +27,52 @@ window.MATERIALS = [
 "page": "grade7.html"
 },
 {
-"code": "Exam",
-"title": "First exam material",
+"code": "6",
+"title": "Internal structure of the leaf",
 "res": [
-{
-"type": "textbook",
-"label": "PDF",
-"href": "pdfs/grade8/8th Grade First Exam.pdf"
-}
-],
-"gradeLabel": "Grade 8",
-"page": "grade8.html"
-},
-{
-"code": "7.2",
-"title": "The amount of energy in a type of food",
-"res": [
-{
-"type": "textbook",
-"label": "PDF",
-"href": "pdfs/grade8/7.2 The amount of energy of a certain type of food.pdf"
-},
-{
-"type": "mindmap",
-"label": "Mind map",
-"href": "studying-materials/energycalories.html"
-}
-],
-"gradeLabel": "Grade 8",
-"page": "grade8.html"
-},
-{
-"code": "8.2",
-"title": "Basal metabolic rate (BMR) and total daily energy expenditure (TDEE)",
-"res": [
-{
-"type": "textbook",
-"label": "PDF",
-"href": "pdfs/grade8/8.2 Basal Metabolic Rate (BMR) and Total Daily Energy Expenditure.pdf"
-},
-{
-"type": "mindmap",
-"label": "Mind map",
-"href": "studying-materials/bmrandtdee.html"
-},
 {
 "type": "interactive",
-"label": "BMR calculator",
-"href": "https://gemini.google.com/share/bb4677329f17"
+"label": "3D simulation",
+"href": "simulations/grade8/6-leaf-structure-3d.html"
 }
 ],
 "gradeLabel": "Grade 8",
 "page": "grade8.html"
 },
 {
-"code": "9.1",
-"title": "Proteins",
+"code": "7",
+"title": "Chloroplast and chlorophyll",
 "res": [
 {
-"type": "textbook",
-"label": "PDF",
-"href": "pdfs/grade8/9.1 Proteins.pdf"
-},
-{
-"type": "mindmap",
-"label": "Mind map",
-"href": "studying-materials/proteins.html"
+"type": "interactive",
+"label": "Interactive lab",
+"href": "simulations/grade8/7-chloroplast-chlorophyll-lab.html"
 }
 ],
 "gradeLabel": "Grade 8",
 "page": "grade8.html"
 },
 {
-"code": "9.2",
-"title": "Digestion",
+"code": "9",
+"title": "Photosynthesis: the plant’s food factory",
 "res": [
 {
-"type": "textbook",
-"label": "PDF",
-"href": "pdfs/grade8/9.2 Digestion.pdf"
-},
-{
-"type": "mindmap",
-"label": "Mind map",
-"href": "studying-materials/digestion.html"
+"type": "interactive",
+"label": "Simulation",
+"href": "simulations/grade8/9-photosynthesis-food-factory.html"
 }
 ],
 "gradeLabel": "Grade 8",
 "page": "grade8.html"
 },
 {
-"code": "10.1",
-"title": "Circulatory system",
+"code": "10",
+"title": "Effect of light intensity on photosynthesis",
 "res": [
 {
-"type": "textbook",
-"label": "PDF",
-"href": "pdfs/grade8/10.1 Circulatory System.pdf"
-},
-{
-"type": "mindmap",
-"label": "Mind map",
-"href": "studying-materials/MCirculatory System.html"
-}
-],
-"gradeLabel": "Grade 8",
-"page": "grade8.html"
-},
-{
-"code": "10.2",
-"title": "Blood composition",
-"res": [
-{
-"type": "textbook",
-"label": "PDF",
-"href": "pdfs/grade8/10.2 Blood composition.pdf"
-},
-{
-"type": "mindmap",
-"label": "Mind map",
-"href": "studying-materials/MBlood Composition.html"
-}
-],
-"gradeLabel": "Grade 8",
-"page": "grade8.html"
-},
-{
-"code": "11.1",
-"title": "Species",
-"res": [
-{
-"type": "textbook",
-"label": "PDF",
-"href": "pdfs/grade8/11.1 Species.pdf"
-},
-{
-"type": "mindmap",
-"label": "Mind map",
-"href": "studying-materials/MSpecies.html"
-}
-],
-"gradeLabel": "Grade 8",
-"page": "grade8.html"
-},
-{
-"code": "11.2",
-"title": "Species and hybrids",
-"res": [
-{
-"type": "textbook",
-"label": "PDF",
-"href": "pdfs/grade8/11.2 Species and hybrids.pdf"
-},
-{
-"type": "mindmap",
-"label": "Mind map",
-"href": "studying-materials/MSpecies and Hybrids.html"
-}
-],
-"gradeLabel": "Grade 8",
-"page": "grade8.html"
-},
-{
-"code": "12.1",
-"title": "Types of variation",
-"res": [
-{
-"type": "textbook",
-"label": "PDF",
-"href": "pdfs/grade8/12.1 Types of variations.pdf"
-},
-{
-"type": "mindmap",
-"label": "Mind map",
-"href": "studying-materials/MTypes of Variations.html"
-}
-],
-"gradeLabel": "Grade 8",
-"page": "grade8.html"
-},
-{
-"code": "12.2",
-"title": "Measuring variation",
-"res": [
-{
-"type": "textbook",
-"label": "PDF",
-"href": "pdfs/grade8/12.2 Measurement of variations.pdf"
-},
-{
-"type": "mindmap",
-"label": "Mind map",
-"href": "studying-materials/MMeasurement of variations.html"
+"type": "interactive",
+"label": "Virtual lab",
+"href": "simulations/grade8/10-light-intensity-virtual-lab.html"
 }
 ],
 "gradeLabel": "Grade 8",
