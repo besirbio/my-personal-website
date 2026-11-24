@@ -123,22 +123,14 @@ GRADES = [
      L('10', 'Effect of light intensity on photosynthesis', ('interactive', 'Virtual lab', 'simulations/grade8/10-light-intensity-virtual-lab.html')),
   ])]},
  {'id': 'grade9', 'num': '9', 'label': 'Grade 9', 'mm_page': 'mindmappings9thgrade.html',
-  'intro': 'Human reproduction and development, breathing, classification and adaptation.',
-  'terms': [
-   ('First semester', [
-     L('Exam', 'First exam material', pdf('grade9', '9th Grade - 1st Exam Material.pdf')),
-   ]),
-   ('Second semester', [
-     L('9.1', 'Understanding the menstrual cycle', pdf('grade9', '9.1 Understanding Menstrual Cycle.pdf'), mm('menstruation.html')),
-     L('10.1', 'Fertilisation', pdf('grade9', '10.1 Fertilization.pdf'), mm('fertilization.html')),
-     L('10.2', 'Fetal development', pdf('grade9', '10.2 Fetal Development - READ.pdf', 'Reading'), sl('grade9', '10.2 Fetal Developmentp - PRESENTATION.pdf'), mm('fetaldevelopment.html')),
-     L('11.2', 'Respiratory system', pdf('grade9', '11.2 Respiratory System.pdf'), mm('MRespiratory System.html')),
-     L('12.1', 'Breathing and ventilation', pdf('grade9', '12.1 Breathing and ventilation.pdf'), mm('MBreathing and Ventilation.html')),
-     L('12.2', 'Dichotomous keys', sl('grade9', '12.2B dichotomous_key_pp.pdf')),
-     L('13.1', 'Adaptation of plants and animals', pdf('grade9', '13.1 Adaptation of plants and animals.pdf'), mm('MAdaptation of Plants and Animals.html')),
-     L('13.2', 'Adaptation of detritivores', pdf('grade9', '13.2 Adaptation of detritivores.pdf'), mm('MDetritivores.html')),
-     L('14.1', 'Decomposers', pdf('grade9', '14.1 Decomposers.pdf'), mm('MDecomposers.html')),
-   ])]},
+  'intro': 'Plants: how a leaf is built, chloroplasts and photosynthesis, flowers and pollination, the journey of a pollen grain, and seed germination.',
+  'terms': [('Lessons', [
+     L('1', 'Leaf structure', pdf('grade9', '1. Leaf Structure.pdf', 'Reading')),
+     L('2', 'Chloroplasts and photosynthesis', pdf('grade9', '2. Chloroplast and Photosynthesis.pdf', 'Reading & worksheet')),
+     L('6', 'Flowering plants and pollination', pdf('grade9', '6. Flowering Plants and Pollination.pdf', 'Textbook')),
+     L('7', 'Pollen grains: structure and journey', pdf('grade9', '7. Pollen Grains - Structure and Journey.pdf', 'Textbook'), ('interactive', 'Interactive lab', 'simulations/grade9/7-pollen-grain-journey.html')),
+     L('8', 'Seed germination', pdf('grade9', '8. Seed Germination.pdf', 'Textbook'), ('interactive', 'Simulation', 'simulations/grade9/8-seed-germination.html')),
+  ])]},
  {'id': 'grade10', 'num': '10', 'label': 'Grade 10', 'mm_page': 'mindmappings10thgrade.html',
   'intro': 'The chemistry and structure of the cell, then the diversity of life from viruses to animals.',
   'terms': [
