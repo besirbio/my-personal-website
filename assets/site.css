@@ -324,3 +324,14 @@ p { margin: 0 0 1em; }
 .cv-side img.headshot { aspect-ratio: 1; border-radius: 50%; max-width: 240px; border: 3px solid var(--slide); box-shadow: 0 0 0 1.5px var(--eosin); }
 .cv-side dd a { word-break: break-all; }
 .cv-main .facts { margin-top: 28px; }
+
+/* essay diagrams */
+.essay-body figure svg { display: block; border: 1px solid var(--line); }
+.tl { list-style: none; margin: 0; padding: 22px 22px 22px 18px; background: var(--slide); border: 1px solid var(--line); border-radius: var(--r-md); font-family: var(--sans); counter-reset: tl; }
+.tl li { position: relative; padding: 0 0 16px 34px; border-left: 2px solid var(--hema-soft); margin-left: 8px; }
+.tl li:last-child { padding-bottom: 0; border-left-color: transparent; }
+.tl li::before { content: ""; position: absolute; left: -8px; top: 3px; width: 14px; height: 14px; border-radius: 50%; background: var(--slide); border: 2.5px solid var(--eosin); }
+.tl li:first-child::before { background: var(--eosin); }
+.tl li:last-child::before { background: var(--hema); border-color: var(--hema); }
+.tl b { display: block; font-size: 1rem; color: var(--hema-deep); }
+.tl span { display: block; font-size: 0.95rem; color: var(--muted); line-height: 1.5; }
