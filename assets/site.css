@@ -321,3 +321,6 @@ p { margin: 0 0 1em; }
 .chat-input { display: flex; gap: 10px; margin-top: 14px; }
 .chat-input input { flex: 1; font: 400 1rem var(--sans); padding: 14px 18px; border: 1.5px solid var(--line); border-radius: 999px; background: var(--slide); }
 .chat-input input:focus { outline: none; border-color: var(--hema); }
+.cv-side img.headshot { aspect-ratio: 1; border-radius: 50%; max-width: 240px; border: 3px solid var(--slide); box-shadow: 0 0 0 1.5px var(--eosin); }
+.cv-side dd a { word-break: break-all; }
+.cv-main .facts { margin-top: 28px; }

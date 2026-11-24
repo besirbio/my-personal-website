@@ -388,7 +388,7 @@ ESSAYS = [
   'author': 'Ayşegül Sarıarslan, student at Maarif International Schools · mentored by Besir Zeneli'},
  {'file': 'essay3.html', 'kind': 'science', 'kind_label': 'Science', 'date': '2025-02-02', 'date_h': '2 February 2025',
   'title': 'Asteroid Bennu’s secrets', 'sub': 'building blocks of life found in space',
-  'summary': 'Uncontaminated samples from asteroid Bennu hold ammonia and amino acids, some unknown in Earth’s biology. They do not prove life came from space, but they show its ingredients may be common across the solar system.',
+  'summary': 'Uncontaminated samples from asteroid Bennu, returned by NASA’s OSIRIS-REx, hold ammonia, amino acids and all five DNA and RNA bases. They do not prove life came from space, but they show its ingredients may be common across the solar system.',
   'author': 'Besir Zeneli'},
  {'file': 'essay1.html', 'kind': 'science', 'kind_label': 'Human biology', 'date': '2025-02-02', 'date_h': '2 February 2025',
   'title': 'Understanding stress', 'sub': 'a survival mechanism and a health risk',
@@ -482,21 +482,22 @@ ESSAY_BODIES = {
 
 'essay3.html': f'''
 {fig("assets/img/bennu.jpg", "Asteroid Bennu sample being examined in a laboratory")}
-<p>Scientists have made an exciting discovery that could help us understand how life began — not just on Earth, but possibly elsewhere in the universe. Samples collected from asteroid Bennu, brought back by Japan’s Hayabusa spacecraft, contain ingredients essential for life. While this doesn’t prove life came from space, it reveals the universe might be full of the tools needed to create it.</p>
+<p>Scientists have made an exciting discovery that could help us understand how life began — not just on Earth, but possibly elsewhere in the universe. Samples collected from asteroid Bennu, brought back by NASA’s OSIRIS-REx spacecraft, contain ingredients essential for life. While this doesn’t prove life came from space, it reveals the universe might be full of the tools needed to create it.</p>
 <h2>Why Bennu’s samples are special</h2>
 <p>For decades, scientists studied meteorites (space rocks that land on Earth) to find clues about life’s origins. The problem? Meteorites get contaminated when they crash through Earth’s atmosphere. Heat, impact, and exposure to our environment make it hard to confirm if their contents truly came from space.</p>
-<p><strong>Bennu’s samples are different.</strong> The Hayabusa spacecraft collected them directly from the asteroid and sealed them in a protective capsule, shielding them from Earth’s contaminants. This makes Bennu’s rocks the “purest” space samples we’ve ever analyzed.</p>
+<p><strong>Bennu’s samples are different.</strong> OSIRIS-REx collected them directly from the asteroid in 2020 and sealed them in a protective capsule, which landed in 2023, shielding them from Earth’s contaminants. This makes Bennu’s rocks the “purest” space samples we’ve ever analyzed.</p>
 <h2>Key discoveries in the space dust</h2>
 <ul>
-<li><strong>Ammonia overload:</strong> 75× more ammonia than other asteroid samples</li>
-<li><strong>Alien amino acids:</strong> 19 types not found in Earth biology</li>
+<li><strong>Ammonia overload:</strong> about 75× more ammonia than the samples from asteroid Ryugu</li>
+<li><strong>Amino acids:</strong> 33 in total — 14 of the 20 that life on Earth uses to build proteins, and 19 that life does not use</li>
+<li><strong>Genetic letters:</strong> all five nucleobases found in DNA and RNA</li>
 <li><strong>Saltwater history:</strong> evidence of ancient liquid water reactions</li>
 </ul>
 {fig("assets/img/amino-acids.jpg", "Molecular diagram of amino acid structures")}
 <h2>The life recipe connection</h2>
-<p>While Bennu’s samples contain life’s ingredients, this doesn’t confirm the <strong><em>panspermia</em> hypothesis</strong> (life spreading through asteroids). What it does show is that asteroids could have delivered life’s raw materials to Earth. As one scientist noted: <q>We’ve found the LEGO blocks, but we still don’t know how they were assembled.</q></p>
+<p>While Bennu’s samples contain life’s ingredients, this doesn’t confirm the <strong><em>panspermia</em> hypothesis</strong> (life spreading through asteroids). What it does show is that asteroids could have delivered life’s raw materials to Earth. We have found the building blocks, but we still don’t know how they were assembled into living things.</p>
 <h2>Looking beyond Bennu</h2>
-<p>Scientists are now targeting icy moons like Jupiter’s Europa and Saturn’s Enceladus. NASA’s upcoming Europa Clipper mission will explore the moon’s subsurface ocean — a potential hotspot for alien life. As researcher Dr. Jane Smith explains: <q>Where there’s water and organic molecules, there’s potential for life’s chemistry.</q></p>
+<p>Scientists are now targeting icy moons like Jupiter’s Europa and Saturn’s Enceladus. NASA’s Europa Clipper, launched in October 2024, will explore the moon’s subsurface ocean — a potential hotspot for alien life. Where there is liquid water and organic molecules, the chemistry of life becomes possible.</p>
 <h2>A time capsule for future science</h2>
 <p>Only 30% of Bennu’s samples have been analyzed. The rest are preserved for future generations using technology we haven’t invented yet. This is a good argument that shows how we still study Moon rocks collected in the 1970s with modern tools.</p>
 <p class="source">Scientific reference: <a href="https://www.nature.com/articles/s41550-024-02472-9" target="_blank" rel="noopener">original study in <em>Nature Astronomy</em></a>.</p>''',
@@ -557,7 +558,7 @@ def build_home():
     <div>
       <h1>Besir<br>Zeneli</h1>
       <p class="role">Biology teacher and molecular biologist in Skopje.</p>
-      <p class="role-sub">I teach grades 7 to 13 at Maarif International Schools, lead our science department, and spent three years running PCR diagnostics in a clinical lab. This site holds my class materials, my writing and my CV.</p>
+      <p class="role-sub">I teach grades 7 to 13 at Maarif International Schools, lead our Science Department, and spent over two years running Real-Time PCR diagnostics in a clinical lab. This site holds my class materials, my writing and my CV.</p>
       <div class="hero-actions">
         <a class="btn btn-solid" href="{SM}studyingmaterials.html">Open study materials</a>
         <a class="btn btn-line" href="Portfolio.html">Read my CV</a>
@@ -576,7 +577,7 @@ def build_home():
     <ul class="routes">
       <li><a href="{SM}studyingmaterials.html"><span class="who">Students</span><span class="what">Study materials<small>{total} lessons for grades 7–13: readings, slides, mind maps and simulations, searchable by topic.</small></span><span class="go">Open</span></a></li>
       <li><a href="writings.html"><span class="who">Readers</span><span class="what">Writing<small>Essays on prions, asteroid chemistry, stress biology, and a translation of Sezai Karakoç.</small></span><span class="go">Read</span></a></li>
-      <li><a href="Portfolio.html"><span class="who">Colleagues</span><span class="what">CV<small>Molecular diagnostics, teaching, education and skills.</small></span><span class="go">View</span></a></li>
+      <li><a href="Portfolio.html"><span class="who">Colleagues</span><span class="what">CV<small>Teaching, department leadership, molecular diagnostics and education. Downloadable as PDF.</small></span><span class="go">View</span></a></li>
     </ul>
   </div>
 </section>
@@ -589,14 +590,14 @@ def build_home():
     </figure>
     <div class="text">
       <h2>About me</h2>
-      <p>I studied molecular biology at Hacettepe University in Ankara, then led the molecular biology department of a diagnostic laboratory in Skopje, running real-time PCR for SARS-CoV-2, HPV and chlamydia.</p>
-      <p>Since 2021 I have taught Biology at Maarif International Schools. In class I care less about memorising isolated facts and more about helping students observe, question, connect evidence and think for themselves. My students have taken first place in national Biology competitions.</p>
-      <p>Outside the classroom I write, translate, read, and run — I competed for the national athletics team.</p>
+      <p>I studied Biology at Hacettepe University in Ankara, graduating as an honour student, and then worked as a molecular biologist at VFV Laboratory in Skopje, running Real-Time PCR diagnostics for SARS-CoV-2 and HPV through the pandemic. I am now completing an MSc in Phytochemistry &amp; Natural Products at Mother Teresa University.</p>
+      <p>Since 2021 I have taught Biology at Maarif International Schools, where I now lead the Science Department and prepare my gymnasium class for the State Matura. In class I care less about memorising isolated facts and more about helping students observe, question, connect evidence and think for themselves — which is why I have built more than 20 interactive simulations for my lessons.</p>
+      <p>Outside the classroom I translate books, make Biology videos and posts as @biobesir, and run — I was national U19 champion in the 800 m and 1500 m.</p>
       <blockquote>“Science is the poetry of reality.”<cite>Richard Dawkins</cite></blockquote>
       <dl class="facts">
         <div><dt>Based in</dt><dd>Skopje, North Macedonia</dd></div>
         <div><dt>Teaching</dt><dd>Biology, grades 7–13</dd></div>
-        <div><dt>Languages</dt><dd>Albanian, Macedonian, English, Turkish</dd></div>
+        <div><dt>Languages</dt><dd>Albanian, Macedonian, Turkish, English, German</dd></div>
       </dl>
     </div>
   </div>
@@ -629,97 +630,131 @@ def build_home():
 # =====================================================================
 def build_cv():
     def role(when, title, org, bullets, tags=()):
-        b = ''.join(f'<li>{x}</li>' for x in bullets)
+        b = ('<ul>' + ''.join(f'<li>{x}</li>' for x in bullets) + '</ul>') if bullets else ''
         t = ('<ul class="chips">' + ''.join(f'<li>{x}</li>' for x in tags) + '</ul>') if tags else ''
-        return f'<li class="role-item"><span class="when">{when}</span><h3>{title}</h3><p class="org">{org}</p><ul>{b}</ul>{t}</li>'
+        return f'<li class="role-item"><span class="when">{when}</span><h3>{title}</h3><p class="org">{org}</p>{b}{t}</li>'
+    chips = lambda xs: '<ul class="chips">' + ''.join(f'<li>{x}</li>' for x in xs) + '</ul>'
     body = f'''
 <div class="wrap">
   <header class="page-head">
     <h1>Curriculum vitae</h1>
-    <p class="lede">Molecular biologist and Biology educator, working where molecular diagnostics, science communication and student development meet.</p>
+    <p class="lede">Biology educator, molecular biologist and science communicator.</p>
+    <div class="hero-actions" style="margin-top:26px">
+      <a class="btn btn-solid" href="assets/Besir_Zeneli_CV.pdf" download>Download CV (PDF)</a>
+      <a class="btn btn-line" href="mailto:{EMAIL}">Email me</a>
+    </div>
   </header>
   <div class="cv">
     <aside class="cv-side">
-      <img src="assets/img/portrait.jpg" alt="Besir Zeneli" width="818" height="997">
-      <h2>Details</h2>
+      <img class="headshot" src="assets/img/headshot.jpg" alt="Besir Zeneli" width="480" height="480">
+      <h2>Contact</h2>
       <dl>
-        <dt>Based in</dt><dd>Skopje</dd>
-        <dt>Born</dt><dd>24.06.1996, Skopje</dd>
-        <dt>Nationality</dt><dd>Macedonian</dd>
-        <dt>Licence</dt><dd>Category B</dd>
-        <dt>Open to</dt><dd>Relocation and remote work</dd>
+        <dt>Email</dt><dd><a href="mailto:{EMAIL}">{EMAIL}</a></dd>
+        <dt>Phone</dt><dd><a href="tel:+38971669905">+389 71 669 905</a></dd>
+        <dt>Based in</dt><dd>Skopje, North Macedonia</dd>
+        <dt>YouTube</dt><dd><a href="https://www.youtube.com/user/BesirZeneli" target="_blank" rel="noopener">BesirZeneli</a></dd>
+        <dt>Licence</dt><dd>Categories B and B1</dd>
       </dl>
       <h2>Languages</h2>
       <ul>
         <li>Albanian <span>Native</span></li>
-        <li>Macedonian <span>Fluent</span></li>
-        <li>English <span>Fluent</span></li>
-        <li>Turkish <span>Fluent</span></li>
+        <li>Macedonian <span>Native</span></li>
+        <li>Turkish <span>C2 · Proficient</span></li>
+        <li>English <span>C1 · Advanced</span></li>
+        <li>German <span>A2 · Elementary</span></li>
       </ul>
-      <a class="btn btn-solid" href="mailto:{EMAIL}">Email me</a>
+      <h2>Strengths</h2>
+      <p style="font-size:.95rem;color:var(--muted);margin:0">Leadership, strategic planning, decision-making, critical thinking, research and analysis, teamwork, conflict resolution, written and verbal communication.</p>
     </aside>
 
     <div class="cv-main">
       <section>
         <h2>Profile</h2>
-        <p class="intro">Molecular biologist with three years of experience in diagnostic laboratories, leading research and diagnostic projects. Skilled in real-time PCR, DNA/RNA extraction and molecular diagnostics of infectious disease, with careful laboratory management. Designs engaging curricula and interactive lessons that bring students into real science.</p>
+        <p class="intro">Biology educator and molecular biologist who pairs hands-on diagnostic laboratory experience with five years of classroom teaching. Head of the Science Department at Maarif International Schools, teaching Biology across Grades 7–13 and creating interactive digital simulations that make complex processes — from glycolysis to PCR — visible and memorable. Former Real-Time PCR diagnostics specialist (SARS-CoV-2, HPV). Honours BSc in Biology from Hacettepe University; MSc in Phytochemistry &amp; Natural Products in progress. Works in five languages.</p>
+        <dl class="facts">
+          <div><dt>Teaching Biology</dt><dd>5+ years</dd></div>
+          <div><dt>Molecular diagnostics</dt><dd>2+ years</dd></div>
+          <div><dt>Interactive simulations built</dt><dd>20+</dd></div>
+        </dl>
       </section>
 
       <section id="experience">
-        <h2>Experience</h2>
+        <h2>Professional experience</h2>
         <ul class="role-list">
-          {role("September 2021 – present · Skopje", "Biology teacher", "Maarif International Schools",
-                ["Designs and teaches Biology curricula aligned with international standards.", "Runs laboratory experiments and interactive learning activities.", "Mentors students in research projects and science fairs.", "Guided students to first place in national Biology competitions."],
-                ["Education", "Curriculum design", "Mentoring"])}
-          {role("April 2021 – August 2023 · Skopje", "Molecular biologist", "VFV Laboratory",
-                ["Led the Molecular Biology Department, overseeing research and diagnostic projects.", "Ran real-time PCR analysis for SARS-CoV-2, HPV and Chlamydia detection.", "Managed DNA/RNA isolation, sample preparation and thermocycler operation.", "Prepared master mixes and worked with Viasure, Algimed, Bio-Speedy, AmpliSens and GeneProof kits.", "Trained and supervised laboratory staff."],
-                ["PCR", "Diagnostics", "Laboratory management"])}
-          {role("January – July 2020 · Ankara", "Medical translator", "Liv Hospital",
-                ["Translated between Turkish and Albanian for medical staff and patients.", "Supported accurate medical communication and patient care coordination."],
-                ["Translation", "Medical communication"])}
+          {role("September 2021 – present · Skopje", "Head of Science Department &amp; Biology Teacher", "Maarif International Schools",
+                ["Lead the Science Department and its teaching staff while teaching Biology from Grade 7 (first-year learners) to Grade 13.",
+                 "Homeroom teacher of a gymnasium class, preparing students for the State Matura examination.",
+                 "Write exam papers and assessments for Grades 7–13 to the school’s standardised template.",
+                 "Designed 20+ interactive simulations and animations in English and Albanian — cell structure, photosynthesis, glycolysis, the Krebs cycle, the electron transport chain, PCR — turning abstract processes into visual, hands-on lessons.",
+                 "Build evidence-based reasoning and curiosity through experiments, visual materials and active learning, adapting instruction to mixed-ability groups."],
+                ["Department leadership", "State Matura preparation", "Assessment design", "Interactive simulations"])}
+          {role("March 2021 – August 2023 · Skopje", "Molecular Biologist", "VFV Medical (VFV Laboratory)",
+                ["Detected SARS-CoV-2 and its variants by Real-Time PCR throughout the COVID-19 pandemic.",
+                 "Isolated and detected HPV and other pathogens using Real-Time PCR and RT-PCR.",
+                 "Ran the full workflow: nucleic-acid isolation, master-mix preparation and thermocycler runs with Bio-Speedy diagnostic kits.",
+                 "Performed rapid antigen testing during the pandemic response."],
+                ["Real-Time PCR", "RT-PCR", "DNA/RNA extraction"])}
+          {role("August 2020 – present", "Book Translator", "Freelance", [])}
         </ul>
       </section>
 
       <section id="education">
-        <h2>Education</h2>
+        <h2>Education and research</h2>
         <ul class="role-list">
-          <li class="role-item"><span class="when">2015 – 2019 · Ankara</span><h3>BSc in Molecular Biology</h3><p class="org">Hacettepe University</p>
-            <ul><li>GPA 3.43, honours student.</li><li>Coursework: molecular biology, biochemistry, histology, ecology.</li><li>Lab techniques: PCR, electrophoresis, protein purification, DNA extraction, spectrophotometry.</li></ul></li>
+          {role("In progress · Skopje", "MSc, Phytochemistry &amp; Natural Products", "Mother Teresa University (UNT)",
+                ["Thesis: <em>Characterization of bioactive compounds of citrus peels and evaluation of their application as natural additives</em> — orange, lemon and mandarin peels as natural alternatives to the synthetic colourants E110 and E102. Supervisor: Zimere Saiti Musliji."])}
+          {role("2014 – 2019 · Ankara, Türkiye", "BSc, Biology — Honour Student", "Hacettepe University · GPA 4.43 · 265 ECTS",
+                ["Core training in molecular biology, biochemistry, research methods and biological data analysis.",
+                 "Lab techniques: PCR, electrophoresis, DNA extraction, protein purification, spectrophotometry, herbarium methods.",
+                 "Special Study, Ecology (grade A1, 95–100): built a database of steppe-plant traits across Anatolia to examine links between climate, topography and plant evolution.",
+                 "Special Study, Histology (Toxicology Lab): fixation, paraffin embedding, microtomy, staining and mounting of tissue sections."])}
+          {role("Online course", "COVID-19, SARS-CoV-2 and the Pandemic", "Massachusetts Institute of Technology (MIT)", [])}
         </ul>
       </section>
 
-      <section id="internships">
-        <h2>Internships</h2>
+      <section id="earlier">
+        <h2>Earlier experience</h2>
         <ul class="role-list">
-          {role("July 2019 – July 2020", "Biochemistry intern", "Clinical Center Tetovo",
-                ["Performed urine microscopy and equipment calibration.", "Worked with TOSOH AIA-360, SmartLyte Plus and Architect c4000 systems."])}
-          {role("June – August 2018", "Microbiology intern", "Center for Public Health",
-                ["Ran bacterial cultures and antimicrobial susceptibility testing.", "Assisted with sanitary inspections and microbial analysis."])}
+          {role("July 2019 – July 2020 · Tetovo", "Clinical Biochemistry Intern", "Clinical Center Tetovo",
+                ["Operated TOSOH AIA-360, Architect c4000, SmartLyte Plus and i-CHROMA analysers; performed urine microscopy and supported calibration and quality control."])}
+          {role("March – July 2020 · Ankara", "Medical Translator (Turkish ⇄ Albanian)", "Liv Hospital Ankara",
+                ["Bridged communication between patients, physicians and hospital management, verbally and in writing."])}
+          {role("July – September 2018 · Skopje", "Microbiology Intern (Sanitary Review)", "Center for Public Health",
+                ["Tested food samples for <em>Salmonella</em>, <em>Shigella</em> and <em>E. coli</em> under ISO methods; prepared daily and summary lab reports."])}
+          {role("October 2016 – June 2020 · Ankara", "Albanian Language Course Coordinator", "Albanian Cultural Center",
+                ["Ran the course programme for four years: recruited teachers, managed enrolment, schedules, payments and records, and organised cultural events."])}
         </ul>
       </section>
 
-      <section>
-        <h2>Training and community</h2>
+      <section id="honours">
+        <h2>Honours and achievements</h2>
         <ul class="role-list">
-          {role("2021", "COVID-19 and SARS-CoV-2 course", "Massachusetts Institute of Technology (MIT)", [])}
-          {role("2015 – 2019", "Community volunteer", "Albanian Cultural Center, Ankara",
-                ["Five years of contribution to cultural and educational activities.", "Community Volunteer Recognition Award."])}
+          {role("2014 – 2019", "Honour Student", "BSc Biology, Hacettepe University · GPA 4.43", [])}
+          {role("2020", "Appreciation Plaque", "Embassy of Kosovo in Ankara", ["For five years of cultural and educational contribution."])}
+          {role("2013", "National U19 Champion, 800 m and 1500 m", "Athletics", ["Represented Macedonia at the U19 Balkan competition in Edirne."])}
+        </ul>
+      </section>
+
+      <section id="communication">
+        <h2>Science communication</h2>
+        <ul class="role-list">
+          {role("2020", "The Origin of Coronaviruses", "Educational video in Albanian", ["The history and origin of coronaviruses. <a href=\"https://www.youtube.com/user/BesirZeneli\" target=\"_blank\" rel=\"noopener\">Watch on YouTube</a>."])}
+          {role("Ongoing", "@biobesir", "Instagram", ["Biology content for a general audience."])}
         </ul>
       </section>
 
       <section id="skills">
         <h2>Skills</h2>
         <div class="skill-groups">
-          <div><h3>Laboratory and science</h3><ul class="chips"><li>Molecular biology</li><li>PCR</li><li>DNA/RNA extraction</li><li>Biotechnology</li><li>Data analysis</li><li>Quality control</li><li>Lab management</li></ul></div>
-          <div><h3>Teaching and communication</h3><ul class="chips"><li>Curriculum development</li><li>Scientific writing</li><li>Teamwork</li><li>Adaptability</li><li>Working under pressure</li></ul></div>
-          <div><h3>Digital</h3><ul class="chips"><li>Microsoft Office</li><li>Adobe Photoshop</li></ul></div>
+          <div><h3>Laboratory and molecular</h3>{chips(["Real-Time PCR", "RT-PCR diagnostics", "DNA/RNA extraction", "Electrophoresis", "Microbiology (ISO)", "Clinical biochemistry", "Histology", "Spectrophotometry", "Quality control"])}</div>
+          <div><h3>Education and teaching</h3>{chips(["Department leadership", "State Matura preparation", "Exam and assessment design", "Interactive simulations", "Differentiated instruction", "Science communication"])}</div>
+          <div><h3>Digital</h3>{chips(["Microsoft Word", "Excel", "PowerPoint", "Video editing (VideoPad)", "Subtitling", "AI-assisted e-learning"])}</div>
         </div>
-        <p style="margin-top:28px;color:var(--muted)">Interests: running, writing, reading, translation, poetry and film.</p>
       </section>
     </div>
   </div>
 </div>'''
-    page('Portfolio.html', 'CV — Besir Zeneli', 'CV of Besir Zeneli — molecular biologist and Biology educator in Skopje.', body, current='cv')
+    page('Portfolio.html', 'CV — Besir Zeneli', 'CV of Besir Zeneli — Head of Science Department and Biology teacher at Maarif International Schools, molecular biologist and science communicator.', body, current='cv')
 
 def build_chat():
     body = '''
