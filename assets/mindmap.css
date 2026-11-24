@@ -1,0 +1,19 @@
+/* Navigation bar laid over the Markmap mind-map pages */
+.mm-bar {
+  position: fixed; top: 14px; left: 14px; right: 14px; z-index: 1000;
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  padding: 8px 10px 8px 8px; border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(10px);
+  border: 1px solid #dfdde9; box-shadow: 0 6px 24px rgba(29, 27, 44, 0.08);
+  font-family: "Schibsted Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: #1d1b2c; font-size: 15px; line-height: 1.3;
+}
+.mm-back {
+  text-decoration: none; background: #352a73; color: #fff; font-weight: 600;
+  padding: 9px 16px; border-radius: 999px; white-space: nowrap;
+}
+.mm-back:hover { background: #221a52; color: #fff; }
+.mm-back:focus-visible { outline: 2px solid #c9466f; outline-offset: 3px; }
+.mm-title { font-weight: 600; }
+.mm-hint { margin-left: auto; color: #615e74; font-size: 13px; padding-right: 8px; }
+@media (max-width: 640px) { .mm-hint { display: none; } .mm-bar { right: auto; } }
