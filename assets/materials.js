@@ -27,6 +27,19 @@ window.MATERIALS = [
 "page": "grade7.html"
 },
 {
+"code": "",
+"title": "From cells to organisms: organ systems working together",
+"res": [
+{
+"type": "interactive",
+"label": "Virtual lab",
+"href": "simulations/grade7/4-body-teamwork-lab.html"
+}
+],
+"gradeLabel": "Grade 7",
+"page": "grade7.html"
+},
+{
 "code": "6",
 "title": "Internal structure of the leaf",
 "res": [
