@@ -27,6 +27,7 @@
     <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
     <nav id="site-nav" class="nav" aria-label="Main">
       <a href="studying-materials/studyingmaterials.html">Study</a>
+      <a href="index.html#videos">Videos</a>
       <a href="writings.html">Writing</a>
       <a href="Portfolio.html">CV</a>
       <a href="index.html#contact">Contact</a>
@@ -63,6 +64,40 @@
     </ul>
   </div>
 </section>
+
+<section class="section" id="videos">
+  <div class="wrap">
+    <div class="section-head"><h2>BioBesir videos</h2><p>Animated biology expeditions in Albanian. I guide students through living structures as an explorer and narrate each episode myself.</p></div>
+    <div class="video-feature">
+      <figure class="video-frame">
+        <video id="bio-video" controls preload="none" playsinline poster="assets/video/ekspedita-qeliza-bimore.jpg">
+          <source src="assets/video/ekspedita-qeliza-bimore.mp4" type="video/mp4">
+          Your browser cannot play this video. <a href="assets/video/ekspedita-qeliza-bimore.mp4">Download it here.</a>
+        </video>
+      </figure>
+      <div class="video-info">
+        <span class="tag">Episode 1</span>
+        <h3 lang="sq">Ekspedita brenda qelizës bimore</h3>
+        <p class="meta">Grade 7 · 3:44 · Albanian</p>
+        <p lang="sq">Hyjmë brenda një qelize të gjethes dhe zbulojmë si mbrohet ajo dhe si e prodhon vetë ushqimin: muri, membrana, bërthama, vakuola, kloroplastet dhe mitokondritë.</p>
+        <ol class="chapters" lang="sq" aria-label="Chapters">
+          <li><button type="button" data-t="0"><time>0:00</time>Misioni</button></li>
+          <li><button type="button" data-t="22"><time>0:22</time>Muri qelizor</button></li>
+          <li><button type="button" data-t="45"><time>0:45</time>Membrana qelizore</button></li>
+          <li><button type="button" data-t="67"><time>1:07</time>Citoplazma</button></li>
+          <li><button type="button" data-t="86"><time>1:26</time>Bërthama</button></li>
+          <li><button type="button" data-t="106"><time>1:46</time>Vakuola</button></li>
+          <li><button type="button" data-t="131"><time>2:11</time>Kloroplastet</button></li>
+          <li><button type="button" data-t="161"><time>2:41</time>Mitokondritë</button></li>
+          <li><button type="button" data-t="187"><time>3:07</time>Përmbledhja</button></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+<script>
+{const v=document.getElementById('bio-video');document.querySelectorAll('.chapters button').forEach(b=>b.addEventListener('click',()=>{v.currentTime=+b.dataset.t;const p=v.play();if(p&&p.catch)p.catch(()=>{});}));}
+</script>
 
 <section class="section" id="about">
   <div class="wrap about">
@@ -128,6 +163,7 @@
       <h2>On this site</h2>
       <ul>
         <li><a href="studying-materials/studyingmaterials.html">Study materials</a></li>
+        <li><a href="index.html#videos">Videos</a></li>
         <li><a href="writings.html">Writing</a></li>
         <li><a href="Portfolio.html">CV</a></li>
       </ul>
