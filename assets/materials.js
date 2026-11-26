@@ -15,12 +15,12 @@ window.MATERIALS = [
 },
 {
 "code": "",
-"title": "How to log in to EduPage",
+"title": "The human skeleton",
 "res": [
 {
-"type": "textbook",
-"label": "Guide",
-"href": "pdfs/grade7/EdupageLogin.pdf"
+"type": "interactive",
+"label": "Skeleton lab",
+"href": "simulations/grade7/3-human-skeleton-lab.html"
 }
 ],
 "gradeLabel": "Grade 7",

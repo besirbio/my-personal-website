@@ -109,10 +109,10 @@ mm = lambda f: ('mindmap', 'Mind map', M(f))
 
 GRADES = [
  {'id': 'grade7', 'num': '7', 'label': 'Grade 7', 'mm_page': 'mindmappings7thgrade.html',
-  'intro': 'First year of Biology. Start with microorganisms and how to get into EduPage.',
+  'intro': 'First year of Biology: microorganisms and the bones of the human skeleton.',
   'terms': [('Lessons', [
      L('', 'Microorganisms', mm('microorganisms.html')),
-     L('', 'How to log in to EduPage', pdf('grade7', 'EdupageLogin.pdf', 'Guide')),
+     L('', 'The human skeleton', ('interactive', 'Skeleton lab', 'simulations/grade7/3-human-skeleton-lab.html')),
   ])]},
  {'id': 'grade8', 'num': '8', 'label': 'Grade 8', 'mm_page': 'mindmappings8thgrade.html',
   'intro': 'Plants as food factories: inside the leaf, chloroplasts and chlorophyll, photosynthesis, and how light intensity changes its rate.',

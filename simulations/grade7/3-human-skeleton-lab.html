@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Skeleton Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* VOICE: friendly, encouraging lab for first-year (Grade 7) biology students
+   IDEA: an anatomy-room skeleton on a stand you can tap, label and quiz yourself on
+   PICTURE: a house-style cartoon skeleton with the 19 labels from textbook Fig. 3.41
+   COLOUR and TYPE: ivory bone, navy ink, gold highlight, teal = correct, red = try again; Nunito
+   LAYOUT: skeleton stage left (large), activity panel right; stacks on phones */
+:root{color-scheme:light;--ink:#2B2D42;--navy:#14213D;--bg:#FAF8F3;--bone:#F1E9D2;--gold:#FFD60A;--ok:#2A9D8F;--okl:#8EDCCF;--bad:#E63946;--badl:#F6A5AC;--blue:#219EBC;--muted:#5c5f73;--line:#e6dfcf}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Nunito,system-ui,sans-serif;overflow-x:clip}
+header{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;padding:12px max(2vw,14px);background:var(--navy);color:#fff}
+header h1{font-size:24px;margin:0;font-weight:900;line-height:1.1}
+header .sub{font-size:14px;opacity:.8}
+nav{display:flex;flex-wrap:wrap;gap:6px;margin-left:auto}
+nav button,.btn{font:inherit;font-weight:800;border:0;border-radius:999px;padding:10px 16px;min-height:44px;cursor:pointer}
+nav button{background:rgba(255,255,255,.12);color:#fff}
+nav button.on{background:var(--gold);color:var(--navy)}
+nav button:focus-visible,.btn:focus-visible,.chip:focus-visible,.tagb:focus-visible,.opt:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+#mute{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.35)}
+main{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(300px,1fr);gap:16px;padding:14px max(2vw,14px);max-width:1420px;margin:auto}
+#stage{background:#fff;border:2px solid var(--line);border-radius:20px;position:relative;overflow:hidden}
+#sk{display:block;width:100%;height:calc(100vh - 104px);min-height:560px;touch-action:manipulation}
+#stage .note{position:absolute;left:12px;bottom:8px;font-size:13px;color:var(--muted)}
+#tip{position:absolute;pointer-events:none;background:var(--navy);color:#fff;font-weight:800;padding:5px 10px;border-radius:999px;font-size:14px;transform:translate(-50%,-140%);display:none;white-space:nowrap}
+aside{display:flex;flex-direction:column;gap:12px}
+.panel{background:#fff;border:2px solid var(--line);border-radius:20px;padding:18px}
+.panel h2{margin:0 0 4px;font-size:30px;line-height:1.05;font-weight:900}
+.panel h3{margin:0 0 6px;font-size:22px;font-weight:900}
+.panel p{margin:6px 0}
+.muted{color:var(--muted)}
+.tag{display:inline-block;background:#E8F4F8;color:#126a80;font-weight:800;font-size:13px;border-radius:999px;padding:3px 10px}
+.common{font-size:19px;font-weight:700;color:var(--muted);margin-bottom:6px}
+.say{font-size:15px;color:var(--muted)}
+.box{border-radius:14px;padding:10px 14px;margin:8px 0}
+.job{background:#F3F6FB}.fact{background:#FFF8DB}.trick{background:#EAF7F4}
+.btn{background:var(--navy);color:#fff}
+.btn.alt{background:#EDE8DA;color:var(--ink)}
+.btn.gold{background:var(--gold);color:var(--navy)}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0}
+select{font:inherit;font-size:16px;padding:9px 10px;border-radius:12px;border:2px solid var(--line);background:#fff;min-height:44px;max-width:100%}
+.meter{height:12px;background:#EDE8DA;border-radius:999px;overflow:hidden;margin:6px 0 10px}
+.meter i{display:block;height:100%;background:var(--ok);border-radius:999px;transition:width .4s}
+#chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:inherit;font-size:14px;font-weight:700;border:2px solid var(--line);background:#fff;border-radius:999px;padding:6px 11px;cursor:pointer;min-height:36px}
+.chip.done{border-color:var(--ok);background:#EAF7F4}
+.chip.cur{border-color:var(--navy);background:var(--gold)}
+.switch{display:flex;gap:8px;align-items:center;font-weight:700;cursor:pointer;margin:6px 0}
+.switch input{width:22px;height:22px;accent-color:var(--ok)}
+.stats{display:flex;flex-wrap:wrap;gap:6px 16px;font-weight:800;margin:6px 0}
+.prompt{font-size:26px;font-weight:900;line-height:1.2;margin:10px 0;padding:14px;border-radius:16px;background:#FFF8DB;text-align:center}
+.feed{min-height:24px;font-weight:700}
+.feed.good{color:var(--ok)}.feed.no{color:var(--bad)}
+#tags{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.tagb{font:inherit;font-weight:800;border:2px solid var(--navy);background:#fff;border-radius:12px;padding:8px 12px;cursor:grab;touch-action:none;user-select:none;min-height:44px;text-align:left;line-height:1.15}
+.tagb small{display:block;font-weight:600;color:var(--muted);font-size:13px}
+.tagb.sel{background:var(--gold)}
+.ghost{position:fixed;pointer-events:none;z-index:9;transform:translate(-50%,-50%) rotate(-3deg);box-shadow:0 8px 20px rgba(0,0,0,.25)}
+#qOpts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:10px 0}
+.opt{font:inherit;font-weight:800;font-size:17px;border:2px solid var(--line);background:#fff;border-radius:14px;padding:12px;cursor:pointer;min-height:56px}
+.opt.right{background:var(--okl);border-color:var(--ok)}.opt.wrong{background:var(--badl);border-color:var(--bad)}
+.end{text-align:center;padding:8px}
+.stars{font-size:44px;letter-spacing:4px}
+[hidden]{display:none!important}
+/* skeleton */
+.bone{cursor:pointer}
+.bone .f{fill:var(--bone);stroke:var(--ink);stroke-width:2.2;transition:fill .15s}
+.bone .o{stroke:var(--ink);fill:none;stroke-linecap:round;stroke-linejoin:round}
+.bone .fl{stroke:var(--bone);fill:none;stroke-linecap:round;stroke-linejoin:round;transition:stroke .15s}
+.bone .hit{fill:rgba(0,0,0,0);stroke:none}
+.bone .dk{fill:var(--ink)}
+.bone.hov .f{fill:#FFF1B8}.bone.hov .fl{stroke:#FFF1B8}
+.bone.hl .f{fill:var(--gold)}.bone.hl .fl{stroke:var(--gold)}
+.bone.ok .f{fill:var(--okl)}.bone.ok .fl{stroke:var(--okl)}
+.bone.bad .f{fill:var(--badl)}.bone.bad .fl{stroke:var(--badl)}
+.bone.glow{animation:pulse .9s ease-in-out infinite alternate}
+@keyframes pulse{from{filter:none}to{filter:drop-shadow(0 0 6px #FFB703) drop-shadow(0 0 2px #FFB703)}}
+.neutral{pointer-events:none}
+.neutral .f{fill:#E9E1CB;stroke:var(--ink);stroke-width:1.6}
+.neutral .o{stroke:var(--ink);fill:none;stroke-linecap:round}
+.neutral .fl{stroke:#E9E1CB;fill:none;stroke-linecap:round}
+.lab{display:none;pointer-events:none}
+.lab.show{display:inline}
+.lab .n{font:800 19px Nunito,system-ui,sans-serif;fill:var(--ink)}
+.lab .c{font:600 15px Nunito,system-ui,sans-serif;fill:var(--muted)}
+.lab line{stroke:#8a8da0;stroke-width:1.5}
+.lab circle{fill:var(--ink)}
+.lab.act .n{fill:#B5179E}.lab.act line{stroke:#B5179E;stroke-width:2.5}
+.pin{cursor:pointer}
+.pin circle{fill:var(--blue);stroke:#fff;stroke-width:3}
+.pin text{font:900 15px Nunito,system-ui,sans-serif;fill:#fff;text-anchor:middle;dominant-baseline:central;pointer-events:none}
+.pin.armed circle{animation:arm .7s ease-in-out infinite alternate}
+@keyframes arm{to{r:17}}
+.pin.done{display:none}
+.pin.shake{animation:shake .4s}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.pin.shake circle{fill:var(--bad)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media(max-width:900px){main{grid-template-columns:minmax(0,1fr)}#sk{height:auto;min-height:0;aspect-ratio:770/850}}
+@media(max-width:600px){header h1{font-size:20px}nav{margin-left:0}nav button{padding:8px 12px}.panel h2{font-size:26px}.prompt{font-size:21px}#qOpts{grid-template-columns:minmax(0,1fr)}}
+</style>
+</head>
+<body>
+<header>
+  <div><h1>🦴 Skeleton Lab</h1><div class="sub">Grade 7 Biology · Human skeleton (Fig. 3.41)</div></div>
+  <nav id="modes">
+    <button data-m="explore" class="on">Explore</button>
+    <button data-m="find">Find It!</button>
+    <button data-m="label">Label Lab</button>
+    <button data-m="quiz">Name Match</button>
+  </nav>
+  <button id="mute" class="btn" aria-label="Sound on or off">🔊</button>
+</header>
+<main>
+  <div id="stage">
+    <svg id="sk" viewBox="0 0 770 850" role="img" aria-label="Human skeleton, front view"></svg>
+    <div id="tip"></div>
+    <div class="note">Front view · not to scale</div>
+  </div>
+  <aside>
+    <!-- EXPLORE -->
+    <section class="panel" id="p-explore">
+      <div id="card">
+        <h3>Meet your skeleton 👋</h3>
+        <p>Tap any bone on the skeleton to learn its <b>science name</b>, its <b>everyday name</b>, its <b>job</b> and a <b>memory trick</b>.</p>
+        <p class="muted">Tip: tap 🔊 to hear how to say the name.</p>
+      </div>
+    </section>
+    <section class="panel" id="p-explore2">
+      <label class="switch"><input type="checkbox" id="showLabels" checked> Show textbook labels</label>
+      <div class="stats">Bones explored: <span><b id="expN">0</b> / 19</span></div>
+      <div class="meter"><i id="expBar" style="width:0%"></i></div>
+      <div id="chips"></div>
+    </section>
+
+    <!-- FIND IT -->
+    <section class="panel" id="p-find" hidden>
+      <h3>Find It! 🔍</h3>
+      <p>I name a bone — you tap it on the skeleton. 10 bones per round. You get two tries.</p>
+      <div class="row">
+        <select id="findStyle" aria-label="Name style">
+          <option value="common">Everyday names (thigh bone)</option>
+          <option value="sci">Science names (femur)</option>
+          <option value="mix" selected>Mixed</option>
+        </select>
+        <button class="btn gold" id="findStart">Start round</button>
+      </div>
+      <div id="findBox" hidden>
+        <div class="stats"><span>Bone <b id="fN">1</b>/10</span><span>Score <b id="fS">0</b></span><span>Streak 🔥 <b id="fK">0</b></span></div>
+        <div class="prompt" id="fPrompt"></div>
+        <div class="feed" id="fFeed"></div>
+        <div class="row"><button class="btn" id="fNext" hidden>Next bone ▶</button></div>
+      </div>
+      <div id="findEnd" class="end" hidden></div>
+      <p class="muted">Best score: <b id="fBest">–</b></p>
+    </section>
+
+    <!-- LABEL LAB -->
+    <section class="panel" id="p-label" hidden>
+      <h3>Label Lab 🏷️</h3>
+      <p>Drag each name onto its numbered pin — or tap a name, then tap the pin.</p>
+      <div class="row">
+        <select id="labLevel" aria-label="Level">
+          <option value="starter">Level 1 · 8 big bones</option>
+          <option value="arms">Level 2 · Head, chest &amp; arms</option>
+          <option value="legs">Level 3 · Hips &amp; legs</option>
+          <option value="all">Level 4 · All 19 labels</option>
+        </select>
+        <button class="btn gold" id="labStart">Start</button>
+      </div>
+      <div class="stats"><span>Placed <b id="lP">0</b>/<b id="lT">0</b></span><span>Mistakes <b id="lM">0</b></span></div>
+      <div id="tags"></div>
+      <div class="feed" id="labFeed"></div>
+      <div id="labEnd" class="end" hidden></div>
+    </section>
+
+    <!-- QUIZ -->
+    <section class="panel" id="p-quiz" hidden>
+      <h3>Name Match 🧠</h3>
+      <p>Match science names, everyday names and jobs. 10 questions.</p>
+      <div class="row"><button class="btn gold" id="qStart">Start quiz</button></div>
+      <div id="qBox" hidden>
+        <div class="stats"><span>Question <b id="qN">1</b>/10</span><span>Score <b id="qS">0</b></span></div>
+        <div class="prompt" id="qPrompt"></div>
+        <div id="qOpts"></div>
+        <div class="feed" id="qFeed"></div>
+        <div class="row"><button class="btn" id="qNext" hidden>Next ▶</button></div>
+      </div>
+      <div id="qEnd" class="end" hidden></div>
+      <p class="muted">Best score: <b id="qBest">–</b></p>
+    </section>
+  </aside>
+</main>
+
+<script>
+{
+const B=[
+ {id:'cranium',name:'Cranium',common:'skull',say:'KRAY-nee-um',reg:'Head',side:'R',ly:45,p:[224,40],
+  job:'Protects the brain like a hard helmet.',fact:'The cranium is made of 8 bones joined by wiggly joints called sutures. They do not move.',trick:'CRANIUM sounds like "BRAIN-ium" — it is the box for your brain.'},
+ {id:'mandible',name:'Mandible',common:'lower jaw bone',say:'MAN-di-bul',reg:'Head',side:'R',ly:112,p:[214,112],
+  job:'Moves up and down so you can chew and talk.',fact:'It is the only bone of the skull that can move.',trick:'MANDIBLE → "MUNCH-ible": the bone you munch with.'},
+ {id:'clavicle',name:'Clavicle',common:'collarbone',say:'KLAV-i-kul',reg:'Chest & trunk',side:'L',ly:150,p:[242,160],
+  job:'Joins the arm to the trunk and holds the shoulder out to the side.',fact:'It is one of the most often broken bones — usually from falling on an outstretched hand.',trick:'Clavicle comes from Latin "clavis" = KEY. It is shaped like an old key.'},
+ {id:'scapula',name:'Scapula',common:'shoulder blade',say:'SKAP-yoo-luh',reg:'Chest & trunk',side:'R',ly:170,p:[272,200],
+  job:'A flat bone on your back where shoulder and arm muscles attach.',fact:'You can feel it slide on your back when you shrug your shoulders.',trick:'SCAPULA looks like a flat SPATULA on your back.'},
+ {id:'sternum',name:'Sternum',common:'breastbone',say:'STER-num',reg:'Chest & trunk',side:'R',ly:215,p:[200,215],
+  job:'The front of the ribcage — ribs join to it. Protects the heart.',fact:'It is flat and shaped a bit like a short sword or a tie.',trick:'STERNUM sits in the cenTER of your chest, straight like a tie.'},
+ {id:'thoracic',name:'Thoracic cage',common:'ribcage',say:'thuh-RASS-ik cage',reg:'Chest & trunk',side:'L',ly:255,p:[258,256],
+  job:'Protects the heart and lungs and moves when you breathe.',fact:'It is made of 12 pairs of ribs — boys and girls have the same number.',trick:'THORACIC = chest. Picture a CAGE guarding your heart and lungs.'},
+ {id:'humerus',name:'Humerus',common:'upper arm bone',say:'HYOO-mer-us',reg:'Arm & hand',side:'R',ly:262,p:[293,240],
+  job:'The long bone from the shoulder to the elbow.',fact:'The "funny bone" tingle is a nerve passing over the humerus at the elbow.',trick:'HUMERUS sounds like "humorous" — the FUNNY bone!'},
+ {id:'vertebral',name:'Vertebral column',common:'backbone',say:'VER-tuh-brul column',reg:'Chest & trunk',side:'L',ly:345,p:[200,350],
+  job:'Holds the body upright and protects the spinal cord.',fact:'It is a stack of 33 small bones called vertebrae, with soft discs between them.',trick:'Animals with a VERTEBRAL column are VERTEBRATES — like you!'},
+ {id:'radius',name:'Radius',common:'lower arm bone (thumb side)',say:'RAY-dee-us',reg:'Arm & hand',side:'R',ly:360,p:[321,370],
+  job:'Lower arm bone on the thumb side. It rolls over the ulna to turn your hand.',fact:'Turn your palm down — the radius crosses over the ulna!',trick:'RADIUS ROLLS. Thumbs up for the radius!'},
+ {id:'ulna',name:'Ulna',common:'lower arm bone (little-finger side)',say:'UL-nuh',reg:'Arm & hand',side:'R',ly:410,p:[312,392],
+  job:'Lower arm bone on the little-finger side. It forms the point of your elbow.',fact:'The bony bump of your elbow is the top end of the ulna.',trick:'uLna is on the Little-finger side.'},
+ {id:'pelvis',name:'Pelvis',common:'hip bone',say:'PEL-vis',reg:'Leg & foot',side:'L',ly:415,p:[250,412],
+  job:'Joins the backbone to the legs, carries body weight and protects organs in the belly.',fact:'The pelvis of a woman is usually wider than that of a man.',trick:'The PELVIS looks like a BUTTERFLY (or a bowl) holding you up.'},
+ {id:'carpals',name:'Carpals',common:'wrist bones',say:'KAR-pulz',reg:'Arm & hand',side:'L',ly:462,p:[330,434],
+  job:'Small bones of the wrist that let the hand bend and turn.',fact:'Each wrist has 8 small carpal bones in two rows.',trick:'CARpals — your wrists turn the steering wheel of a CAR.'},
+ {id:'phal_hand',name:'Phalanges',common:'finger bones',say:'fuh-LAN-jeez',reg:'Arm & hand',side:'R',ly:480,p:[337,488],
+  job:'The bones of the fingers. They let you grip, write and pick things up.',fact:'Each hand has 14 phalanges: 2 in the thumb and 3 in every other finger.',trick:'A PHALANX is a line of soldiers — your fingers are lines of little bones.'},
+ {id:'femur',name:'Femur',common:'thigh bone',say:'FEE-mur',reg:'Leg & foot',side:'R',ly:545,p:[242,530],
+  job:'The thigh bone, from hip to knee. It carries your weight when you stand and run.',fact:'It is the longest and strongest bone in your body — about ¼ of your height.',trick:'FEMUR = the FAMOUS one: longest and strongest.'},
+ {id:'patella',name:'Patella',common:'kneecap',say:'puh-TEL-uh',reg:'Leg & foot',side:'L',ly:610,p:[232,606],
+  job:'A small round bone that protects the front of the knee joint.',fact:'Babies have kneecaps of soft cartilage. They turn into bone at about 3–5 years old.',trick:'PAT your PATella — pat your kneecap!'},
+ {id:'tibia',name:'Tibia',common:'shin bone',say:'TIB-ee-uh',reg:'Leg & foot',side:'R',ly:680,p:[228,690],
+  job:'The thick lower leg bone that carries your body weight.',fact:'You can feel its sharp front edge — that is your shin.',trick:'Tibia is Thick, fibula is fine (thin).'},
+ {id:'fibula',name:'Fibula',common:'lower leg bone (thin, outer)',say:'FIB-yoo-luh',reg:'Leg & foot',side:'R',ly:730,p:[242,722],
+  job:'The thin lower leg bone on the outside. Muscles attach to it and it steadies the ankle.',fact:'It carries very little body weight.',trick:'FIBula is thin like a FIBre.'},
+ {id:'tarsals',name:'Tarsals',common:'ankle bones',say:'TAR-sulz',reg:'Leg & foot',side:'L',ly:778,p:[232,774],
+  job:'Ankle bones that pass your weight from the leg to the foot.',fact:'Each ankle has 7 tarsals. The biggest is the heel bone.',trick:'Carpals → CAR (hands on the wheel). Tarsals → TAR road (feet on the road).'},
+ {id:'phal_foot',name:'Phalanges',common:'toe bones',say:'fuh-LAN-jeez',reg:'Leg & foot',side:'R',ly:826,p:[224,818],
+  job:'The bones of the toes. They help you balance and push off when you walk.',fact:'Each foot has 14 phalanges — the same number as each hand.',trick:'Same name as the finger bones: phalanges are in fingers AND toes.'}
+];
+const BY={};B.forEach(b=>BY[b.id]=b);
+const label=b=>b.id==='phal_hand'?'Phalanges (fingers)':b.id==='phal_foot'?'Phalanges (toes)':b.name;
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const $=id=>document.getElementById(id);
+const store={get(k){try{return JSON.parse(localStorage.getItem('skel_'+k))}catch(e){return null}},set(k,v){try{localStorage.setItem('skel_'+k,JSON.stringify(v))}catch(e){}}};
+
+/* ---------- sound ---------- */
+let AC=null,muted=false;
+function tone(f,d=.12,t='sine',v=.07){if(muted)return;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();const o=AC.createOscillator(),g=AC.createGain();o.type=t;o.frequency.value=f;g.gain.setValueAtTime(v,AC.currentTime);g.gain.exponentialRampToValueAtTime(.0001,AC.currentTime+d);o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+d)}catch(e){}}
+const sGood=()=>{tone(660);setTimeout(()=>tone(880,.16),90)},sBad=()=>tone(170,.22,'square',.035),sTap=()=>tone(520,.05,'triangle',.05),sWin=()=>[523,659,784,1047].forEach((f,i)=>setTimeout(()=>tone(f,.18),i*120));
+$('mute').onclick=()=>{muted=!muted;$('mute').textContent=muted?'🔇':'🔊'};
+function speak(t){try{const u=new SpeechSynthesisUtterance(t);u.lang='en-GB';u.rate=.8;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}}
+
+/* ---------- draw skeleton ---------- */
+const NS='http://www.w3.org/2000/svg',svg=$('sk');
+function E(t,a,p){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e}
+const G=(p,id)=>E('g',id?{class:'bone','data-bone':id}:{class:'neutral'},p);
+function stick(g,d,w){E('path',{d,class:'o','stroke-width':w+4.4},g);E('path',{d,class:'fl','stroke-width':w},g)}
+function seg(g,x1,y1,x2,y2,w){stick(g,`M${x1} ${y1}L${x2} ${y2}`,w)}
+function longBone(g,x1,y1,x2,y2,w){
+  const L=Math.hypot(x2-x1,y2-y1),px=-(y2-y1)/L,py=(x2-x1)/L;
+  E('line',{x1,y1,x2,y2,class:'o','stroke-width':w+4.4},g);
+  for(const [x,y] of [[x1,y1],[x2,y2]])for(const s of [-1,1])E('circle',{cx:x+px*w*.34*s,cy:y+py*w*.34*s,r:w*.52,class:'f'},g);
+  E('line',{x1,y1,x2,y2,class:'fl','stroke-width':w},g);
+}
+const ell=(g,cx,cy,rx,ry)=>E('ellipse',{cx,cy,rx,ry,class:'f'},g);
+const ring=(cx,cy,rx,ry,ix,iy)=>`M${cx-rx} ${cy}a${rx} ${ry} 0 1 0 ${2*rx} 0a${rx} ${ry} 0 1 0 ${-2*rx} 0ZM${cx-ix} ${cy}a${ix} ${iy} 0 1 0 ${2*ix} 0a${ix} ${iy} 0 1 0 ${-2*ix} 0Z`;
+const root=E('g',{transform:'translate(190,0)'},svg);
+function sides(fn){fn(E('g',{},root));fn(E('g',{transform:'translate(400,0) scale(-1,1)'},root))}
+
+// vertebral column (behind)
+let g=G(root,'vertebral');
+for(let y=122;y<392;y+=11){const w=y>300?20:y<165?13:15;E('rect',{x:200-w/2,y,width:w,height:9,rx:3,class:'f'},g)}
+// scapula + ribs (back layer)
+sides(s=>{
+  let sc=G(s,'scapula');E('path',{d:'M262 166L293 172Q291 202 270 238Q260 210 262 166Z',class:'f'},sc);
+  let r=G(s,'thoracic');E('path',{d:'M206 166C252 158 272 212 264 262C259 300 242 324 206 320Z',class:'hit'},r);
+  for(let i=0;i<10;i++){const y=176+i*12.5,hw=30+32*Math.sin(Math.PI*(i+2)/13);
+    stick(r,`M206 ${y-4}C${200+hw*.7} ${y-16} ${200+hw+7} ${y-2} ${200+hw} ${y+20}C${200+hw-6} ${y+34} 222 ${y+33} 209 ${y+24+i*1.6}`,4)}
+  stick(r,'M206 302C226 298 238 304 242 314',4);stick(r,'M206 312C220 310 228 314 230 321',4);
+});
+// sternum
+g=G(root,'sternum');E('path',{d:'M189 165Q200 160 211 165L209 186L206 189L206 254Q200 268 194 254L194 189L191 186Z',class:'f'},g);
+// pelvis
+sides(s=>{const p=G(s,'pelvis');
+  E('path',{d:'M204 396C214 386 250 376 266 392C277 405 269 428 251 440C243 446 237 452 233 458L214 452C214 438 210 420 204 410Z',class:'f'},p);
+  E('path',{d:ring(219,464,20,16,8,9),class:'f','fill-rule':'evenodd'},p)});
+// sacrum (part of the vertebral column)
+g=G(root,'vertebral');E('path',{d:'M186 392L214 392L207 434Q200 446 193 434Z',class:'f'},g);E('path',{d:'M196 444L204 444L200 456Z',class:'f'},g);
+// limbs (front layer)
+sides(s=>{
+  let c=G(s,'clavicle');stick(c,'M206 158C226 148 246 168 278 160',6);
+  let h=G(s,'humerus');E('circle',{cx:284,cy:170,r:11,class:'f'},h);longBone(h,287,178,300,298,11);
+  longBone(G(s,'ulna'),296,307,318,422,7);
+  longBone(G(s,'radius'),309,311,334,420,7);
+  const cp=G(s,'carpals');[[318,431,5,4.5],[326,428,4.5,4],[334,430,4.5,4],[342,433,4.5,4.5],[320,439,4.5,4],[328,438,4.5,4],[336,439,4.5,4],[344,442,4,4]].forEach(a=>ell(cp,...a));
+  const mc=G(s);for(let k=0;k<4;k++)seg(mc,319+k*7.5,446,318+k*8,466,3.4);seg(mc,347,446,353,462,3.6);
+  const ph=G(s,'phal_hand');
+  for(let k=0;k<4;k++){let x=318+k*8,y=470;const dx=(k-1.5)*1.1;for(const l of [11,9,7]){seg(ph,x,y,x+dx,y+l,3.6);x+=dx;y+=l+2.6}}
+  seg(ph,354,466,357,477,3.8);seg(ph,358,480,360,489,3.6);
+  const f=G(s,'femur');longBone(f,240,456,252,466,9);E('circle',{cx:257,cy:462,r:7,class:'f'},f);longBone(f,252,466,234,598,13);E('circle',{cx:236,cy:452,r:10,class:'f'},f);
+  longBone(G(s,'fibula'),246,629,240,757,6);
+  longBone(G(s,'tibia'),230,622,226,760,12);
+  const pt=G(s,'patella');ell(pt,232,606,9,11);
+  const ts=G(s,'tarsals');[[226,768,8,6],[238,766,6,5],[247,772,5,5],[230,779,7,5],[241,780,6,5],[220,777,5,6],[250,781,4,4]].forEach(a=>ell(ts,...a));
+  const mt=G(s);for(let k=0;k<5;k++)seg(mt,220+k*6,787,214+k*9,808,k?3:4.4);
+  const pf=G(s,'phal_foot');for(let k=0;k<5;k++){let y=812;const x=214+k*9;for(const l of (k?[5,4,3]:[8,6])){seg(pf,x,y,x,y+l,k?3:4.6);y+=l+2.4}}
+});
+// cranium + mandible
+g=G(root,'cranium');
+E('path',{d:'M200 14C240 14 241 70 232 80L228 84Q222 92 214 90L186 90Q178 92 172 84L168 80C159 70 160 14 200 14Z',class:'f'},g);
+E('path',{d:'M178 34Q200 28 222 34',fill:'none',stroke:'#2B2D42','stroke-width':1.3,opacity:.5},g);
+E('ellipse',{cx:186,cy:62,rx:9,ry:8,class:'dk'},g);E('ellipse',{cx:214,cy:62,rx:9,ry:8,class:'dk'},g);
+E('path',{d:'M200 70L195 82L205 82Z',class:'dk'},g);
+E('rect',{x:187,y:86,width:26,height:7,rx:2,class:'f'},g);
+g=G(root,'mandible');
+E('path',{d:'M169 80L179 83Q181 97 186 97L214 97Q219 97 221 83L231 80Q231 108 215 116Q200 123 185 116Q169 108 169 80Z',class:'f'},g);
+E('rect',{x:187,y:94,width:26,height:6,rx:2,class:'f'},g);
+
+// labels + pins (global coords)
+const gx=b=>b.side==='R'?190+b.p[0]:590-b.p[0],gy=b=>b.p[1];
+const labG=E('g',{},svg),pinG=E('g',{},svg);
+B.forEach(b=>{
+  const l=E('g',{class:'lab show','data-lab':b.id},labG),R=b.side==='R',tx=R?578:202;
+  E('line',{x1:R?572:208,y1:b.ly-6,x2:gx(b),y2:gy(b)},l);E('circle',{cx:gx(b),cy:gy(b),r:3.2},l);
+  const t1=E('text',{x:tx,y:b.ly,class:'n','text-anchor':R?'start':'end'},l);t1.textContent=b.id.startsWith('phal')?'phalanges':b.name.toLowerCase();
+  const t2=E('text',{x:tx,y:b.ly+17,class:'c','text-anchor':R?'start':'end'},l);t2.textContent='('+b.common.replace(/ \(.*\)/,'')+')';
+});
+
+/* ---------- interaction helpers ---------- */
+const parts=id=>svg.querySelectorAll(`.bone[data-bone="${id}"]`);
+const clearBones=()=>svg.querySelectorAll('.bone').forEach(e=>e.classList.remove('hl','ok','bad','glow','hov'));
+const mark=(id,c)=>parts(id).forEach(e=>e.classList.add(c));
+const unmark=(id,c)=>parts(id).forEach(e=>e.classList.remove(c));
+const labs=()=>labG.querySelectorAll('.lab');
+let mode='explore';
+const tip=$('tip');
+svg.addEventListener('pointerover',e=>{const b=e.target.closest('.bone');if(!b)return;mark(b.dataset.bone,'hov');
+  if(mode==='explore'){tip.textContent=label(BY[b.dataset.bone]);tip.style.display='block'}});
+svg.addEventListener('pointerout',e=>{const b=e.target.closest('.bone');if(b)unmark(b.dataset.bone,'hov');tip.style.display='none'});
+svg.addEventListener('pointermove',e=>{if(tip.style.display==='block'){const r=$('stage').getBoundingClientRect();tip.style.left=(e.clientX-r.left)+'px';tip.style.top=(e.clientY-r.top)+'px'}});
+svg.addEventListener('click',e=>{const b=e.target.closest('.bone');if(!b)return;const id=b.dataset.bone;
+  if(mode==='explore')explore(id);else if(mode==='find')findClick(id)});
+
+/* ---------- modes ---------- */
+function setMode(m){mode=m;
+  document.querySelectorAll('#modes button').forEach(b=>b.classList.toggle('on',b.dataset.m===m));
+  $('p-explore').hidden=$('p-explore2').hidden=m!=='explore';$('p-find').hidden=m!=='find';$('p-label').hidden=m!=='label';$('p-quiz').hidden=m!=='quiz';
+  clearBones();pinG.innerHTML='';labs().forEach(l=>l.classList.remove('act'));
+  labs().forEach(l=>l.classList.toggle('show',m==='explore'&&$('showLabels').checked));
+  if(m==='label')labStart();
+}
+document.querySelectorAll('#modes button').forEach(b=>b.onclick=()=>{sTap();setMode(b.dataset.m)});
+
+/* ---------- EXPLORE ---------- */
+let seen=new Set(store.get('seen')||[]);
+function renderChips(cur){
+  $('chips').innerHTML=B.map(b=>`<button class="chip${seen.has(b.id)?' done':''}${b.id===cur?' cur':''}" data-id="${b.id}">${seen.has(b.id)?'✓ ':''}${label(b)}</button>`).join('');
+  $('chips').querySelectorAll('.chip').forEach(c=>c.onclick=()=>explore(c.dataset.id));
+  $('expN').textContent=seen.size;$('expBar').style.width=(seen.size/19*100)+'%';
+}
+function explore(id){const b=BY[id];sTap();clearBones();mark(id,'hl');
+  labs().forEach(l=>l.classList.toggle('act',l.dataset.lab===id));
+  const first=!seen.has(id);seen.add(id);store.set('seen',[...seen]);
+  $('card').innerHTML=`<span class="tag">${b.reg}</span><h2>${b.id.startsWith('phal')?'Phalanges':b.name}</h2>
+   <div class="common">${b.common}</div>
+   <div class="row"><button class="btn alt" id="sayBtn">🔊 Say it</button><span class="say">${b.say}</span></div>
+   <div class="box job"><b>Job:</b> ${b.job}</div>
+   <div class="box fact"><b>Wow fact:</b> ${b.fact}</div>
+   <div class="box trick"><b>Memory trick:</b> ${b.trick}</div>
+   ${seen.size===19&&first?'<p class="feed good">🎉 You explored all 19 labels! Try “Find It!” next.</p>':''}`;
+  $('sayBtn').onclick=()=>speak(b.id.startsWith('phal')?'phalanges':b.name);
+  renderChips(id);
+}
+$('showLabels').onchange=()=>labs().forEach(l=>l.classList.toggle('show',$('showLabels').checked));
+renderChips();
+
+/* ---------- FIND IT ---------- */
+let F=null;
+const stars=(s,n)=>s>=n?'⭐⭐⭐':s>=n*.7?'⭐⭐☆':s>=n*.4?'⭐☆☆':'☆☆☆';
+function showBest(k,el){const v=store.get(k);$(el).textContent=v==null?'–':v+' / 10'}
+showBest('bestFind','fBest');showBest('bestQuiz','qBest');
+$('findStart').onclick=()=>{sTap();F={list:shuffle(B.map(b=>b.id)).slice(0,10),i:0,score:0,streak:0,style:$('findStyle').value};
+  $('findEnd').hidden=true;$('findBox').hidden=false;findAsk()};
+function findAsk(){clearBones();F.tries=0;F.lock=false;const b=BY[F.list[F.i]];
+  const st=F.style==='mix'?(Math.random()<.5?'sci':'common'):F.style;
+  const nm=st==='sci'?(b.id==='phal_hand'?'phalanges of the fingers':b.id==='phal_foot'?'phalanges of the toes':b.name.toLowerCase()):b.common.replace(/ \(.*\)/,b.id==='radius'?' on the thumb side':b.id==='ulna'?' on the little-finger side':b.id==='fibula'?' (the thin one)':'');
+  $('fPrompt').innerHTML=`Tap the <u>${nm}</u>`;$('fFeed').textContent='';$('fFeed').className='feed';$('fNext').hidden=true;
+  $('fN').textContent=F.i+1;$('fS').textContent=F.score;$('fK').textContent=F.streak}
+function findClick(id){if(!F||F.lock||$('findBox').hidden)return;const t=BY[F.list[F.i]],c=BY[id];
+  if(id===t.id){F.score+=F.tries?0.5:1;F.streak++;mark(id,'ok');sGood();F.lock=true;
+    $('fFeed').className='feed good';$('fFeed').innerHTML=`✅ Yes! ${label(t)} = ${t.common}.<br><span class="muted">🧠 ${t.trick}</span>`;}
+  else{F.tries++;sBad();mark(id,'bad');setTimeout(()=>unmark(id,'bad'),800);
+    if(F.tries<2){$('fFeed').className='feed no';$('fFeed').textContent=`❌ That is the ${label(c).toLowerCase()} (${c.common}). Try again!`;return}
+    F.streak=0;F.lock=true;mark(t.id,'hl');mark(t.id,'glow');
+    $('fFeed').className='feed no';$('fFeed').innerHTML=`The ${label(t).toLowerCase()} is glowing 👉 remember it!<br><span class="muted">🧠 ${t.trick}</span>`}
+  $('fS').textContent=F.score;$('fK').textContent=F.streak;$('fNext').hidden=false;$('fNext').textContent=F.i===9?'See my score ▶':'Next bone ▶'}
+$('fNext').onclick=()=>{F.i++;if(F.i<10)return findAsk();clearBones();$('findBox').hidden=true;
+  const best=store.get('bestFind');if(best==null||F.score>best)store.set('bestFind',F.score);showBest('bestFind','fBest');
+  if(F.score>=7)sWin();
+  $('findEnd').hidden=false;$('findEnd').innerHTML=`<div class="stars">${stars(F.score,10)}</div><h3>You scored ${F.score} / 10</h3><p>${F.score>=9?'Bone expert! 🦴':F.score>=6?'Great work — play again to beat it!':'Keep going — use Explore, then try again.'}</p><button class="btn gold" id="fAgain">Play again</button>`;
+  $('fAgain').onclick=()=>$('findStart').click()};
+
+/* ---------- LABEL LAB ---------- */
+const LEVELS={starter:['cranium','thoracic','vertebral','humerus','pelvis','femur','patella','tibia'],
+ arms:['cranium','mandible','clavicle','scapula','sternum','thoracic','humerus','radius','ulna','carpals','phal_hand'],
+ legs:['vertebral','pelvis','femur','patella','tibia','fibula','tarsals','phal_foot'],all:B.map(b=>b.id)};
+let LB=null,selTag=null;
+$('labStart').onclick=()=>{sTap();labStart()};
+function labStart(){const ids=LEVELS[$('labLevel').value];clearBones();selTag=null;
+  labs().forEach(l=>l.classList.remove('show','act'));
+  LB={ids,placed:0,miss:0,easy:$('labLevel').value!=='all'};
+  $('lP').textContent=0;$('lT').textContent=ids.length;$('lM').textContent=0;$('labFeed').textContent='';$('labEnd').hidden=true;
+  pinG.innerHTML='';
+  B.filter(b=>ids.includes(b.id)).forEach((b,i)=>{const p=E('g',{class:'pin','data-bone':b.id,tabindex:0},pinG);
+    E('circle',{cx:gx(b),cy:gy(b),r:14},p);const t=E('text',{x:gx(b),y:gy(b)},p);t.textContent=i+1;
+    p.style.transformOrigin=`${gx(b)}px ${gy(b)}px`;
+    p.addEventListener('click',()=>{if(selTag)tryPlace(selTag,b.id)})});
+  $('tags').innerHTML=shuffle(ids).map(id=>{const b=BY[id];return `<button class="tagb" data-id="${id}">${label(b)}${LB.easy?`<small>${b.common}</small>`:''}</button>`}).join('');
+  $('tags').querySelectorAll('.tagb').forEach(bindTag)}
+function armPins(on){pinG.querySelectorAll('.pin').forEach(p=>p.classList.toggle('armed',on))}
+function bindTag(el){let sx,sy,gh=null,down=false;
+  el.addEventListener('pointerdown',e=>{down=true;sx=e.clientX;sy=e.clientY;el.setPointerCapture(e.pointerId)});
+  el.addEventListener('pointermove',e=>{if(!down)return;if(!gh&&Math.hypot(e.clientX-sx,e.clientY-sy)>8){gh=el.cloneNode(true);gh.classList.add('ghost','sel');document.body.appendChild(gh);armPins(true)}
+    if(gh){gh.style.left=e.clientX+'px';gh.style.top=e.clientY+'px'}});
+  el.addEventListener('pointerup',e=>{if(!down)return;down=false;
+    if(gh){gh.remove();gh=null;armPins(!!selTag);const t=document.elementFromPoint(e.clientX,e.clientY),pin=t&&t.closest&&t.closest('.pin');if(pin)tryPlace(el.dataset.id,pin.dataset.bone);return}
+    sTap();const was=selTag===el.dataset.id;$('tags').querySelectorAll('.tagb').forEach(t=>t.classList.remove('sel'));
+    selTag=was?null:el.dataset.id;if(selTag)el.classList.add('sel');armPins(!!selTag)});
+  el.addEventListener('pointercancel',()=>{down=false;if(gh){gh.remove();gh=null}});
+  el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();selTag=el.dataset.id;$('tags').querySelectorAll('.tagb').forEach(t=>t.classList.toggle('sel',t===el));armPins(true)}})}
+function tryPlace(tagId,pinId){const b=BY[tagId],pin=pinG.querySelector(`.pin[data-bone="${pinId}"]`);
+  if(tagId===pinId){sGood();pin.classList.add('done');mark(pinId,'ok');labG.querySelector(`[data-lab="${pinId}"]`).classList.add('show');
+    $('tags').querySelector(`[data-id="${tagId}"]`).remove();LB.placed++;$('lP').textContent=LB.placed;
+    $('labFeed').className='feed good';$('labFeed').textContent=`✅ ${label(b)} — ${b.common}. ${b.trick}`;}
+  else{sBad();LB.miss++;$('lM').textContent=LB.miss;pin.classList.remove('shake');void pin.getBBox();pin.classList.add('shake');
+    $('labFeed').className='feed no';$('labFeed').textContent=`❌ Not there. Hint: the ${label(b).toLowerCase()} is the ${b.common}. ${b.job}`}
+  selTag=null;$('tags').querySelectorAll('.tagb').forEach(t=>t.classList.remove('sel'));armPins(false);
+  if(LB.placed===LB.ids.length){sWin();const n=LB.ids.length,sc=Math.max(0,n-LB.miss);
+    $('labEnd').hidden=false;$('labEnd').innerHTML=`<div class="stars">${stars(sc,n)}</div><h3>All ${n} labels placed with ${LB.miss} mistake${LB.miss===1?'':'s'}!</h3><p>${LB.miss===0?'Perfect labelling! Try the next level.':'Play again and aim for zero mistakes.'}</p>`}}
+
+/* ---------- NAME MATCH ---------- */
+let Q=null;
+const uniq=(arr,key)=>{const s=new Set;return arr.filter(x=>{const k=key(x);if(s.has(k))return false;s.add(k);return true})};
+$('qStart').onclick=()=>{sTap();Q={list:shuffle(B).slice(0,10),i:0,score:0};$('qEnd').hidden=true;$('qBox').hidden=false;qAsk()};
+function qAsk(){clearBones();Q.lock=false;const b=Q.list[Q.i],type=['toCommon','toSci','job'][Math.random()*3|0];Q.b=b;
+  const others=uniq(shuffle(B.filter(x=>x.name!==b.name)),x=>x.name).slice(0,3);
+  const opts=shuffle([b,...others]);
+  let prompt;
+  if(type==='toCommon'){prompt=`What is the everyday name of the <u>${label(b).toLowerCase()}</u>?`;mark(b.id,'hl');Q.opts=opts.map(o=>[o.common,o===b])}
+  else if(type==='toSci'){prompt=`What is the science name of the <u>${b.common}</u>?`;Q.opts=opts.map(o=>[label(o),o===b])}
+  else{prompt=`Which bone has this job?<br><span style="font-weight:700;font-size:.75em">“${b.job}”</span>`;Q.opts=opts.map(o=>[label(o),o===b])}
+  $('qPrompt').innerHTML=prompt;
+  $('qOpts').innerHTML=Q.opts.map((o,i)=>`<button class="opt" data-i="${i}">${o[0]}</button>`).join('');
+  $('qOpts').querySelectorAll('.opt').forEach(btn=>btn.onclick=()=>qAnswer(+btn.dataset.i,btn));
+  $('qFeed').textContent='';$('qNext').hidden=true;$('qN').textContent=Q.i+1;$('qS').textContent=Q.score}
+function qAnswer(i,btn){if(Q.lock)return;Q.lock=true;const ok=Q.opts[i][1],b=Q.b;
+  $('qOpts').querySelectorAll('.opt').forEach((x,j)=>{if(Q.opts[j][1])x.classList.add('right')});
+  clearBones();mark(b.id,'ok');mark(b.id,'glow');
+  if(ok){Q.score++;sGood();$('qFeed').className='feed good';$('qFeed').innerHTML=`✅ Correct! ${label(b)} = ${b.common}.<br><span class="muted">🧠 ${b.trick}</span>`}
+  else{btn.classList.add('wrong');sBad();$('qFeed').className='feed no';$('qFeed').innerHTML=`❌ It is the ${label(b).toLowerCase()} (${b.common}) — glowing on the skeleton.<br><span class="muted">🧠 ${b.trick}</span>`}
+  $('qS').textContent=Q.score;$('qNext').hidden=false;$('qNext').textContent=Q.i===9?'See my score ▶':'Next ▶'}
+$('qNext').onclick=()=>{Q.i++;if(Q.i<10)return qAsk();clearBones();$('qBox').hidden=true;
+  const best=store.get('bestQuiz');if(best==null||Q.score>best)store.set('bestQuiz',Q.score);showBest('bestQuiz','qBest');
+  if(Q.score>=7)sWin();
+  $('qEnd').hidden=false;$('qEnd').innerHTML=`<div class="stars">${stars(Q.score,10)}</div><h3>You scored ${Q.score} / 10</h3><p>${Q.score>=9?'Bone expert! 🦴':Q.score>=6?'Nice! One more round to beat it?':'Look at the memory tricks in Explore, then try again.'}</p><button class="btn gold" id="qAgain">Play again</button>`;
+  $('qAgain').onclick=()=>$('qStart').click()};
+}
+</script>
+</body>
+</html>
