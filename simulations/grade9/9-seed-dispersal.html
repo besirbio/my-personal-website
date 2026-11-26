@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Seed Dispersal – How Seeds Leave Home</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* VOICE: friendly Grade 9 biology explainer, same house style as "Seed Germination".
+   IDEA: a guided field trip — one big animated scene per step, a notebook panel beside it.
+   PICTURE: flat cartoon canvas with dark outlines: trees, wind, sea, fox, bird, exploding pod, ecosystem.
+   COLOUR and TYPE: forest green header, plum taglines, gold primary buttons, Nunito.
+   LAYOUT: canvas + controls + scene dots on the left, lesson panel on the right; stacks below 920px. */
+:root{color-scheme:light;--ink:#2B2D42;--bg:#FAF8F3;--green:#2A9D8F;--leaf:#52B788;--gold:#FFB703;--water:#8ECAE6;--soil:#8A5A36;--plum:#5A3E72;--ok:#1B7A4B;--okbg:#C7F0D8;--bad:#B42318;--badbg:#FFD6D6}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Nunito,system-ui,sans-serif;overflow-x:clip}
+button,select,input,textarea{font-family:inherit;color:inherit}
+:focus-visible{outline:3px solid #F77F00;outline-offset:2px}
+#app{max-width:1440px;margin:0 auto;padding:12px}
+header{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;background:linear-gradient(90deg,#2D6A4F,#40916C);color:#fff;border:3px solid var(--ink);border-radius:18px;padding:10px 18px;margin-bottom:12px}
+header .logo{width:46px;height:46px;flex:none}
+header h1{margin:0;font-size:clamp(18px,2.4vw,28px);font-weight:900;letter-spacing:.3px}
+header .sub{font-size:14px;opacity:.92;font-weight:600}
+.hright{margin-left:auto;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.pill{background:#fff;color:#2D6A4F;border:2px solid var(--ink);border-radius:999px;padding:4px 12px;font-weight:800;font-size:14px;white-space:nowrap}
+button.pill{cursor:pointer}
+.prog{display:flex;align-items:center;gap:6px;font-weight:800;font-size:13px}
+.prog .bar{width:96px;height:12px;background:rgba(255,255,255,.3);border:2px solid var(--ink);border-radius:9px;overflow:hidden}
+.prog .bar i{display:block;height:100%;width:0;background:var(--gold);transition:width .5s}
+.main{display:grid;grid-template-columns:minmax(0,1.75fr) minmax(320px,1fr);gap:12px;align-items:start}
+@media(max-width:920px){.main{grid-template-columns:minmax(0,1fr)}}
+.stage{position:relative;background:#fff;border:3px solid var(--ink);border-radius:18px;overflow:hidden}
+canvas{display:block;width:100%;aspect-ratio:5/3;touch-action:none}
+.panel{background:#fff;border:3px solid var(--ink);border-radius:18px;padding:16px 18px;min-height:200px}
+.tagline{display:inline-block;background:var(--plum);color:#fff;font-weight:800;font-size:13px;border-radius:999px;padding:3px 11px;letter-spacing:.5px;text-transform:uppercase}
+.panel h2{margin:8px 0 6px;font-size:24px;font-weight:900;line-height:1.15}
+.panel h4{margin:10px 0 4px;font-size:17px;font-weight:900}
+.panel p{margin:8px 0;font-size:17px;line-height:1.45}
+.panel ul,.panel ol{margin:6px 0 8px 0;padding-left:22px;font-size:16.5px;line-height:1.45}
+.key{background:#FFF3D6;border:2px solid var(--ink);border-radius:12px;padding:8px 12px;margin:10px 0;font-size:16px}
+.key b{color:#9C4A00}
+.wow{background:#E9F7EF;border:2px solid var(--ink);border-radius:12px;padding:8px 12px;margin:10px 0;font-size:16px}
+.def{background:#2D6A4F;color:#fff;border:2px solid var(--ink);border-radius:12px;padding:10px 12px;margin:10px 0;font-size:17px;font-weight:800}
+.small{font-size:14px;color:#555}
+details{border:2px solid var(--ink);border-radius:12px;padding:7px 11px;margin:8px 0;background:#FFFDF6}
+summary{cursor:pointer;font-weight:800;font-size:16px}
+details p,details li{font-size:15.5px}
+/* question engine */
+.qcard{background:#F1ECFA;border:2px solid var(--ink);border-radius:14px;padding:10px 12px;margin:12px 0}
+.qcard h4{margin:4px 0 8px;font-size:16.5px;font-weight:800}
+.qtype{display:inline-block;font-size:12px;font-weight:800;color:#fff;background:var(--plum);border-radius:999px;padding:2px 9px}
+.opts{display:grid;gap:6px;margin:6px 0}
+.opt{display:flex;gap:8px;align-items:flex-start;width:100%;text-align:left;padding:8px 11px;font:600 15.5px Nunito,system-ui,sans-serif;color:var(--ink);background:#fff;border:2px solid var(--ink);border-radius:10px;cursor:pointer;transition:transform .1s;min-height:44px}
+.opt:hover:not(:disabled){transform:translateX(3px);background:#FFFBEF}
+.opt .k{flex:none;width:24px;height:24px;border-radius:50%;background:#EEE9DC;border:1.5px solid var(--ink);display:grid;place-items:center;font-weight:900;font-size:12px}
+.opt.sel{background:#E3F2FD;border-color:#1565C0}
+.opt.right{background:var(--okbg);border-color:var(--ok)}
+.opt.wrong{background:var(--badbg);border-color:var(--bad)}
+.opt.locked,.opt:disabled{cursor:default}
+.imgopts{grid-template-columns:repeat(2,minmax(0,1fr))}
+.imgopts .opt{flex-direction:column;align-items:center;text-align:center}
+.imgopts svg{width:70px;height:70px}
+.popart svg{max-width:100%;height:auto}
+.fb{border:2px solid var(--ink);border-radius:10px;padding:7px 10px;margin:8px 0;font-size:15.5px;background:#fff}
+.fb.ok{background:#E9F7EF;border-left:6px solid var(--ok)}
+.fb.bad{background:#FFF0F0}
+.fb.hint{background:#FFF3D6;border-left:6px solid #E9A100}
+.fb.clue{background:#E8F5FA;border-left:6px solid #219EBC}
+.fb.exp{background:#fff;border-left:6px solid var(--plum)}
+.fb .take{display:block;margin-top:5px;font-weight:900;color:#2D6A4F}
+.clue-art{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:4px}
+.clue-art svg{width:90px;height:90px;flex:none}
+.order ol{padding-left:20px}
+.order li{display:flex;gap:6px;align-items:center;background:#fff;border:2px solid var(--ink);border-radius:10px;padding:5px 7px;margin:5px 0;font-size:15px}
+.order li span{flex:1}
+.order li.right{background:var(--okbg)}.order li.wrong{background:var(--badbg)}
+.mv{min-width:36px;min-height:36px;border:2px solid var(--ink);border-radius:8px;background:#FFF3D6;font-weight:900;cursor:pointer}
+.match{display:grid;gap:8px}
+.mitems{display:flex;flex-wrap:wrap;gap:6px;min-height:44px;padding:4px;border:2px dashed #bbb;border-radius:10px;background:#fff}
+.mitem{display:flex;gap:5px;align-items:center;border:2px solid var(--ink);border-radius:10px;background:#fff;padding:4px 8px;font-weight:800;font-size:14px;cursor:grab;min-height:40px}
+.mitem svg{width:28px;height:28px}
+.mitem.sel{background:#E3F2FD;border-color:#1565C0}.mitem.right{background:var(--okbg)}.mitem.wrong{background:var(--badbg)}
+.mzones{display:grid;gap:6px}
+.mzone{border:2px dashed var(--ink);border-radius:10px;padding:6px;background:#FFFDF6;min-height:50px;cursor:pointer}
+.mzone.over{background:#E9F7EF}
+.mzone .zt{font-weight:900;font-size:14px}.mzone .zin{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
+/* buttons and controls */
+.controls{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:10px;background:#fff;border:3px solid var(--ink);border-radius:16px;padding:8px 10px}
+.btn{font:800 15px Nunito,system-ui,sans-serif;color:var(--ink);background:#fff;border:2px solid var(--ink);border-radius:11px;padding:7px 12px;cursor:pointer;box-shadow:0 3px 0 var(--ink);transition:transform .08s,box-shadow .08s;min-height:42px}
+.btn:active{transform:translateY(3px);box-shadow:0 0 0 var(--ink)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.primary{background:var(--gold)}
+.btn.go,.btn.on{background:#95D5B2}
+.btn.off{background:#E9ECEF;color:#6c757d}
+.btn.sm{padding:4px 10px;font-size:14px;min-height:36px}
+.btn.pulse{animation:pulse 1.1s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 3px 0 var(--ink),0 0 0 0 rgba(255,183,3,.7)}50%{box-shadow:0 3px 0 var(--ink),0 0 0 9px rgba(255,183,3,0)}}
+@media (prefers-reduced-motion:reduce){.btn.pulse{animation:none}}
+.spacer{flex:1}
+select,input[type=text],textarea{font:700 15px Nunito,system-ui,sans-serif;border:2px solid var(--ink);border-radius:9px;padding:6px 8px;background:#fff;min-height:40px}
+textarea{width:100%;min-height:80px}
+input[type=text]{width:100%}
+.dots{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.dot{font:800 12.5px Nunito,system-ui,sans-serif;border:2px solid var(--ink);border-radius:999px;padding:4px 10px;background:#fff;cursor:pointer;color:var(--ink);min-height:32px}
+.dot.done{background:#D8F3DC}
+.dot.cur{background:var(--plum);color:#fff}
+.popup{position:absolute;max-width:320px;background:#fff;border:3px solid var(--ink);border-radius:14px;padding:10px 13px;box-shadow:0 6px 0 rgba(43,45,66,.25);font-size:15.5px;line-height:1.4;display:none;z-index:5;max-height:90%;overflow:auto}
+.popup h3{margin:0 0 4px;font-size:17px;font-weight:900;padding-right:18px}
+.popup .x{position:absolute;right:8px;top:4px;cursor:pointer;font-weight:900;background:none;border:0;font-size:18px}
+.popup svg{max-width:100%;height:auto}
+.hint{position:absolute;left:12px;bottom:10px;background:rgba(255,255,255,.92);border:2px solid var(--ink);border-radius:999px;padding:3px 11px;font-weight:800;font-size:13px;pointer-events:none}
+.lab-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:7px 0;font-weight:800;font-size:15.5px}
+.lab-row .lbl{min-width:96px}
+.lab-row output{font-weight:900;color:#2D6A4F}
+.segs{display:flex;flex-wrap:wrap;gap:5px}
+.segs button{font:800 14px Nunito,system-ui,sans-serif;border:2px solid var(--ink);border-radius:9px;background:#fff;padding:4px 9px;cursor:pointer;min-height:36px}
+.segs button[aria-pressed=true]{background:#95D5B2}
+input[type=range]{width:100%;accent-color:#E76F51;height:26px}
+.result{border:2px solid var(--ink);border-radius:12px;padding:9px 12px;margin-top:10px;font-size:15.5px;background:#F8F9FA;min-height:44px}
+.result.good{background:#E9F7EF}.result.warn{background:#FFF3D6}
+table.t{width:100%;border-collapse:collapse;font-size:14px;margin:6px 0}
+table.t th,table.t td{border:2px solid var(--ink);padding:4px 6px;text-align:left;vertical-align:top}
+table.t th{background:#F1ECFA;font-size:13px}
+table.t td.n{text-align:right;white-space:nowrap}
+.tscroll{overflow-x:auto}
+.score{font-weight:900;font-size:16px;background:var(--gold);border:2px solid var(--ink);border-radius:999px;padding:2px 11px;display:inline-block}
+.qnav{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0}
+.qdot{width:34px;height:34px;border-radius:50%;border:2px solid var(--ink);background:#fff;font-weight:900;cursor:pointer}
+.qdot.ok{background:var(--okbg)}.qdot.rev{background:#FFF3D6}.qdot.cur{background:var(--plum);color:#fff}
+.check label{display:flex;gap:8px;align-items:flex-start;font-size:15px;padding:4px 2px;border-bottom:1px dashed #ccc}
+.check input{width:20px;height:20px;flex:none;accent-color:#2D6A4F}
+.check label.auto{background:#E9F7EF}
+.timer{font-size:34px;font-weight:900;color:#2D6A4F;min-width:60px;display:inline-block}
+.badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.bdg{border:2px solid var(--ink);border-radius:999px;padding:3px 10px;font-weight:800;font-size:13px;background:#fff;opacity:.45;filter:grayscale(1)}
+.bdg.on{opacity:1;filter:none;background:#FFF3D6}
+.modal{position:fixed;inset:0;background:rgba(20,28,30,.55);z-index:80;display:grid;place-items:center;padding:14px}
+.modal .box{background:#fff;border-radius:18px;max-width:880px;width:100%;max-height:90vh;overflow:auto;padding:16px 20px;border:3px solid var(--ink)}
+.mhead{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.mhead h3{margin:0;font-size:22px;font-weight:900}
+.xbtn{border:2px solid var(--ink);background:#fff;border-radius:50%;width:42px;height:42px;font-size:20px;font-weight:900;cursor:pointer}
+.ttabs{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.tpanel{display:none;font-size:15.5px}.tpanel.on{display:block}
+.answer{background:#FAF8F3;border:2px solid var(--ink);border-radius:10px;padding:7px 10px;margin:6px 0;font-size:14.5px}
+.hidden{display:none!important}
+#toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:95;display:grid;gap:8px;justify-items:center;pointer-events:none}
+.toast{background:var(--ink);color:#fff;border-radius:999px;padding:8px 16px;font-weight:800;font-size:15px;border:2px solid #fff;animation:pop .3s ease}
+.toast.badge-t{background:var(--gold);color:var(--ink);border-color:var(--ink)}
+@keyframes pop{from{transform:scale(.7);opacity:0}to{transform:none;opacity:1}}
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <svg class="logo" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22" fill="#fff" stroke="#2B2D42" stroke-width="3"/><path d="M24 40V24" stroke="#6b5a3a" stroke-width="2.5"/><g stroke="#8d939c" stroke-width="1.8"><path d="M24 24l-10-8M24 24l-5-12M24 24V10M24 24l5-12M24 24l10-8"/></g><g fill="#fff" stroke="#2B2D42" stroke-width="1.2"><circle cx="14" cy="16" r="2.4"/><circle cx="19" cy="12" r="2.4"/><circle cx="24" cy="10" r="2.4"/><circle cx="29" cy="12" r="2.4"/><circle cx="34" cy="16" r="2.4"/></g><ellipse cx="24" cy="41" rx="3" ry="4" fill="#8B6B4A" stroke="#2B2D42" stroke-width="1.5"/></svg>
+    <div><h1>Seed Dispersal</h1><div class="sub">How and why seeds leave their parent plant</div></div>
+    <div class="hright">
+      <div class="prog" title="Progress"><div class="bar"><i id="progFill"></i></div><span id="progTxt">0%</span></div>
+      <button class="pill" id="ptsBtn">⭐ <span id="ptsTxt">0</span> pts · 🏅 <span id="bdgTxt">0</span>/6</button>
+      <span class="pill">Biology · Grade 9</span>
+      <button class="pill" id="teacherBtn">🧑‍🏫 Teacher</button>
+    </div>
+  </header>
+  <div class="main">
+    <div>
+      <div class="stage" id="stage">
+        <canvas id="cv" width="1000" height="600" aria-label="Animated seed dispersal scene"></canvas>
+        <div class="popup" id="popup" role="dialog" aria-live="polite"><button class="x" id="popx" aria-label="Close">✕</button><h3 id="poph"></h3><div id="popb"></div></div>
+        <div class="hint" id="hint">👆 Click the picture to learn more</div>
+      </div>
+      <div class="controls">
+        <button class="btn" id="prev">◀ Back</button>
+        <button class="btn primary" id="play">⏸ Pause</button>
+        <button class="btn" id="replay">↺ Replay</button>
+        <button class="btn go" id="next">Next ▶</button>
+        <span class="spacer"></span>
+        <label style="font-weight:800;font-size:14px">Speed
+          <select id="speed"><option value="0.6">Slow</option><option value="1" selected>Normal</option><option value="1.6">Fast</option></select></label>
+        <button class="btn off" id="narr">🗣 Narrate: off</button>
+        <button class="btn on" id="snd">🔊 Sound</button>
+      </div>
+      <div class="dots" id="dots"></div>
+      <div class="badges" id="badges"></div>
+    </div>
+    <div class="panel" id="panel" aria-live="polite"></div>
+  </div>
+</div>
+<div class="modal hidden" id="teacher" role="dialog" aria-modal="true" aria-labelledby="tmT"><div class="box"><div class="mhead"><h3 id="tmT">🧑‍🏫 Teacher Mode</h3><button class="xbtn" data-close aria-label="Close">×</button></div>
+  <div class="ttabs" id="ttabs"><button class="btn sm on" data-tp="obj">Objectives</button><button class="btn sm" data-tp="flow">Lesson flow</button><button class="btn sm" data-tp="key">Answer key</button><button class="btn sm" data-tp="sci">Science notes</button><button class="btn sm" data-tp="ctl">Controls</button></div>
+  <div class="tpanel on" id="tp-obj"></div><div class="tpanel" id="tp-flow"></div><div class="tpanel" id="tp-key"></div><div class="tpanel" id="tp-sci"></div><div class="tpanel" id="tp-ctl"></div>
+</div></div>
+<div class="modal hidden" id="badgeModal" role="dialog" aria-modal="true" aria-labelledby="bmT"><div class="box"><div class="mhead"><h3 id="bmT">🏅 Badges &amp; points</h3><button class="xbtn" data-close aria-label="Close">×</button></div><div id="bmList"></div><p class="small">Points reward predictions, experiments, fair tests and good explanations — never speed. First-try answers earn the most.</p></div></div>
+<div class="modal hidden" id="confirmBox" role="dialog" aria-modal="true"><div class="box" style="max-width:480px"><h3>Reset the whole simulation?</h3><p>This clears all points, badges and answers in this browser.</p><button class="btn primary" id="cfYes">Yes, reset</button> <button class="btn" data-close>Cancel</button></div></div>
+<div id="toast" aria-live="polite"></div>
+<script>
+"use strict";
+/* ============ core ============ */
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const INK='#2B2D42',W=1000,H=600;
+const cv=$('#cv'),ctx=cv.getContext('2d');cv._W=W;cv._H=H;
+const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v)),rand=(a,b)=>a+Math.random()*(b-a),lerp=(a,b,t)=>a+(b-a)*t;
+const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const fmtD=d=>d>=1000?(d/1000).toFixed(1)+' km':d>=10?Math.round(d)+' m':d>=1?d.toFixed(1)+' m':Math.round(d*100)+' cm';
+const FONT='Nunito,system-ui,sans-serif';
+function font(sz,w=800){ctx.font=w+' '+sz+'px '+FONT;}
+let now=0;
+
+/* ---- store, points, badges ---- */
+const S={points:0,done:{},badges:{},pred:{}};
+try{const d=JSON.parse(localStorage.getItem('seedDisp9')||'null');if(d&&typeof d==='object')Object.assign(S,d);}catch(e){}
+function save(){try{localStorage.setItem('seedDisp9',JSON.stringify(S));}catch(e){}}
+const TASKS=['m1_explore','m1_predict','m1_season','m1_spread','m1_explain','a_predict','a_exp','a_fair','a_explain','a_chal','b_predict','b_exp','b_look','b_explain','b_chal','c_predict','c_fur','c_gut','c_explain','c_chal','d_predict','d_exp','d_explain','d_chal','l_exp1','l_exp3','l_fair','l_explain','e_release','e_eval','e_season','e_explain','q1','q2','q3','q4','q5','q6','q7','q8','q9','q10','q11','q12','r_cards','r_recall','r_teach'];
+const grp=p=>TASKS.filter(k=>k.startsWith(p)).every(k=>S.done[k]);
+const quizCorrect=()=>TASKS.filter(k=>/^q\d+$/.test(k)&&S.done[k]).length;
+const BADGES=[{id:'wind',i:'🌬️',n:'Wind Explorer',how:'finish the Wind scene',need:()=>grp('a_')},
+ {id:'water',i:'🌊',n:'Water Investigator',how:'finish the Water scene',need:()=>grp('b_')},
+ {id:'animal',i:'🦊',n:'Animal Dispersal Detective',how:'finish both Animal scenes',need:()=>grp('c_')},
+ {id:'mech',i:'💥',n:'Seed Launcher Scientist',how:'finish the Mechanical scene',need:()=>grp('d_')},
+ {id:'eco',i:'🌍',n:'Ecology Investigator',how:'finish Investigate + Survival',need:()=>grp('l_')&&grp('e_')},
+ {id:'master',i:'🏆',n:'Master Seed Dispersal Scientist',how:'all badges + 9/12 in the quiz',need:()=>['wind','water','animal','mech','eco'].every(b=>S.badges[b])&&grp('m1_')&&quizCorrect()>=9}];
+function toast(msg,cls=''){const t=document.createElement('div');t.className='toast '+cls;t.textContent=msg;$('#toast').appendChild(t);setTimeout(()=>t.remove(),cls?3600:2300);}
+function award(id,pts,label){if(S.done[id])return false;S.done[id]=true;S.points+=pts;if(pts)toast(`+${pts} ⭐ ${label}`);
+  BADGES.forEach(b=>{if(!S.badges[b.id]&&b.need()){S.badges[b.id]=true;S.points+=20;setTimeout(()=>{toast(`🏅 Badge: ${b.n}! +20`,'badge-t');sfx.chime();},450);}});
+  save();hud();return true;}
+function hud(){const n=TASKS.filter(k=>S.done[k]).length,p=Math.round(n/TASKS.length*100);$('#progFill').style.width=p+'%';$('#progTxt').textContent=p+'%';$('#ptsTxt').textContent=S.points;
+  const nb=BADGES.filter(b=>S.badges[b.id]).length;$('#bdgTxt').textContent=nb;
+  const h=BADGES.map(b=>`<span class="bdg ${S.badges[b.id]?'on':''}" title="${b.how}">${b.i} ${b.n}</span>`).join('');$('#badges').innerHTML=h;
+  $('#bmList').innerHTML=BADGES.map(b=>`<p class="bdg ${S.badges[b.id]?'on':''}" style="display:block;border-radius:12px;font-size:15px">${b.i} <b>${b.n}</b> — ${S.badges[b.id]?'earned!':b.how}</p>`).join('');
+  if(typeof renderDots==='function')renderDots();}
+
+/* ---- sound ---- */
+let AC=null,soundOn=true;
+function ac(){if(!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)();}catch(e){}}return AC;}
+function tone(f1,f2,dur,type='sine',vol=.07,delay=0){if(!soundOn)return;const a=ac();if(!a)return;try{const o=a.createOscillator(),g=a.createGain(),t0=a.currentTime+delay;o.type=type;o.frequency.setValueAtTime(f1,t0);o.frequency.exponentialRampToValueAtTime(Math.max(30,f2),t0+dur);g.gain.setValueAtTime(0,t0);g.gain.linearRampToValueAtTime(vol,t0+.015);g.gain.exponentialRampToValueAtTime(.0005,t0+dur);o.connect(g).connect(a.destination);o.start(t0);o.stop(t0+dur+.05);}catch(e){}}
+function noise(dur=.15,vol=.12){if(!soundOn)return;const a=ac();if(!a)return;try{const b=a.createBuffer(1,a.sampleRate*dur,a.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,3);const s=a.createBufferSource(),g=a.createGain();s.buffer=b;g.gain.value=vol;s.connect(g).connect(a.destination);s.start();}catch(e){}}
+const sfx={ok(){tone(660,660,.12,'triangle');tone(990,990,.18,'triangle',.07,.11);},bad(){tone(260,150,.25,'sawtooth',.035);},pop(){tone(500,900,.12,'triangle',.06);},
+ whoosh(){noise(.35,.06);},splash(){noise(.25,.14);tone(400,120,.25,'sine',.05);},burst(){noise(.18,.2);tone(900,200,.15,'square',.04);},drip(){tone(1100,420,.12,'sine',.04);},
+ grow(){tone(300,700,.5,'sine',.05);},chime(){tone(784,784,.2,'sine',.06);tone(1046,1046,.3,'sine',.06,.15);tone(1318,1318,.4,'sine',.05,.3);}};
+
+/* ---- canvas drawing in the house style ---- */
+function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+function circle(x,y,r,fill,stroke,lw=2){ctx.beginPath();ctx.arc(x,y,Math.max(.1,r),0,Math.PI*2);if(fill){ctx.fillStyle=fill;ctx.fill();}if(stroke){ctx.lineWidth=lw;ctx.strokeStyle=stroke;ctx.stroke();}}
+function tag(text,x,y,tx,ty,col='#7B2CBF',sz=16){
+  font(sz,800);const w=ctx.measureText(text).width+24,h=sz+14;x=clamp(x,w/2+4,W-w/2-4);
+  if(tx!=null){ctx.strokeStyle=INK;ctx.lineWidth=2;ctx.setLineDash([]);ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(tx,ty);ctx.stroke();circle(tx,ty,4.5,INK);circle(tx,ty,2.2,'#fff');}
+  rr(x-w/2,y-h/2,w,h,h/2);ctx.fillStyle='#fff';ctx.fill();ctx.lineWidth=2.5;ctx.strokeStyle=INK;ctx.stroke();
+  ctx.beginPath();ctx.arc(x-w/2+11,y,4.5,0,7);ctx.fillStyle=col;ctx.fill();
+  ctx.fillStyle=INK;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(text,x+5,y+1);}
+function banner(text,y=34,col='#5A3E72'){font(22,900);const w=ctx.measureText(text).width+40;rr(W/2-w/2,y-20,w,40,20);ctx.fillStyle=col;ctx.fill();ctx.lineWidth=3;ctx.strokeStyle=INK;ctx.stroke();ctx.fillStyle='#fff';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(text,W/2,y+1);}
+function arrow(x1,y1,x2,y2,col,lw=5){const a=Math.atan2(y2-y1,x2-x1);ctx.lineCap='round';ctx.strokeStyle=INK;ctx.lineWidth=lw+3;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2-Math.cos(a)*8,y2-Math.sin(a)*8);ctx.stroke();ctx.strokeStyle=col;ctx.lineWidth=lw;ctx.stroke();
+  ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-Math.cos(a-.5)*16,y2-Math.sin(a-.5)*16);ctx.lineTo(x2-Math.cos(a+.5)*16,y2-Math.sin(a+.5)*16);ctx.closePath();ctx.fillStyle=col;ctx.fill();ctx.lineWidth=2;ctx.strokeStyle=INK;ctx.stroke();ctx.lineCap='butt';}
+function cornerPill(txt){font(17,900);const w=ctx.measureText(txt).width+28;rr(W-w-14,14,w,38,19);ctx.fillStyle='#fff';ctx.fill();ctx.lineWidth=3;ctx.strokeStyle=INK;ctx.stroke();ctx.fillStyle=INK;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(txt,W-14-w/2,34);}
+function skyBg(top='#BFE3F8',bot='#F2FAFF',gy=470){const g=ctx.createLinearGradient(0,0,0,gy);g.addColorStop(0,top);g.addColorStop(1,bot);ctx.fillStyle=g;ctx.fillRect(0,0,W,gy+5);}
+function cloudS(x,y,s){ctx.save();ctx.translate(x,y);ctx.scale(s,s);ctx.beginPath();ctx.arc(0,0,22,Math.PI*.5,Math.PI*1.5);ctx.arc(26,-14,26,Math.PI,Math.PI*2);ctx.arc(56,-4,20,Math.PI*1.3,Math.PI*.5);ctx.closePath();ctx.fillStyle='#fff';ctx.fill();ctx.lineWidth=2.5;ctx.strokeStyle='rgba(43,45,66,.4)';ctx.stroke();ctx.restore();}
+function sunS(x,y,r=33){ctx.save();ctx.translate(x,y);ctx.rotate(now*.3);for(let i=0;i<12;i++){ctx.rotate(Math.PI/6);ctx.beginPath();ctx.moveTo(r+7,0);ctx.lineTo(r+23,0);ctx.lineWidth=5;ctx.lineCap='round';ctx.strokeStyle='#FFB703';ctx.stroke();}ctx.restore();circle(x,y,r,'#FFD60A',INK,3);circle(x-r*.3,y-r*.3,r*.27,'rgba(255,255,255,.55)');}
+const SOILP=[];for(let i=0;i<180;i++)SOILP.push({x:Math.random()*W,y:Math.random(),r:Math.random()<.12?3+Math.random()*4:1+Math.random()*2,c:['#5E3B22','#A0703F','#3F2715','#C08A55','#A68A6D'][i%5]});
+function soil(gy,top='#8A5A36',bot='#4E321D',grass=true){const g=ctx.createLinearGradient(0,gy,0,H);g.addColorStop(0,top);g.addColorStop(1,bot);ctx.fillStyle=g;ctx.beginPath();ctx.moveTo(0,gy);for(let x=0;x<=W;x+=20)ctx.lineTo(x,gy+Math.sin(x*.031)*3);ctx.lineTo(W,H);ctx.lineTo(0,H);ctx.closePath();ctx.fill();
+  SOILP.forEach(p=>circle(p.x,gy+8+p.y*(H-gy-10),p.r,p.c));ctx.beginPath();for(let x=0;x<=W;x+=20)ctx.lineTo(x,gy+Math.sin(x*.031)*3);ctx.lineWidth=3;ctx.strokeStyle=INK;ctx.stroke();
+  if(grass){for(let x=20;x<W;x+=70){for(let k=-2;k<=2;k++){ctx.beginPath();ctx.moveTo(x+k*4,gy+2);ctx.quadraticCurveTo(x+k*6,gy-10,x+k*8+Math.sin(now*1.5+x)*2,gy-16-(k%2?4:0));ctx.lineWidth=3;ctx.strokeStyle='#55A630';ctx.stroke();}}}}
+/* ================= CANVAS HELPERS ================= */
+function mkCanvas(id,W,H){const c=$('#'+id);const dpr=Math.min(2,window.devicePixelRatio||1);c.width=W*dpr;c.height=H*dpr;const ctx=c.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);c._W=W;c._H=H;return {c,ctx,W,H};}
+function ptr(c,e){const r=c.getBoundingClientRect();return {x:(e.clientX-r.left)*c._W/r.width,y:(e.clientY-r.top)*c._H/r.height};}
+function circ(x,y,r,fill,ctx,stroke=INK,lw=2){ctx.beginPath();ctx.arc(x,y,Math.max(.1,r),0,Math.PI*2);if(fill){ctx.fillStyle=fill;ctx.fill();}if(stroke){ctx.lineWidth=lw;ctx.strokeStyle=stroke;ctx.stroke();}}
+function ell(ctx,x,y,rx,ry,rot,fill,stroke=INK,lw=2){ctx.beginPath();ctx.ellipse(x,y,Math.max(.1,rx),Math.max(.1,ry),rot,0,Math.PI*2);if(fill){ctx.fillStyle=fill;ctx.fill();}if(stroke){ctx.lineWidth=lw;ctx.strokeStyle=stroke;ctx.stroke();}}
+function rrect(ctx,x,y,w,h,r,fill,stroke=INK,lw=2){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();if(fill){ctx.fillStyle=fill;ctx.fill();}if(stroke){ctx.lineWidth=lw;ctx.strokeStyle=stroke;ctx.stroke();}}
+function label(ctx,t,x,y,{size=14,bg='#fff',color=INK,align='center',bold=true}={}){ctx.font=`${bold?'700 ':''}${size}px system-ui,sans-serif`;const w=ctx.measureText(t).width+14,h=size+10;let lx=align==='center'?x-w/2:align==='right'?x-w:x;lx=clamp(lx,2,ctx.canvas._W-w-2);if(bg){rrect(ctx,lx,y-h/2,w,h,h/2,bg,INK,1.5);}ctx.fillStyle=color;ctx.textAlign='left';ctx.textBaseline='middle';ctx.fillText(t,lx+7,y+1);}
+function cloud(ctx,x,y,s,fill='#fff'){ctx.save();ctx.translate(x,y);ctx.scale(s,s);ctx.beginPath();ctx.arc(-26,6,18,Math.PI*.5,Math.PI*1.5);ctx.arc(-6,-10,22,Math.PI,Math.PI*1.9);ctx.arc(22,-2,18,Math.PI*1.3,Math.PI*.4);ctx.closePath();ctx.fillStyle=fill;ctx.fill();ctx.lineWidth=2/s;ctx.strokeStyle=INK;ctx.stroke();ctx.restore();}
+function sun(ctx,x,y,r,t){ctx.save();ctx.strokeStyle='#F4A261';ctx.lineWidth=3;for(let i=0;i<10;i++){const a=i/10*6.283+t*.3;ctx.beginPath();ctx.moveTo(x+Math.cos(a)*(r+6),y+Math.sin(a)*(r+6));ctx.lineTo(x+Math.cos(a)*(r+16),y+Math.sin(a)*(r+16));ctx.stroke();}ctx.restore();circ(x,y,r,'#FFD60A',ctx,INK,2.5);}
+function tree(ctx,x,gy,s=1,col1='#4F8F5B',col2='#6BAA75'){ctx.save();ctx.translate(x,gy);ctx.scale(s,s);rrect(ctx,-14,-120,28,122,6,'#8B5E3C',INK,2.5);ctx.lineWidth=2.5;circ(-44,-128,46,col1,ctx);circ(44,-132,48,col1,ctx);circ(0,-168,56,col2,ctx);circ(-10,-120,30,col2,ctx,null);ctx.restore();}
+function seedling(ctx,x,gy,h,health=1,g=1){if(g<=0)return;const hh=h*g;const col=health>.6?'#52B26B':health>.3?'#B5A642':'#8B6B4A';const droop=(1-health)*0.9;ctx.save();ctx.translate(x,gy);ctx.strokeStyle=health>.3?'#3f7f4d':'#7a5c3c';ctx.lineWidth=2.5;ctx.beginPath();ctx.moveTo(0,0);ctx.quadraticCurveTo(droop*hh*.6,-hh*.6,droop*hh*.9,-hh*(1-droop*.4));ctx.stroke();const tx=droop*hh*.9,ty=-hh*(1-droop*.4);ell(ctx,tx-7,ty+droop*4,8*g,4*g,-.5+droop,col,INK,1.5);ell(ctx,tx+7,ty+droop*4,8*g,4*g,.5+droop,col,INK,1.5);ctx.restore();}
+function drawDandelion(ctx,x,y,s,rot=0){ctx.save();ctx.translate(x,y);ctx.rotate(rot);ctx.scale(s,s);ctx.strokeStyle='#8d939c';ctx.lineWidth=1.2;for(let i=0;i<11;i++){const a=(-160+i*14)*Math.PI/180;ctx.beginPath();ctx.moveTo(0,-14);ctx.lineTo(Math.cos(a)*16,-14+Math.sin(a)*16);ctx.stroke();ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(Math.cos(a)*16,-14+Math.sin(a)*16,1.6,0,6.3);ctx.fill();}ctx.strokeStyle='#6b5a3a';ctx.beginPath();ctx.moveTo(0,-14);ctx.lineTo(0,0);ctx.stroke();ell(ctx,0,4,2.6,5,0,'#8B6B4A',INK,1.3);ctx.restore();}
+function drawSamara(ctx,x,y,s,rot=0){ctx.save();ctx.translate(x,y);ctx.rotate(rot);ctx.scale(s,s);ctx.beginPath();ctx.moveTo(0,0);ctx.bezierCurveTo(4,-14,18,-22,30,-22);ctx.bezierCurveTo(30,-14,18,-2,4,4);ctx.closePath();ctx.fillStyle='#D9B26F';ctx.fill();ctx.lineWidth=1.6;ctx.strokeStyle=INK;ctx.stroke();ell(ctx,0,2,6,4.5,.3,'#9C6B3E',INK,1.6);ctx.restore();}
+function drawPlainSeed(ctx,x,y,s,rot=0,col='#A47148'){ell(ctx,x,y,5*s,7*s,rot,col,INK,1.6);}
+function drawCoconut(ctx,x,y,s,rot=0,col='#7C9A3E'){ctx.save();ctx.translate(x,y);ctx.rotate(rot);ell(ctx,0,0,16*s,14*s,0,col,INK,2.2);ctx.strokeStyle='rgba(0,0,0,.25)';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(-10*s,-4*s);ctx.quadraticCurveTo(0,-10*s,10*s,-4*s);ctx.stroke();ctx.restore();}
+function drawBurr(ctx,x,y,s){ctx.save();ctx.translate(x,y);ctx.strokeStyle='#6d4c41';ctx.lineWidth=1.6;for(let i=0;i<12;i++){const a=i/12*6.283;ctx.beginPath();ctx.moveTo(Math.cos(a)*6*s,Math.sin(a)*6*s);ctx.lineTo(Math.cos(a)*10*s,Math.sin(a)*10*s);ctx.lineTo(Math.cos(a+.5)*10*s,Math.sin(a+.5)*10*s);ctx.stroke();}circ(0,0,6.5*s,'#8E6C8A',ctx,INK,1.6);ctx.restore();}
+function drawBerry(ctx,x,y,s,col='#C1121F'){circ(x,y,7*s,col,ctx,INK,1.6);circ(x-2*s,y-2*s,1.8*s,'rgba(255,255,255,.6)',ctx,null);}
+function ground(ctx,W,H,gy,top='#9CC27E',soil='#8B6B4A'){ctx.fillStyle=top;ctx.fillRect(0,gy,W,14);ctx.fillStyle=soil;ctx.fillRect(0,gy+14,W,H-gy-14);ctx.strokeStyle=INK;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,gy);ctx.lineTo(W,gy);ctx.stroke();}
+
+/* ================= SVG LIBRARY ================= */
+const SV={};
+SV.wrap=(inner,vb='0 0 100 100',label='')=>`<svg viewBox="${vb}" role="img" aria-label="${label}" xmlns="http://www.w3.org/2000/svg">${inner}</svg>`;
+SV.dandelion=()=>{let h='';for(let i=0;i<13;i++){const a=(-165+i*150/12)*Math.PI/180,x=50+Math.cos(a)*36,y=44+Math.sin(a)*36;h+=`<line x1="50" y1="44" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="#8d939c" stroke-width="1.6"/><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.4" fill="#fff" stroke="#8d939c" stroke-width="1.2"/>`;}
+  return SV.wrap(h+`<line x1="50" y1="44" x2="50" y2="74" stroke="#6b5a3a" stroke-width="2"/><ellipse cx="50" cy="83" rx="4.5" ry="10" fill="#8B6B4A" stroke="${INK}" stroke-width="2"/>`,'0 0 100 100','Dandelion seed with a parachute of hairs (pappus)');};
+SV.maple=()=>SV.wrap(`<path d="M30 74 C30 40 52 14 80 12 C86 24 72 52 44 74 Z" fill="#D9B26F" stroke="${INK}" stroke-width="2.5"/><path d="M36 70 C46 52 58 34 76 18 M44 66 C56 52 66 40 78 30" stroke="#a9834a" stroke-width="1.3" fill="none"/><ellipse cx="32" cy="76" rx="12" ry="9" fill="#9C6B3E" stroke="${INK}" stroke-width="2.5"/>`,'0 0 100 100','Maple fruit with a wing');
+SV.ash=()=>SV.wrap(`<path d="M20 80 C30 60 60 22 80 14 C86 18 84 28 76 36 C60 54 40 74 26 86 Z" fill="#CDB37A" stroke="${INK}" stroke-width="2.5"/><path d="M24 82 C40 64 62 38 80 18" stroke="#9c8650" stroke-width="1.3" fill="none"/><ellipse cx="24" cy="83" rx="6" ry="9" transform="rotate(40 24 83)" fill="#8B6B4A" stroke="${INK}" stroke-width="2.5"/>`,'0 0 100 100','Ash fruit with a single wing');
+SV.coconut=()=>SV.wrap(`<ellipse cx="50" cy="54" rx="34" ry="30" fill="#7C9A3E" stroke="${INK}" stroke-width="3"/><path d="M26 44 C38 34 62 34 74 44" stroke="#5f7a2c" stroke-width="2" fill="none"/><path d="M50 24 L50 18" stroke="${INK}" stroke-width="3"/><ellipse cx="40" cy="46" rx="8" ry="4" fill="#9fbf5e" opacity=".8"/>`,'0 0 100 100','Coconut fruit');
+SV.coconutX=()=>SV.wrap(`<ellipse cx="160" cy="120" rx="130" ry="100" fill="#7C9A3E" stroke="${INK}" stroke-width="4"/><ellipse cx="160" cy="120" rx="120" ry="90" fill="#C9A26A" stroke="#8B6B4A" stroke-width="2"/>`+
+  Array.from({length:40},(_,i)=>{const a=i/40*6.283,r1=72,r2=112;return `<line x1="${160+Math.cos(a)*r1}" y1="${120+Math.sin(a)*r1*.82}" x2="${160+Math.cos(a)*r2}" y2="${120+Math.sin(a)*r2*.8}" stroke="#a37d47" stroke-width="2"/>`;}).join('')+
+  Array.from({length:26},()=>{const a=Math.random()*6.283,r=80+Math.random()*26;return `<circle cx="${(160+Math.cos(a)*r).toFixed(0)}" cy="${(120+Math.sin(a)*r*.8).toFixed(0)}" r="3.5" fill="#F7E7C6" stroke="#8B6B4A"/>`;}).join('')+
+  `<ellipse cx="160" cy="120" rx="68" ry="58" fill="#5A3A22" stroke="${INK}" stroke-width="3"/><ellipse cx="160" cy="120" rx="58" ry="49" fill="#FBF8F0" stroke="#d8cfb9" stroke-width="2"/><ellipse cx="160" cy="120" rx="44" ry="36" fill="#CDE8F2"/><ellipse cx="160" cy="76" rx="7" ry="5" fill="#E9C46A" stroke="${INK}" stroke-width="2"/>`+
+  [['Smooth outer skin (waterproof)',318,30,250,52],['Fibrous husk full of AIR SPACES → floats',318,80,268,96],['Hard shell (endocarp) — protects',318,130,222,124],['Seed: white "meat" + coconut water = food store',318,180,190,150],['Embryo (tiny new plant)',318,230,166,80]].map(([t,x,y,px,py])=>`<line x1="${px}" y1="${py}" x2="${x-6}" y2="${y-5}" stroke="${INK}" stroke-width="1.5"/><circle cx="${px}" cy="${py}" r="3.5" fill="${INK}"/><text x="${x}" y="${y}" font-size="15" font-family="system-ui,sans-serif" fill="${INK}">${t}</text>`).join(''),'0 0 640 250','Cross-section of a coconut');
+SV.burr=()=>{let h='';for(let i=0;i<16;i++){const a=i/16*6.283,x1=50+Math.cos(a)*22,y1=50+Math.sin(a)*22,x2=50+Math.cos(a)*36,y2=50+Math.sin(a)*36,hx=x2+Math.cos(a+1.6)*5,hy=y2+Math.sin(a+1.6)*5;h+=`<path d="M${x1.toFixed(1)} ${y1.toFixed(1)} L${x2.toFixed(1)} ${y2.toFixed(1)} Q${(x2+Math.cos(a)*4).toFixed(1)} ${(y2+Math.sin(a)*4).toFixed(1)} ${hx.toFixed(1)} ${hy.toFixed(1)}" stroke="#6d4c41" stroke-width="2.2" fill="none" stroke-linecap="round"/>`;}return SV.wrap(h+`<circle cx="50" cy="50" r="23" fill="#8E6C8A" stroke="${INK}" stroke-width="2.5"/><circle cx="50" cy="50" r="9" fill="#B48CB0"/>`,'0 0 100 100','Burdock burr covered in hooks');};
+SV.smooth=()=>SV.wrap(`<ellipse cx="50" cy="52" rx="22" ry="30" fill="#A47148" stroke="${INK}" stroke-width="3"/><ellipse cx="43" cy="40" rx="6" ry="9" fill="#c4935f"/>`,'0 0 100 100','Smooth seed with no special structures');
+SV.cherry=()=>SV.wrap(`<path d="M38 60 C40 36 52 18 66 10 M66 10 C68 30 64 48 64 62" stroke="#3f6b2a" stroke-width="3" fill="none"/><path d="M66 10 C78 6 88 12 90 20 C80 22 72 18 66 10Z" fill="#6A994E" stroke="${INK}" stroke-width="2"/><circle cx="36" cy="72" r="17" fill="#C1121F" stroke="${INK}" stroke-width="3"/><circle cx="66" cy="74" r="17" fill="#C1121F" stroke="${INK}" stroke-width="3"/><circle cx="30" cy="66" r="4" fill="#fff" opacity=".6"/><circle cx="60" cy="68" r="4" fill="#fff" opacity=".6"/>`,'0 0 100 100','Cherries — juicy fruits with a hard stone around the seed');
+SV.berry=()=>SV.wrap(`<g stroke="${INK}" stroke-width="2.5">`+[[40,50],[60,50],[50,66],[34,68],[66,68],[50,36]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="12" fill="#5A189A"/>`).join('')+`</g><path d="M50 24 L50 12" stroke="#3f6b2a" stroke-width="3"/>`,'0 0 100 100','Berries');
+SV.pod=(open=false)=>open?SV.wrap(`<path d="M50 20 C50 30 50 34 50 40" stroke="#3f6b2a" stroke-width="3"/>`+[0,72,144,216,288].map(a=>`<path d="M50 40 c ${(Math.cos(a*Math.PI/180)*20).toFixed(1)} ${(Math.sin(a*Math.PI/180)*20+10).toFixed(1)} ${(Math.cos(a*Math.PI/180)*34).toFixed(1)} ${(Math.sin(a*Math.PI/180)*8+30).toFixed(1)} ${(Math.cos((a+60)*Math.PI/180)*14).toFixed(1)} ${(Math.sin((a+60)*Math.PI/180)*14+40).toFixed(1)}" stroke="#7FA650" stroke-width="5" fill="none" stroke-linecap="round"/>`).join('')+[[18,30],[84,24],[14,74],[88,70],[50,92]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="5" fill="#6B4423" stroke="${INK}" stroke-width="2"/>`).join(''),'0 0 100 100','Exploded pod with coiled walls and flying seeds')
+ :SV.wrap(`<path d="M50 8 L50 20" stroke="#3f6b2a" stroke-width="3"/><path d="M50 20 C64 30 66 70 50 92 C34 70 36 30 50 20Z" fill="#8DB45A" stroke="${INK}" stroke-width="3"/><path d="M50 22 L50 90 M43 30 C40 54 42 74 48 88 M57 30 C60 54 58 74 52 88" stroke="#5d7f33" stroke-width="1.5" fill="none"/>`,'0 0 100 100','Closed Impatiens seed pod with seams');
+SV.pea=()=>SV.wrap(`<path d="M10 52 C20 30 80 30 92 48 C80 66 20 70 10 52Z" fill="#7DB542" stroke="${INK}" stroke-width="3"/><g fill="#A6D36A" stroke="${INK}" stroke-width="2"><circle cx="28" cy="51" r="7"/><circle cx="44" cy="50" r="7"/><circle cx="60" cy="50" r="7"/><circle cx="76" cy="50" r="6"/></g>`,'0 0 100 100','Pea pod (a legume)');
+SV.tree=()=>SV.wrap(`<rect x="0" y="210" width="400" height="90" fill="#9CC27E"/><rect x="0" y="250" width="400" height="50" fill="#8B6B4A"/><rect x="178" y="120" width="40" height="110" rx="8" fill="#8B5E3C" stroke="${INK}" stroke-width="3"/><g stroke="${INK}" stroke-width="3"><circle cx="150" cy="110" r="60" fill="#4F8F5B"/><circle cx="250" cy="105" r="62" fill="#4F8F5B"/><circle cx="200" cy="70" r="70" fill="#6BAA75"/></g><circle cx="340" cy="50" r="26" fill="#FFD60A" stroke="${INK}" stroke-width="3"/>`+
+  [[60,150,0],[110,90,1],[300,170,2],[350,120,0],[30,60,1]].map(([x,y,t])=>`<g transform="translate(${x} ${y}) scale(.5)">${t===0?`<line x1="0" y1="0" x2="0" y2="30" stroke="#6b5a3a" stroke-width="3"/>`+[-60,-30,0,30,60].map(a=>`<line x1="0" y1="0" x2="${Math.sin(a*Math.PI/180)*30}" y2="${-Math.cos(a*Math.PI/180)*30}" stroke="#777" stroke-width="2"/>`).join('')+`<ellipse cx="0" cy="36" rx="4" ry="8" fill="#8B6B4A" stroke="${INK}" stroke-width="2"/>`:t===1?`<path d="M0 0 C10 -30 40 -40 60 -40 C60 -26 40 -6 6 8Z" fill="#D9B26F" stroke="${INK}" stroke-width="3"/><circle cx="0" cy="4" r="9" fill="#9C6B3E" stroke="${INK}" stroke-width="3"/>`:`<circle r="14" fill="#C1121F" stroke="${INK}" stroke-width="3"/>`}</g>`).join('')+
+  `<path d="M40 190 q20 -14 40 0" stroke="#fff" stroke-width="4" fill="none"/><path d="M290 200 q20 -14 40 0" stroke="#fff" stroke-width="4" fill="none"/>`,'0 0 400 300','A tree releasing seeds that travel in different ways');
+
+function exampleRow(el,list){$(el).innerHTML=list.map(([svg,name,note])=>`<div class="ex">${svg}<div><b>${name}</b><br><small>${note}</small></div></div>`).join('');}
+
+/* ================= PREDICTION WIDGET ================= */
+function predict(elSel,key,opts,onPick){
+  const el=$(elSel);
+  const draw=()=>{const picked=S.pred[key];
+    el.innerHTML=`<div class="opts">${opts.map((o,i)=>`<button class="opt ${picked===i?'sel':''} ${picked!=null?'locked':''}" data-i="${i}" ${picked!=null?'aria-disabled="true"':''}><span class="k">${'ABCD'[i]}</span><span>${o}</span></button>`).join('')}</div>`+(picked!=null?`<p class="canvas-note">🔒 Prediction recorded. Now test it!</p>`:'');};
+  draw();
+  el.addEventListener('click',e=>{const b=e.target.closest('.opt');if(!b||S.pred[key]!=null)return;S.pred[key]=+b.dataset.i;award(key,5,'Prediction made');save();draw();sfx.pop();onPick&&onPick(+b.dataset.i);});
+  return {picked:()=>S.pred[key]};
+}
+function revealPred(fbSel,key,correct,opts,why){
+  const p=S.pred[key];if(p==null)return;
+  const ok=p===correct;
+  $(fbSel).innerHTML=`<div class="fb ${ok?'ok':'hint'}"><b>${ok?'✅ Your prediction was supported by the evidence.':'🔄 The evidence did not support your prediction — and that is fine!'}</b> You predicted: <i>${opts[p]}</i>.${ok?'':` The results show: <b>${opts[correct]}</b>.`} ${why}${ok?'':'<span class="take">Scientists change their ideas when evidence disagrees. That is good science.</span>'}</div>`;
+}
+
+/* ================= QUESTION ENGINE (3-stage feedback) ================= */
+const PTS=[10,6,3];
+function renderQ(el,q,opt={}){
+  if(typeof el==='string')el=$(el);
+  q._att=q._att||0;
+  const solved=()=>S.done[q.task];
+  const typeName={mc:'Multiple choice',tf:'True or false',multi:'Choose ALL correct answers',multi2:'Two-part scenario',img:'Image identification',order:'Cause and effect — put in order',match:'Drag-and-drop matching'}[q.type];
+  let sel=q.type==='multi'?new Set():q.type==='multi2'?[null,null]:null;
+  let orderState=q.type==='order'?shuffleNot(q.items):null;
+  let place={};
+  function shuffleNot(a){let s;do{s=shuffle(a.map((t,i)=>i));}while(s.every((v,i)=>v===i));return s;}
+  function body(){
+    if(q.type==='mc'||q.type==='tf'||q.type==='multi')return `<div class="opts">${q.opts.map((o,i)=>`<button class="opt" data-i="${i}"><span class="k">${q.type==='multi'?'☐':'ABCD'[i]}</span><span>${o}</span></button>`).join('')}</div>`;
+    if(q.type==='img')return `<div class="opts imgopts">${q.opts.map((o,i)=>`<button class="opt" data-i="${i}">${o.svg}<span>${o.t}</span></button>`).join('')}</div>`;
+    if(q.type==='multi2')return q.parts.map((p,pi)=>`<p style="margin-top:10px"><b>${p.label}</b></p><div class="opts" data-part="${pi}">${p.opts.map((o,i)=>`<button class="opt" data-p="${pi}" data-i="${i}"><span class="k">${'ABCD'[i]}</span><span>${o}</span></button>`).join('')}</div>`).join('');
+    if(q.type==='order')return `<div class="order"><ol>${orderState.map((ix,pos)=>`<li data-ix="${ix}"><span>${q.items[ix]}</span><button class="mv" data-up="${pos}" aria-label="Move up">▲</button><button class="mv" data-dn="${pos}" aria-label="Move down">▼</button></li>`).join('')}</ol></div>`;
+    if(q.type==='match')return `<p class="canvas-note">Drag each card into a box — or click a card, then click a box.</p><div class="match"><div class="mitems" data-pool>${q.items.map((it,i)=>place[i]==null?`<div class="mitem" draggable="true" tabindex="0" role="button" data-mi="${i}">${it.svg||''}${it.t}</div>`:'').join('')}</div><div class="mzones">${q.targets.map((t,ti)=>`<div class="mzone" data-zt="${ti}" tabindex="0" role="button" aria-label="Drop zone ${t}"><div class="zt">${t}</div><div class="zin">${q.items.map((it,i)=>place[i]===ti?`<div class="mitem" draggable="true" tabindex="0" role="button" data-mi="${i}">${it.svg||''}${it.t}</div>`:'').join('')}</div></div>`).join('')}</div></div>`;
+  }
+  function draw(){
+    el.innerHTML=`<span class="qtype">${typeName}</span>${opt.title?`<h4>${opt.title}</h4>`:''}<h4>${q.q}</h4>${q.art?`<div class="popart" style="margin:6px 0">${q.art}</div>`:''}<div class="qbody">${body()}</div><div class="row"><button class="btn primary qcheck">Check answer</button><span class="qstat"></span></div><div class="qfb" aria-live="polite"></div>`;
+    if(solved()&&!opt.fresh){showSolved();}
+  }
+  function lockAll(){el.querySelectorAll('.opt,.mv,.mitem').forEach(b=>{b.disabled=true;b.classList.add('locked');});const c=el.querySelector('.qcheck');if(c)c.disabled=true;}
+  function markCorrect(){
+    if(['mc','tf','img'].includes(q.type))el.querySelectorAll('.opt').forEach(b=>{if(+b.dataset.i===q.ans)b.classList.add('right');});
+    if(q.type==='multi')el.querySelectorAll('.opt').forEach(b=>{if(q.ans.includes(+b.dataset.i)){b.classList.add('right');b.querySelector('.k').textContent='☑';}});
+    if(q.type==='multi2')el.querySelectorAll('.opt').forEach(b=>{if(q.parts[+b.dataset.p].ans===+b.dataset.i)b.classList.add('right');});
+  }
+  function showSolved(){markCorrect();lockAll();
+    if(q.type==='order'){orderState=q.items.map((t,i)=>i);el.querySelector('.qbody').innerHTML=body();el.querySelectorAll('.order li').forEach(li=>li.classList.add('right'));lockAll();}
+    if(q.type==='match'){q.items.forEach((it,i)=>place[i]=it.target);el.querySelector('.qbody').innerHTML=body();el.querySelectorAll('.mitem').forEach(m=>m.classList.add('right'));lockAll();}
+    el.querySelector('.qfb').innerHTML=`<div class="fb ok">✅ <b>Correct.</b> ${q.explain}<span class="take">🧠 ${q.take}</span></div><button class="btn sm ghost qretry">↺ Try this question again (practice)</button>`;
+  }
+  function correct(){
+    const first=!solved();
+    const pts=q._rev?2:PTS[Math.min(q._att,2)];
+    if(first)award(q.task,pts,opt.label||'Correct reasoning');
+    sfx.ok();showSolved();opt.onDone&&opt.onDone(true);
+  }
+  function wrong(){
+    q._att++;sfx.bad();
+    const fb=el.querySelector('.qfb');
+    if(q._att===1)fb.innerHTML=`<div class="fb hint">💡 <b>Stage 1 · Hint:</b> ${q.hint} Try again!</div>`;
+    else if(q._att===2)fb.innerHTML=`<div class="fb hint">💡 ${q.hint}</div><div class="fb clue"><b>👀 Stage 2 · Visual clue</b><div class="clue-art">${q.clue}</div>One more try!</div>`;
+    else{q._rev=true;markCorrect();
+      if(q.type==='order'){orderState=q.items.map((t,i)=>i);el.querySelector('.qbody').innerHTML=body();el.querySelectorAll('.order li').forEach(li=>li.classList.add('right'));}
+      if(q.type==='match'){q.items.forEach((it,i)=>place[i]=it.target);el.querySelector('.qbody').innerHTML=body();}
+      lockAll();
+      fb.innerHTML=`<div class="fb exp"><b>📘 Stage 3 · Explanation:</b> ${q.explain}<span class="take">🧠 ${q.take}</span></div><button class="btn sm qretry">↺ Retry this question</button>`;
+      opt.onDone&&opt.onDone(false);}
+  }
+  function check(){
+    let ok=false,any=true;
+    if(['mc','tf','img'].includes(q.type)){if(sel==null)any=false;else ok=sel===q.ans;}
+    else if(q.type==='multi'){if(!sel.size)any=false;else ok=sel.size===q.ans.length&&q.ans.every(a=>sel.has(a));}
+    else if(q.type==='multi2'){if(sel.includes(null))any=false;else ok=sel.every((s,i)=>s===q.parts[i].ans);}
+    else if(q.type==='order'){ok=orderState.every((v,i)=>v===i);el.querySelectorAll('.order li').forEach((li,pos)=>{li.classList.toggle('right',+li.dataset.ix===pos);li.classList.toggle('wrong',+li.dataset.ix!==pos);});}
+    else if(q.type==='match'){if(Object.keys(place).length<q.items.length)any=false;else{ok=q.items.every((it,i)=>place[i]===it.target);el.querySelectorAll('.mzone .mitem').forEach(m=>{const i=+m.dataset.mi;m.classList.toggle('right',place[i]===q.items[i].target);m.classList.toggle('wrong',place[i]!==q.items[i].target);});}}
+    if(!any){el.querySelector('.qstat').textContent=q.type==='match'?'Place every card first.':'Choose an answer first.';return;}
+    el.querySelector('.qstat').textContent='';
+    if(!ok&&['mc','tf','img'].includes(q.type))el.querySelectorAll('.opt').forEach(b=>{if(+b.dataset.i===sel)b.classList.add('wrong');});
+    ok?correct():wrong();
+  }
+  let picked=null;
+  el.onclick=e=>{
+    const t=e.target;
+    if(t.closest('.qretry')){q._att=q._rev?3:0;sel=q.type==='multi'?new Set():q.type==='multi2'?[null,null]:null;orderState=q.type==='order'?shuffleNot(q.items):null;place={};
+      el.innerHTML='';const keep=q._rev;draw2();q._rev=keep;q._att=0;return;}
+    if(t.closest('.qcheck')){check();return;}
+    const o=t.closest('.opt');
+    if(o&&!o.disabled){
+      if(q.type==='multi'){const i=+o.dataset.i;sel.has(i)?sel.delete(i):sel.add(i);o.classList.toggle('sel');o.querySelector('.k').textContent=sel.has(i)?'☑':'☐';}
+      else if(q.type==='multi2'){const p=+o.dataset.p;sel[p]=+o.dataset.i;el.querySelectorAll(`.opt[data-p="${p}"]`).forEach(b=>b.classList.remove('sel','wrong'));o.classList.add('sel');}
+      else{sel=+o.dataset.i;el.querySelectorAll('.opt').forEach(b=>b.classList.remove('sel','wrong'));o.classList.add('sel');}
+      return;}
+    const mv=t.closest('.mv');
+    if(mv&&!mv.disabled){const up=mv.dataset.up,dn=mv.dataset.dn;const a=orderState;if(up!=null&&+up>0){[a[+up-1],a[+up]]=[a[+up],a[+up-1]];}if(dn!=null&&+dn<a.length-1){[a[+dn+1],a[+dn]]=[a[+dn],a[+dn+1]];}el.querySelector('.qbody').innerHTML=body();const btn=el.querySelector(up!=null?`[data-up="${Math.max(0,+up-1)}"]`:`[data-dn="${Math.min(a.length-1,+dn+1)}"]`);btn&&btn.focus();return;}
+    const mi=t.closest('.mitem');
+    if(mi&&!mi.classList.contains('locked')){picked=+mi.dataset.mi;el.querySelectorAll('.mitem').forEach(m=>m.classList.toggle('sel',m===mi));return;}
+    const mz=t.closest('[data-zt]');
+    if(mz&&picked!=null){place[picked]=+mz.dataset.zt;picked=null;el.querySelector('.qbody').innerHTML=body();bindDnD();sfx.pop();return;}
+    const pool=t.closest('[data-pool]');if(pool&&picked!=null){delete place[picked];picked=null;el.querySelector('.qbody').innerHTML=body();bindDnD();}
+  };
+  el.onkeydown=e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('.mitem,.mzone')){e.preventDefault();e.target.click();}};
+  function bindDnD(){
+    el.querySelectorAll('.mitem').forEach(m=>{m.ondragstart=ev=>{ev.dataTransfer.setData('text/plain',m.dataset.mi);};});
+    el.querySelectorAll('.mzone').forEach(z=>{z.ondragover=ev=>{ev.preventDefault();z.classList.add('over');};z.ondragleave=()=>z.classList.remove('over');z.ondrop=ev=>{ev.preventDefault();const i=+ev.dataTransfer.getData('text/plain');place[i]=+z.dataset.zt;el.querySelector('.qbody').innerHTML=body();bindDnD();sfx.pop();};});
+    const pool=el.querySelector('[data-pool]');if(pool){pool.ondragover=ev=>ev.preventDefault();pool.ondrop=ev=>{ev.preventDefault();delete place[+ev.dataTransfer.getData('text/plain')];el.querySelector('.qbody').innerHTML=body();bindDnD();};}
+  }
+  function draw2(){const s=opt.fresh;opt.fresh=true;draw();opt.fresh=s;bindDnD();}
+  draw();bindDnD();
+}
+
+const QUIZ=[
+ {task:'q1',type:'mc',q:'Why is seed dispersal important for a plant species?',opts:['It reduces competition with the parent and siblings, and lets the species colonise new areas.','It makes seeds grow faster than normal.','It means seeds no longer need water.','It stops the parent plant from producing more seeds.'],ans:0,hint:'Think back to the crowded seedlings under the parent tree in Module 1.',clue:SV.tree()+'<span>Crowded vs spread out — which seedlings survived?</span>',explain:'Spreading seeds reduces competition for light, water, minerals and space, and lets plants reach new habitats.',take:'Spread out = less competition + new places.'},
+ {task:'q2',type:'img',q:'Image identification: what helps this seed travel through the air?',art:`<div style="width:150px">${SV.dandelion()}</div>`,opts:[{svg:SV.wrap(`<g stroke="#8d939c" stroke-width="2">${[-60,-30,0,30,60].map(a=>`<line x1="50" y1="60" x2="${50+Math.sin(a*Math.PI/180)*40}" y2="${60-Math.cos(a*Math.PI/180)*40}"/>`).join('')}</g>`),t:'A parachute of fine hairs (pappus)'},{svg:SV.burr(),t:'Hooks'},{svg:SV.cherry(),t:'Juicy fruit'},{svg:SV.coconut(),t:'Air-filled husk'}],ans:0,hint:'Look at the top of the seed. What would catch the air?',clue:SV.dandelion()+'<span>Many thin hairs spread out like an umbrella.</span>',explain:'The dandelion\'s pappus is a parachute of fine hairs with a large surface area, which increases air resistance and slows its fall.',take:'Pappus = parachute.'},
+ {task:'q3',type:'mc',q:'Why can a coconut float?',opts:['Its fibrous husk contains many air spaces, so the fruit is less dense than water.','It is very heavy, so it pushes the water away.','The coconut water inside is lighter than air.','Coconuts have tiny fins.'],ans:0,hint:'Floating depends on density. What fills the husk?',clue:`<div style="max-width:260px">${SV.coconutX()}</div>`,explain:'The husk is fibrous and full of air, making the whole fruit less dense than sea water — so it floats (buoyancy).',take:'Air spaces → low density → floats.'},
+ {task:'q4',type:'multi',q:'How can animals transport seeds? (Choose ALL correct answers.)',opts:['Seeds with hooks attach to fur and drop off later.','Animals eat fruits, and seeds with tough coats are deposited in droppings.','Animals blow seeds away by breathing on them.','Seeds explode inside animals to spread.'],ans:[0,1],hint:'There are two ways: one on the outside of the animal, one on the inside.',clue:SV.burr()+SV.cherry()+'<span>Outside 🦊 · Inside 🐦</span>',explain:'Animals disperse seeds externally (attachment to fur/feathers) and internally (eating fruits and depositing seeds later).',take:'Animals carry seeds outside (fur) or inside (gut).'},
+ {task:'q5',type:'mc',q:'What is the role of the hooks on burdock fruits?',opts:['They catch on animal fur so the fruit is carried away from the parent.','They protect the seed from being eaten.','They help the fruit float on water.','They pull water from the soil.'],ans:0,hint:'Remember the fox walking through the meadow.',clue:SV.burr()+'<span>Hooks + fur = …?</span>',explain:'Hooks grip fur, feathers or clothing, so animals transport the fruit externally until it falls or is groomed off.',take:'Hooks = hitch-hiking.'},
+ {task:'q6',type:'order',q:'Cause and effect: put the steps of mechanical (explosive) dispersal in order.',items:['The pod matures.','Tension builds in the pod walls.','The seams split suddenly.','The walls coil and fling the seeds.'],hint:'Ripening comes first; flinging comes last.',clue:SV.pod()+'→'+SV.pod(true),explain:'Maturation causes changes in the pod walls, tension builds, the seams split, and the walls coil to throw the seeds.',take:'Ripen → tension → split → launch.'},
+ {task:'q7',type:'mc',q:'Why is competition reduced when seeds spread away from the parent plant?',opts:['Each seedling shares light, water, minerals and space with fewer neighbours.','Seeds far away do not need any resources.','The parent plant dies so others can grow.','Competition only happens between animals.'],ans:0,hint:'Competition happens when many organisms need the same limited resources.',clue:'<span>☀️💧🪨↔️ shared by 14 seedlings vs shared by 1 seedling</span>',explain:'Resources are limited. Fewer plants in one place means more light, water, minerals and space for each.',take:'Fewer neighbours = more resources each.'},
+ {task:'q8',type:'img',q:'Which seed structure is best adapted for wind dispersal?',opts:[{svg:SV.smooth(),t:'Smooth, heavy seed'},{svg:SV.maple(),t:'Seed with a thin wing'},{svg:SV.coconut(),t:'Large husked fruit'},{svg:SV.cherry(),t:'Juicy fruit'}],ans:1,hint:'You need a large surface area and a small mass.',clue:SV.maple()+'<span>Think of a helicopter blade spinning slowly downwards.</span>',explain:'A thin, light wing gives a large surface area for little mass, so the seed spins and falls slowly, giving the wind time to carry it.',take:'Light + large surface = wind-ready.'},
+ {task:'q9',type:'tf',q:'True or false: if a seed is successfully dispersed, it will definitely germinate.',opts:['True','False'],ans:1,hint:'Remember the seeds that landed on the dry rocky slope in Module 4.',clue:'<span>1 Dispersal ✓ → 2 Arrival ✓ → 3 Germination ? → 4 Establishment ?</span>',explain:'False. Dispersal only moves the seed. Germination still needs water, oxygen and a suitable temperature; establishment needs light, space and minerals.',take:'Dispersal ≠ germination.'},
+ {task:'q10',type:'mc',q:'A seed lands in a dark, crowded spot under its parent where the soil is dry. What is most likely to happen?',opts:['It may fail to germinate, or the seedling may not become established, because conditions are unsuitable.','It will grow fastest because its parent is nearby.','It will move to a better place by itself.','It will germinate without water because it is in shade.'],ans:0,hint:'Check the water, light and space in that spot.',clue:'<span>💧 low · ☀️ none · ↔️ none</span>',explain:'In an unsuitable environment a seed may stay dormant, die, or germinate but fail to establish because of too little water, light or space.',take:'Wrong place = poor survival.'},
+ {task:'q11',type:'multi2',q:'Scenario: a plant produces seeds with small hooks.',parts:[{label:'Part 1 · Which dispersal mechanism is most likely?',opts:['Wind','Water','Animals (external)','Mechanical'],ans:2},{label:'Part 2 · Why?',opts:['Hooks increase air resistance.','Hooks catch on fur or feathers, so animals carry the seeds.','Hooks help the seed float.','Hooks store tension to launch the seed.'],ans:1}],hint:'What would a hook catch on?',clue:SV.burr()+'<span>🦊 fur</span>',explain:'Hooks are an adaptation for external animal dispersal: they attach to fur or feathers.',take:'Structure tells you the mechanism.'},
+ {task:'q12',type:'match',q:'Drag each seed to the dispersal mechanism it is adapted for.',items:[{t:'Dandelion',svg:SV.dandelion(),target:0},{t:'Coconut',svg:SV.coconut(),target:1},{t:'Burdock',svg:SV.burr(),target:2},{t:'Cherry',svg:SV.cherry(),target:3},{t:'Impatiens',svg:SV.pod(),target:4}],targets:['🌬️ Wind','🌊 Water','🦊 Animal – fur','🐦 Animal – eaten','💥 Mechanical'],hint:'Match each structure: hairs, air-filled husk, hooks, juicy flesh, pod.',clue:'<span>Pappus → air · Husk → floats · Hooks → fur · Flesh → food · Pod → bursts</span>',explain:'Dandelion: wind (pappus). Coconut: water (air-filled husk). Burdock: animal fur (hooks). Cherry: eaten by animals (juicy fruit, hard stone). Impatiens: mechanical (exploding pod).',take:'Every structure fits a mechanism.'}
+];
+/* ============ scenes ============ */
+const SC=[];
+function P(tagT,title,body){return`<span class="tagline">${tagT}</span><h2>${title}</h2>${body}`;}
+function segBind(id,key,obj,cb){const el=$('#'+id);if(!el)return;const set=()=>el.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v==String(obj[key])));set();el.onclick=e=>{const b=e.target.closest('button');if(!b)return;obj[key]=isNaN(+b.dataset.v)?b.dataset.v:+b.dataset.v;set();sfx.pop();cb&&cb();};}
+const segs=(id,opts)=>`<div class="segs" id="${id}">${opts.map(([v,t])=>`<button data-v="${v}" aria-pressed="false">${t}</button>`).join('')}</div>`;
+
+/* ===== 0 · THE PROBLEM ===== */
+const P0={seeds:[],sl:[],mode:'fall',t:0,explored:new Set(S.done.m1_explore?['sun','water','minerals','space']:[]),rain:[]};
+for(let i=0;i<40;i++)P0.rain.push({x:rand(800,920),y:rand(110,470)});
+const GY0=470,TX0=470;
+function p0init(){P0.mode='fall';P0.t=0;P0.seeds=[];P0.sl=[];for(let i=0;i<14;i++){let x;do{x=TX0+rand(-190,190);}while(Math.abs(x-TX0)<28);P0.seeds.push({x:TX0+rand(-110,110),y:GY0-rand(220,290),tx:x,vy:0,delay:i*.16,landed:false});}}
+p0init();
+const INFO0={sun:['☀️ Competition for sunlight','Seedlings need light for <b>photosynthesis</b>. Under the parent\'s thick canopy very little light reaches the ground — and crowded seedlings shade each other too.'],
+ water:['💧 Competition for water','The parent\'s big roots and all the seedlings\' roots take water from the <b>same patch of soil</b>. Close together, each plant gets less.'],
+ minerals:['🪨 Competition for minerals','Roots absorb <b>mineral ions</b> (such as nitrate and magnesium) from the soil. Many roots in one small area use them up quickly.'],
+ space:['🌱 Competition for space','Leaves need room to spread and roots need room to grow. Crowded seedlings get in each other\'s way.']};
+const OPT0=['They would all grow into big, healthy plants.','They would compete for light, water, minerals and space, so most would grow poorly or die.','The parent plant would move away to give them room.','They would grow faster because their parent protects them.'];
+SC.push({name:'Problem',
+ panel:()=>P('Module 1 · The biological problem','Why don’t plants grow everywhere around their parent? 🌳',`<p>This tree drops <b>all</b> its seeds right underneath itself.</p><div class="key">👆 <b>Observe:</b> click the <b>sun</b>, the <b>rain</b>, the <b>soil</b> and the <b>seedlings</b>. Explored: <b id="p0n">${P0.explored.size}</b>/4</div><div class="qcard"><h4>🤔 Predict: if all the seeds remain close to the parent plant, what might happen?</h4><div id="p0pred"></div><div id="p0fb"></div></div><button class="btn primary" id="p0go" ${S.pred.m1_predict==null?'disabled':''}>▶ Run one growing season</button><div class="result" id="p0res">${S.pred.m1_predict==null?'Make your prediction first — then test it.':'Ready: run a growing season.'}</div>`),
+ say:'Why do plants not grow everywhere around their parent? This tree drops all its seeds right underneath itself. Click the sun, the rain, the soil and the seedlings. If all the seeds stay close to the parent, what might happen?',
+ bind(){predict('#p0pred','m1_predict',OPT0,()=>{$('#p0go').disabled=false;$('#p0res').textContent='Ready: run a growing season.';});
+  $('#p0go').onclick=()=>{p0init();P0.seeds.forEach(s=>{s.landed=true;P0.sl.push({x:s.tx,g:1,health:1,h:rand(30,44)});});const keep=new Set(shuffle(P0.sl.map((s,i)=>i)).slice(0,2));P0.sl.forEach((s,i)=>s.target=keep.has(i)?.85:rand(0,.25));P0.mode='season';P0.t=0;sfx.whoosh();$('#p0res').textContent='🌦️ A growing season passes… watch the shade, the roots and the seedlings.';};
+  if(S.done.m1_season)revealPred('#p0fb','m1_predict',1,OPT0,'Crowded seedlings compete with each other and with the parent for the same resources.');},
+ update(dt){P0.t+=dt;
+  P0.seeds.forEach(s=>{if(s.landed||P0.t<s.delay)return;s.vy+=420*dt;s.y+=s.vy*dt;s.x+=(s.tx-s.x)*dt*2;if(s.y>=GY0-5){s.landed=true;P0.sl.push({x:s.tx,g:0,health:1,target:1,h:rand(30,44)});sfx.drip();}});
+  P0.sl.forEach(s=>{s.g=Math.min(1,s.g+dt*.9);if(P0.mode==='season'&&P0.t>1.2)s.health+=(s.target-s.health)*dt*.8;});
+  if(P0.mode==='season'&&P0.t>4.8){P0.mode='done';const alive=P0.sl.filter(s=>s.health>.5).length;award('m1_season',5,'Experiment completed');
+   const r=$('#p0res');if(r)r.innerHTML=`📉 <b>Result: only ${alive} of ${P0.sl.length}</b> seedlings survived under the parent. The rest lost the competition for <b>light, water, minerals and space</b>. Press <b>Next ▶</b> to see what happens when seeds spread out.`;
+   if($('#p0fb'))revealPred('#p0fb','m1_predict',1,OPT0,'Crowded seedlings competed with each other and with the parent for the same resources.');$('#next').classList.add('pulse');}},
+ draw(){skyBg('#BFE3F8','#F2FAFF',GY0);sunS(110,95);cloudS(820,90,1.5);
+  ctx.strokeStyle='#219EBC';ctx.lineWidth=2.5;P0.rain.forEach(r=>{r.y+=240/60;if(r.y>GY0){r.y=120;r.x=rand(800,930);}ctx.beginPath();ctx.moveTo(r.x,r.y);ctx.lineTo(r.x-2,r.y+10);ctx.stroke();});
+  soil(GY0);for(let i=0;i<70;i++)circle((i*137)%W,GY0+24+((i*53)%100),3.2,['#E9C46A','#F4A261','#C77DFF'][i%3],INK,1);
+  const sh=P0.mode==='season'?clamp(P0.t/1.5):P0.mode==='done'?1:.45;ctx.fillStyle=`rgba(30,40,50,${.25*sh})`;ctx.beginPath();ctx.ellipse(TX0,GY0,230,30,0,0,6.283);ctx.fill();
+  if(P0.mode!=='fall'){const ra=P0.mode==='done'?1:clamp(P0.t/2);ctx.strokeStyle=`rgba(255,236,200,${.95*ra})`;ctx.lineWidth=3;for(let i=-5;i<=5;i++){ctx.beginPath();ctx.moveTo(TX0,GY0+6);ctx.quadraticCurveTo(TX0+i*36,GY0+50,TX0+i*52,GY0+110);ctx.stroke();}
+   ctx.lineWidth=2;P0.sl.forEach(s=>{ctx.beginPath();ctx.moveTo(s.x,GY0);ctx.lineTo(s.x-9,GY0+34*ra);ctx.moveTo(s.x,GY0);ctx.lineTo(s.x+9,GY0+30*ra);ctx.stroke();});if(ra>.6)tag('Roots overlap → they share water & minerals',TX0,GY0+100,null,null,'#F4A261',15);}
+  tree(ctx,TX0,GY0,1.45);
+  P0.seeds.forEach(s=>{if(!s.landed)drawPlainSeed(ctx,s.x,s.y,1.3);});
+  P0.sl.forEach(s=>seedling(ctx,s.x,GY0,s.h,clamp(s.health),s.g));
+  tag('Parent tree',TX0,GY0-345,null,null,'#6BAA75',16);
+  if(P0.mode==='season'||P0.mode==='done')tag('Crowded & shaded',TX0-260,GY0-90,TX0-150,GY0-30,'#E63946',15);
+  if(P0.mode==='season'||P0.mode==='done'){const alive=P0.sl.filter(s=>s.health>.5).length;cornerPill(`🌱 alive: ${alive}/${P0.sl.length}`);}
+  banner('Why don’t plants grow everywhere?',34);},
+ hot(){return[{x:110,y:95,r:55,k:'sun'},{x:860,y:250,r:110,k:'water'},{x:500,y:540,r:120,k:'minerals'},{x:TX0+120,y:GY0-25,r:70,k:'space'},{x:TX0-120,y:GY0-25,r:70,k:'space'}].map(h=>({...h,t:INFO0[h.k][0],b:INFO0[h.k][1],act(){P0.explored.add(h.k);const n=$('#p0n');if(n)n.textContent=P0.explored.size;if(P0.explored.size===4)award('m1_explore',5,'Observed all four resources');}}));}
+});
+
+/* ===== 1 · SPREAD OUT ===== */
+const XS1=[60,120,180,245,300,640,700,760,820,880,940,560,980,30];
+const ROCK1=[120,180,560];
+SC.push({name:'Why disperse',dur:8,
+ panel:()=>P('Module 1 · Why disperse?','Spread out = a better chance 🌬️',`<p>Now the same tree’s seeds are <b>carried away</b> from the parent.</p><div class="def">🌱 <b>Seed dispersal</b> is the movement or spreading of seeds away from the parent plant.</div><ul><li>⚖️ <b>Less competition</b> for light, water, minerals and space.</li><li>🗺️ <b>Colonising new areas</b> — new fields, clearings, islands.</li><li>🐛 Escaping pests and diseases that build up around the parent.</li><li>🎲 Not all seeds in one place — if one spot floods or dries out, others survive.</li></ul><div id="q1x"></div>`),
+ say:'Now the seeds are carried away from the parent plant. Seed dispersal is the movement or spreading of seeds away from the parent plant. Spread-out seedlings compete less for light, water, minerals and space, and the species can colonise new areas.',
+ enter(){this.done=false;},
+ bind(){renderQ('#q1x',{task:'m1_explain',type:'mc',q:'💬 Explain: why did more seedlings survive when the seeds were spread out?',opts:['Each seedling shared light, water, minerals and space with fewer neighbours, so there was less competition.','Seeds that travel are always bigger and stronger.','The parent plant stopped needing water.','Seeds far away do not need light or water.'],ans:0,hint:'Think about what the crowded seedlings were fighting over.',clue:SV.tree()+'<span>Under the parent: shade + shared soil. Far away: open sky + their own patch of soil.</span>',explain:'When seeds are spread out, each seedling shares resources with fewer neighbours — competition is reduced.',take:'Dispersal = less competition + new places to grow.'},{label:'Explained the result'});},
+ update(){if(!this.done&&T>=1){this.done=true;award('m1_spread',5,'Compared crowded vs spread out');}},
+ draw(p){skyBg();sunS(110,95);soil(GY0);ROCK1.forEach(x=>{ctx.beginPath();ctx.ellipse(x,GY0+2,28,10,0,0,7);ctx.fillStyle='#C9BCA0';ctx.fill();ctx.lineWidth=2;ctx.strokeStyle=INK;ctx.stroke();});
+  tree(ctx,TX0,GY0,1.45);let alive=0,landed=0;
+  XS1.forEach((x,i)=>{const q=clamp((p*8-i*.3)/2.2);if(q<=0){return;}if(q<1){const sx=TX0+(i%5-2)*30,sy=GY0-300;const px=lerp(sx,x,ease(q)),py=lerp(sy,GY0-6,q)-Math.sin(q*Math.PI)*120;drawDandelion(ctx,px,py,1.6,Math.sin(now*3+i)*.2);}else{landed++;const bad=ROCK1.some(r=>Math.abs(r-x)<34);const g=clamp((p*8-i*.3-2.2)/1.5);const hl=bad?clamp(1-g):1;if(hl>.5)alive++;seedling(ctx,x,GY0,40,hl,Math.max(.15,g));}});
+  if(p>.4)tag('Open space & light',830,GY0-110,820,GY0-40,'#52B788',15);if(p>.6)tag('Dry rock ✗',150,GY0-110,150,GY0-12,'#CDA877',15);
+  cornerPill(`🌱 alive: ${alive}/${landed||14}`);banner('Seeds carried away from the parent',34,'#2D6A4F');}
+});
+
+/* ===== 2 · WIND ===== */
+const A={st:'para',m:'light',w:4,dir:1,h:1,runs:[],fly:null,last:null,parts:[]};
+for(let i=0;i<80;i++)A.parts.push({x:rand(0,W),y:rand(70,480),l:rand(12,30)});
+const VT={para:.3,wing:1.0,none:4.0},MM={light:1,medium:1.6,heavy:2.6},NMA={para:'Parachute',wing:'Wing',none:'No structure'};
+const OPTA=['The parachute (hairs) seed','The winged seed','The seed with no special structure','They all travel the same distance'];
+function aDiff(a,b){const n=[];if(a.st!==b.st)n.push('structure');if(a.m!==b.m)n.push('mass');if(a.w!==b.w)n.push('wind speed');if(a.h!==b.h)n.push('height');if(a.dir!==b.dir)n.push('direction');return n;}
+function aFair(){const el=$('#aFair');if(!el)return;const l=A.runs[A.runs.length-1];if(!l){el.innerHTML='🧪 Tip: change <b>one</b> variable at a time.';return;}const d=aDiff(A,l);el.innerHTML=d.length===0?'🔁 Same set-up as last run — repeating checks reliability.':d.length===1?`✅ <b>Fair test:</b> only the <b>${d[0]}</b> changes.`:`⚠️ You are changing <b>${d.length}</b> variables (${d.join(', ')}) — you won’t know which caused the difference.`;}
+function aTable(){const el=$('#aTab');if(!el)return;el.innerHTML=A.runs.length?`<table class="t"><tr><th>#</th><th>Structure</th><th>Mass</th><th>Wind</th><th>Height</th><th>Distance</th></tr>${A.runs.map((r,i)=>`<tr><td>${i+1}</td><td>${NMA[r.st]}</td><td>${r.m}</td><td>${r.w} m/s</td><td>${r.h} m</td><td class="n"><b>${fmtD(r.dist)}</b></td></tr>`).join('')}</table>`:'<p class="small">No runs yet.</p>';}
+function niceMax(v){return[10,20,30,50,75,100,150,200,300,500,750,1000].find(x=>x>=v)||Math.ceil(v/500)*500;}
+SC.push({name:'Wind',
+ panel:()=>P('Module 2 · Station A · Wind (anemochory)','Can wind carry a seed? 🌬️',`<p class="small"><b>Anemo-</b> = wind, <b>-chory</b> = spreading.</p><div class="qcard"><h4>🔬 Which seed structure allows a seed to travel farther under the same wind conditions?</h4><div id="aPred"></div><div id="aPredFb"></div></div>
+ <div class="lab-row"><span class="lbl">Structure</span>${segs('aSt',[['para','🪂 Parachute'],['wing','🍁 Wing'],['none','⚫ None']])}</div>
+ <div class="lab-row"><span class="lbl">Seed mass</span>${segs('aM',[['light','Light'],['medium','Medium'],['heavy','Heavy']])}</div>
+ <div class="lab-row"><span class="lbl">Direction</span>${segs('aD',[['1','→ East'],['-1','← West']])}</div>
+ <div class="lab-row" style="display:block">💨 Wind speed <output id="aWo">${A.w} m/s</output><input type="range" id="aW" min="0" max="10" value="${A.w}" aria-label="Wind speed"></div>
+ <div class="lab-row" style="display:block">📏 Release height <output id="aHo">${A.h} m</output><input type="range" id="aH" min="0.5" max="20" step="0.5" value="${A.h}" aria-label="Release height"></div>
+ <button class="btn primary" id="aGo">🌬️ Release the seed</button><div class="result" id="aFair"></div><div id="aTab"></div>
+ <details><summary>📘 The science: air resistance, mass, surface area</summary><ul><li><b>Air resistance</b> pushes up on a falling seed. Hairs or wings catch lots of air → the seed falls <b>slowly</b>.</li><li><b>Large surface area + small mass</b> = slow fall = more time for the wind to push it sideways.</li><li><b>Heavy</b> seeds fall fast and land close. Stronger <b>wind</b> and a <b>higher</b> release point increase distance.</li><li>Examples: <b>dandelion</b> (parachute = pappus), <b>maple</b> (wing, spins like a helicopter), <b>ash</b> (one long wing).</li></ul><p class="small">⚠️ Educational approximation: distance ≈ height ÷ falling speed × wind speed. Real seeds also ride gusts and rising air.</p></details>
+ <div id="aEx"></div><div class="key">🏆 <b>Challenge:</b> land a seed <b>≥ 25 m</b> away with height <b>≤ 2 m</b> and wind <b>≤ 6 m/s</b>. <span id="aCh">${S.done.a_chal?'✅ Done!':''}</span></div>`),
+ say:'Station A, wind. Change the seed structure, its mass, the wind and the release height. Which seed structure lets a seed travel farther under the same wind? Change only one variable at a time.',
+ bind(){predict('#aPred','a_predict',OPTA);if(S.done.a_fair)revealPred('#aPredFb','a_predict',0,OPTA,'The parachute seed falls most slowly, so the wind carries it farthest.');
+  segBind('aSt','st',A,aFair);segBind('aM','m',A,aFair);segBind('aD','dir',A,aFair);
+  $('#aW').oninput=e=>{A.w=+e.target.value;$('#aWo').textContent=A.w+' m/s';aFair();};$('#aH').oninput=e=>{A.h=+e.target.value;$('#aHo').textContent=A.h+' m';aFair();};
+  $('#aGo').onclick=()=>{if(A.fly)return;ac();const vt=VT[A.st]*Math.sqrt(MM[A.m]);const dist=A.h/vt*A.w*rand(.92,1.08);A.fly={st:A.st,m:A.m,w:A.w,h:A.h,dir:A.dir,dist,maxD:niceMax(Math.max(10,dist*1.15)),t:0,dur:clamp(A.h/vt*.35,2.2,6)};sfx.whoosh();};
+  aFair();aTable();
+  renderQ('#aEx',{task:'a_explain',type:'mc',q:'💬 Why did the parachute seed travel farther than the seed with no structure?',opts:['Its hairs give a large surface area for a tiny mass, so air resistance slows its fall and the wind pushes it sideways for longer.','The parachute pushes the seed forward like an engine.','Heavier seeds are always carried farther by wind.','The hairs make the wind blow harder.'],ans:0,hint:'Which seed stayed in the air the longest? What slowed it down?',clue:SV.dandelion()+'<span>Many fine hairs = lots of <b>surface area</b>, almost no extra <b>mass</b>.</span>',explain:'Air resistance acts on the large surface area of the pappus. The seed falls slowly, so the wind has more time to carry it. Heavy seeds fall fast.',take:'Big surface + small mass = slow fall = long journey.'},{label:'Explained wind dispersal'});},
+ update(dt){const f=A.fly;if(!f)return;f.t+=dt;if(f.t>=f.dur){A.runs.push({...f});A.last=f;A.fly=null;sfx.pop();aTable();
+  if(A.runs.length>=2)award('a_exp',10,'Two wind experiments');const n=A.runs.length;
+  if(n>=2){const d=aDiff(A.runs[n-1],A.runs[n-2]);if(d.length===1&&d[0]==='structure'&&f.w>0&&award('a_fair',10,'Fair test: only structure changed'))revealPred('#aPredFb','a_predict',0,OPTA,'With the same wind, height and mass, the parachute seed fell most slowly, so the wind carried it farthest.');}
+  if(f.h<=2&&f.w<=6&&f.dist>=25&&award('a_chal',15,'Wind challenge complete')){const c=$('#aCh');if(c)c.textContent='✅ Done!';}aFair();}},
+ draw(){const GY=500;const f=A.fly||A.last,dir=A.fly?A.fly.dir:A.dir,w=A.fly?A.fly.w:A.w;
+  skyBg('#BFE3F8','#F2FAFF',GY);cloudS(160,120,1.1);cloudS(700,90,.9);
+  ctx.strokeStyle='rgba(33,158,188,.55)';ctx.lineWidth=2.5;A.parts.forEach(p=>{p.x+=dir*(w*3.2+(w?1:0));if(p.x>W)p.x=0;if(p.x<0)p.x=W;if(w>0){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p.x-dir*p.l*(.4+w/8),p.y);ctx.stroke();}});
+  soil(GY,'#8A5A36','#4E321D',false);
+  const ox=dir>0?90:W-90,maxD=A.fly?A.fly.maxD:(A.last&&A.last.dir===dir?A.last.maxD:30),pxm=(W-180)/maxD,hNow=A.fly?A.fly.h:A.h,ys=Math.min(17,330/Math.max(hNow,2));
+  font(14,800);ctx.fillStyle='#fff';ctx.textAlign='center';for(let i=0;i<=5;i++){const x=ox+dir*i*maxD/5*pxm;ctx.fillRect(x-1.5,GY+12,3,12);ctx.fillText(Math.round(i*maxD/5)+' m',x,GY+40);}
+  const top=GY-hNow*ys,st=(A.fly||A).st;
+  if(st==='wing'){rr(ox-11,top,22,GY-top,6);ctx.fillStyle='#8B5E3C';ctx.fill();ctx.lineWidth=2.5;ctx.strokeStyle=INK;ctx.stroke();circle(ox-dir*14,top-8,30,'#6BAA75',INK,2.5);}
+  else{ctx.strokeStyle='#3f7f4d';ctx.lineWidth=6;ctx.beginPath();ctx.moveTo(ox,GY);ctx.lineTo(ox,top);ctx.stroke();ell(ctx,ox-14,GY-16,18,7,-.4,'#52B26B',INK,2);ell(ctx,ox+14,GY-16,18,7,.4,'#52B26B',INK,2);}
+  tag(hNow+' m',ox-dir*60,GY-hNow*ys/2,null,null,'#ADB5BD',14);
+  A.runs.forEach((r,i)=>{if(r.dir!==dir||r.maxD!==maxD)return;const x=ox+dir*Math.min(r.dist,maxD)*pxm;ctx.strokeStyle=INK;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x,GY);ctx.lineTo(x,GY-30);ctx.stroke();ctx.fillStyle=r.st==='para'?'#2A9D8F':r.st==='wing'?'#D9A441':'#8B6B4A';ctx.fillRect(x,GY-30,dir*20,13);font(12,900);ctx.fillStyle=INK;ctx.fillText(i+1,x+dir*10,GY-38);});
+  if(A.fly){const p=clamp(f.t/f.dur),x=ox+dir*f.dist*p*pxm,y=GY-f.h*ys*(1-p)-6,sc=f.m==='heavy'?1.5:f.m==='medium'?1.25:1;
+   if(f.st==='para')drawDandelion(ctx,x+Math.sin(now*5)*7,y-14,2*sc,Math.sin(now*3)*.15);else if(f.st==='wing')drawSamara(ctx,x,y,1.7*sc,now*14);else drawPlainSeed(ctx,x,y,1.7*sc);
+   tag(fmtD(f.dist*p),x,y-60,null,null,'#FFB703',14);}
+  else if(f&&f.dir===dir){const x=ox+dir*Math.min(f.dist,maxD)*pxm;if(f.st==='para')drawDandelion(ctx,x,GY-18,2);else if(f.st==='wing')drawSamara(ctx,x,GY-8,1.7,0);else drawPlainSeed(ctx,x,GY-8,1.7);tag('Landed: '+fmtD(f.dist),x,GY-90,x,GY-24,'#52B788',15);}
+  else{if(st==='para')drawDandelion(ctx,ox,top-20,2);else if(st==='wing')drawSamara(ctx,ox,top-6,1.7,0);else drawPlainSeed(ctx,ox,top-8,1.7);}
+  // example icons
+  rr(W-262,62,248,100,14);ctx.fillStyle='rgba(255,255,255,.95)';ctx.fill();ctx.lineWidth=2.5;ctx.strokeStyle=INK;ctx.stroke();font(13,900);ctx.fillStyle=INK;ctx.textAlign='left';ctx.fillText('Examples (click):',W-250,78);
+  drawDandelion(ctx,W-220,138,1.3);drawSamara(ctx,W-150,138,1.2,-.6);ctx.save();ctx.translate(W-70,130);ctx.rotate(-.7);ell(ctx,0,0,22,6,0,'#CDB37A',INK,2);ell(ctx,-20,0,6,5,0,'#8B6B4A',INK,2);ctx.restore();
+  banner(w?`Wind: ${w} m/s ${dir>0?'→':'←'}`:'No wind',34,'#219EBC');},
+ hot(){return[{x:W-220,y:125,r:30,t:'🌼 Dandelion',b:`<div style="width:110px">${SV.dandelion()}</div>The fruit carries a <b>pappus</b> — a parachute of fine hairs. Huge surface area, tiny mass: it can drift for kilometres.`},
+  {x:W-150,y:125,r:30,t:'🍁 Maple',b:`<div style="width:110px">${SV.maple()}</div>Each fruit (a <b>samara</b>) has a papery <b>wing</b>. It spins like a helicopter blade, slowing its fall.`},
+  {x:W-70,y:125,r:30,t:'🌳 Ash',b:`<div style="width:110px">${SV.ash()}</div>Ash fruits have <b>one long wing</b>. They twist and spin as they fall from tall trees.`}];}
+});
+/* ===== 3 · WATER ===== */
+const SURF=300,BED=545,LB=190,RB=810,GAP=300;
+const ITEMS={coconut:{n:'Coconut',dens:.55,wp:true,viab:110},float:{n:'Floating seed',dens:.7,wp:true,viab:60},heavy:{n:'Heavy seed',dens:1.4,wp:false,viab:60},custom:{n:'Your seed',dens:.85,wp:true,viab:60}};
+const DENS=[.45,.65,.85,1.05,1.4],DN=['many air spaces','some air spaces','few air spaces','almost none','none (dense)'];
+const B={item:'coconut',cur:20,dir:1,dv:2,wp:true,trials:[],o:null,tested:new Set()};
+const OPTB=['The coconut','The heavy seed','The floating seed and heavy seed equally','None of them can travel by water'];
+function bItem(){const it={...ITEMS[B.item],k:B.item};if(B.item==='custom'){it.dens=DENS[B.dv];it.wp=B.wp;}return it;}
+function bProps(){const el=$('#bProps');if(!el)return;const it=bItem();el.innerHTML=`<b>${it.n}</b>: density ${it.dens<1?'<b style="color:#1B7A4B">lower than water → floats</b>':'<b style="color:#B42318">higher than water → sinks</b>'} · waterproof coat: ${it.wp?'<b style="color:#1B7A4B">yes</b>':'<b style="color:#B42318">no</b>'}`;const c=$('#bCustom');if(c)c.classList.toggle('hidden',B.item!=='custom');}
+function bTable(){const el=$('#bTab');if(!el)return;el.innerHTML=B.trials.length?`<table class="t"><tr><th>#</th><th>Item</th><th>Floats?</th><th>Moved with current?</th><th>Outcome</th><th>Days</th></tr>${B.trials.map((t,i)=>`<tr><td>${i+1}</td><td>${t.n}</td><td>${t.f?'✅':'❌'}</td><td>${t.m?'✅':'❌'}</td><td>${t.out}</td><td class="n">${t.d}</td></tr>`).join('')}</table>`:'<p class="small">No trials yet.</p>';}
+function bLook(){award('b_look',5,'Looked inside the coconut');return{t:'🔍 Inside a coconut',b:`${SV.coconutX()}<p>The coconut is a <b>fruit</b> (a drupe) containing one large <b>seed</b>. The thick fibrous husk is full of <b>air spaces</b>, so the whole fruit is less dense than water and <b>floats</b>. The hard shell and waterproof skin protect the embryo for weeks at sea.</p>`};}
+function bFinish(out,f,m,newPlace){const o=B.o;o.done=true;B.trials.push({n:o.it.n,f,m,out,d:Math.round(o.day)});bTable();const r=$('#bMsg');if(r)r.innerHTML=out;
+  if(o.cur>0&&o.dir>0)B.tested.add(o.it.k);
+  if(B.tested.has('coconut')&&B.tested.has('heavy')&&award('b_exp',10,'Compared coconut and heavy seed'))revealPred('#bPredFb','b_predict',0,OPTB,'The coconut floated and drifted with the current to the island; the heavy seed sank straight away.');
+  if(o.it.k==='custom'&&newPlace&&award('b_chal',15,'Water challenge complete')){const c=$('#bCh');if(c)c.textContent='✅ Done! It needed air spaces (low density) and a waterproof coat — or a very fast current.';}}
+SC.push({name:'Water',
+ panel:()=>P('Module 2 · Station B · Water (hydrochory)','Can seeds travel across water? 🌊',`<p class="small"><b>Hydro-</b> = water. Click the coconut on the beach to look inside.</p><div class="qcard"><h4>🔬 Which one is most likely to be carried to the new island by water?</h4><div id="bPred"></div><div id="bPredFb"></div></div>
+ <div class="lab-row"><span class="lbl">Seed / fruit</span>${segs('bI',[['coconut','🥥 Coconut'],['float','Floating seed'],['heavy','Heavy seed'],['custom','✏️ Design your own']])}</div>
+ <div id="bCustom" class="hidden"><div class="lab-row" style="display:block">🫧 Floating ability: <output id="bDo">${DN[B.dv]}</output><input type="range" id="bDv" min="0" max="4" value="${B.dv}" aria-label="Floating ability"></div><div class="lab-row"><label><input type="checkbox" id="bWp" ${B.wp?'checked':''} style="width:20px;height:20px"> Waterproof protective coat</label></div></div>
+ <div class="lab-row" style="display:block">🌊 Current strength <output id="bCo">${B.cur} km/day</output><input type="range" id="bC" min="0" max="50" value="${B.cur}" aria-label="Current strength"></div>
+ <div class="lab-row"><span class="lbl">Direction</span>${segs('bD',[['1','→ to island'],['-1','← back to beach']])}</div>
+ <div class="result" id="bProps"></div><button class="btn primary" id="bGo">🌊 Drop into the water</button>
+ <div class="result" id="bMsg">Choose, then drop it in.</div><div id="bTab"></div>
+ <details><summary>📘 The science: buoyancy, air spaces, protective coverings</summary><ul><li><b>Buoyancy:</b> an object floats if it is less dense than water.</li><li><b>Air spaces</b> in the husk make the coconut light for its size.</li><li>A <b>hard, waterproof shell</b> keeps salt water out and protects the seed.</li><li>Other examples: plants by rivers and wetlands (water lilies, alders) whose seeds float downstream.</li></ul></details>
+ <div id="bEx"></div><div class="key">🏆 <b>Challenge:</b> choose <b>Design your own</b> and get your seed to the island <b>alive</b>. <span id="bCh">${S.done.b_chal?'✅ Done!':''}</span></div>`),
+ say:'Station B, water. Choose a seed or fruit, set the current, and drop it into the sea. Does it float, sink, or reach the new island? Click the coconut to look inside it.',
+ bind(){predict('#bPred','b_predict',OPTB);if(S.done.b_exp)revealPred('#bPredFb','b_predict',0,OPTB,'The coconut floated to the island; the heavy seed sank.');
+  segBind('bI','item',B,bProps);segBind('bD','dir',B);
+  $('#bC').oninput=e=>{B.cur=+e.target.value;$('#bCo').textContent=B.cur+' km/day';};$('#bDv').oninput=e=>{B.dv=+e.target.value;$('#bDo').textContent=DN[B.dv];bProps();};$('#bWp').onchange=e=>{B.wp=e.target.checked;bProps();};
+  $('#bGo').onclick=()=>{if(B.o&&!B.o.done)return;ac();B.o={it:bItem(),cur:B.cur,dir:B.dir,x:200,y:SURF-60,vy:0,state:'drop',day:0,wet:0,done:false};$('#bMsg').textContent='Splash!';};
+  bProps();bTable();
+  renderQ('#bEx',{task:'b_explain',type:'mc',q:'💬 Why is a coconut more suitable for water dispersal than a seed that sinks immediately?',opts:['Its fibrous husk is full of air spaces, so it is less dense than water and floats; its hard, waterproof shell protects the seed on long journeys.','Coconuts are heavier, so currents push them harder.','Coconuts can swim using their fibres.','Salt water makes all seeds float.'],ans:0,hint:'Compare what is inside the husk with what is inside the heavy seed.',clue:`<div style="max-width:250px">${SV.coconutX()}</div>`,explain:'Floating depends on density. The air-filled husk makes the coconut less dense than water. The waterproof skin and hard shell keep the seed alive for weeks at sea.',take:'Air spaces → floats. Waterproof shell → survives the trip.'},{label:'Explained water dispersal'});},
+ update(dt){const o=B.o;if(!o||o.done)return;
+  if(o.state==='drop'){o.vy+=500*dt;o.x+=150*dt;o.y+=o.vy*dt;if(o.y>=SURF){o.state=o.it.dens>1?'sink':'float';o.vy=0;sfx.splash();}}
+  else if(o.state==='float'){const total=o.cur>0?GAP/o.cur:999,rate=o.cur>0?clamp(total/6,2,25):10;o.day+=dt*rate;if(!o.it.wp&&o.day>10)o.wet=clamp((o.day-10)/6);
+   o.x+=o.cur*o.dir*dt*rate*(RB-LB)/GAP;o.y=SURF-5+Math.sin(now*3)*4+o.wet*26;
+   if(o.wet>=1)o.state='sink';else if(o.x>=RB-24){o.x=RB+30;o.y=SURF-34;const alive=o.day<=o.it.viab;o.state='arrive';o.alive=alive;bFinish(alive?`🏝️ <b>Reached the new island</b> after ${Math.round(o.day)} days, still alive — it can germinate here!`:`🏝️ Reached the island after ${Math.round(o.day)} days, but the embryo had <b>died</b> on the long trip (arrival ≠ survival).`,true,true,alive);sfx.chime();}
+   else if(o.x<=LB+8&&o.dir<0){o.y=SURF-30;o.state='back';bFinish('↩️ It floated, but the current carried it <b>back to the parent beach</b> — no new location.',true,true,false);}
+   else if(o.cur===0&&o.day>120){o.state='still';bFinish('😴 Floated for 120 days, but with <b>no current</b> it went nowhere.',true,false,false);}}
+  else if(o.state==='sink'){o.y=Math.min(BED-10,o.y+110*dt);if(o.y>=BED-10)bFinish(o.wet>=1?`🫧 Floated for ${Math.round(o.day)} days, but with no waterproof coat it soaked up water and <b>sank</b>.`:'⬇️ <b>Sank</b> immediately — it is denser than water.',o.wet>=1,o.wet>=1,false);}},
+ draw(){skyBg('#BFE3F8','#F2FAFF',SURF);sunS(500,80,28);cloudS(250,90,1);cloudS(740,120,.8);
+  ctx.fillStyle='#8ECAE6';ctx.beginPath();ctx.moveTo(LB-40,SURF);for(let x=LB-40;x<=RB+40;x+=10)ctx.lineTo(x,SURF+Math.sin(x*.05+now*2)*4);ctx.lineTo(RB+40,H);ctx.lineTo(LB-40,H);ctx.fill();ctx.strokeStyle=INK;ctx.lineWidth=2.5;ctx.stroke();
+  ctx.fillStyle='#4C9FBF';ctx.fillRect(LB-40,BED,RB-LB+80,H-BED);
+  const o=B.o,cur=o&&!o.done?o.cur:B.cur,dir=o&&!o.done?o.dir:B.dir;
+  if(cur>0){ctx.fillStyle='rgba(255,255,255,.75)';for(let i=0;i<10;i++){const x=((i*80+now*cur*5*dir)%(RB-LB)+(RB-LB))%(RB-LB)+LB,y=SURF+55+(i%4)*45;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x-dir*20,y-7);ctx.lineTo(x-dir*20,y+7);ctx.fill();}}
+  ctx.fillStyle='#E9D8A6';ctx.strokeStyle=INK;ctx.lineWidth=2.5;ctx.beginPath();ctx.moveTo(0,SURF-24);ctx.lineTo(LB-14,SURF-24);ctx.quadraticCurveTo(LB+40,SURF+30,LB+10,H);ctx.lineTo(0,H);ctx.closePath();ctx.fill();ctx.stroke();
+  ctx.beginPath();ctx.moveTo(W,SURF-30);ctx.lineTo(RB+14,SURF-30);ctx.quadraticCurveTo(RB-40,SURF+30,RB-10,H);ctx.lineTo(W,H);ctx.closePath();ctx.fill();ctx.stroke();
+  // palm
+  ctx.save();ctx.translate(80,SURF-24);ctx.strokeStyle='#8B5E3C';ctx.lineWidth=12;ctx.beginPath();ctx.moveTo(0,0);ctx.quadraticCurveTo(18,-80,6,-170);ctx.stroke();ctx.lineWidth=2.5;ctx.strokeStyle=INK;ctx.stroke();
+  for(let i=0;i<7;i++){const a=-Math.PI/2+(i-3)*.5;ctx.beginPath();ctx.moveTo(6,-170);ctx.quadraticCurveTo(6+Math.cos(a)*55,-170+Math.sin(a)*55-14,6+Math.cos(a)*92,-170+Math.sin(a)*92+30);ctx.lineWidth=9;ctx.strokeStyle='#2A9D8F';ctx.stroke();ctx.lineWidth=2;ctx.strokeStyle=INK;ctx.stroke();}ctx.restore();
+  tag('Parent beach',95,SURF+60,null,null,'#E9D8A6',14);tag('New island',905,SURF+60,null,null,'#52B788',14);tag(`${GAP} km of open sea (not to scale)`,500,SURF-90,null,null,'#8ECAE6',14);
+  const it=bItem();if(!o||o.done){drawItemB(it,150,SURF-50,0);if(!o)tag('click to look inside',150,SURF-110,150,SURF-70,'#FFB703',13);}
+  if(o){drawItemB(o.it,o.x,o.y,Math.sin(now)*.2);if(o.state==='arrive'&&o.alive)seedling(ctx,o.x+10,o.y-14,38,1,1);if(o.state==='float')tag(`Day ${Math.round(o.day)}`,o.x,o.y-60,null,null,'#FFB703',14);}
+  banner(`Current: ${cur} km/day ${dir>0?'→':'←'}`,34,'#219EBC');},
+ hot(){return[{x:150,y:SURF-50,r:40,dyn:bLook}];}
+});
+function drawItemB(it,x,y,r){if(it.k==='coconut')drawCoconut(ctx,x,y,1.8,r);else if(it.k==='heavy')drawPlainSeed(ctx,x,y,2.2,r,'#6B4423');else if(it.k==='float')ell(ctx,x,y,13,9,r,'#C9A26A',INK,2.5);else ell(ctx,x,y,13,10,r,it.dens<1?'#D4B483':'#7A5230',INK,2.5);}
+
+/* ===== 4 · ANIMALS: FUR ===== */
+const GYF=470,ZF=[['Meadow',0,340,'#E3F1DA'],['Forest',340,680,'#D3E6CC'],['Riverbank',680,1000,'#DCEEF2']];
+const F={x:110,walking:false,ph:0,att:[],falling:[],ground:[],tried:{hook:0,smooth:0},drag:null,plants:[70,165,260],burrs:[3,3,3]};
+const OPTC=['The smooth seed','The seed with hooks','Both equally','Neither — seeds cannot stick to fur'];
+const foxBody=()=>({x:F.x,y:GYF-60,rx:58,ry:30});
+function onFox(x,y){const b=foxBody();return((x-b.x)/b.rx)**2+((y-b.y)/b.ry)**2<=1.4;}
+function cMsg(t){const e=$('#cMsg');if(e)e.innerHTML=t;}
+function addSeed(type,px,py){if(F.walking){cMsg('Wait until the fox stops.');return;}const b=foxBody();if(px==null){px=b.x+rand(-40,40);py=b.y-rand(5,20);}F.tried[type]++;
+  if(type==='hook'){F.att.push({ox:px-b.x,oy:py-b.y,dropAt:F.x+rand(220,800)});cMsg('🪝 The hooked burr <b>caught in the fur</b>!');sfx.pop();}else{F.falling.push({type,x:px,y:py,vy:0});cMsg('🫘 The smooth seed <b>slid off</b> — nothing to grip with.');sfx.bad();}cStats();}
+function cStats(){const el=$('#cTab');if(!el)return;const z=t=>ZF.map(([n,a,b])=>F.ground.filter(g=>g.type===t&&g.x>=a&&g.x<b).length);const h=z('hook'),s=z('smooth');
+  el.innerHTML=`<table class="t"><tr><th>Seed</th><th>Tried</th><th>Meadow</th><th>Forest</th><th>River</th></tr><tr><td>🪝 Hooked</td><td class="n">${F.tried.hook}</td>${h.map(n=>`<td class="n">${n}</td>`).join('')}</tr><tr><td>🫘 Smooth</td><td class="n">${F.tried.smooth}</td>${s.map(n=>`<td class="n">${n}</td>`).join('')}</tr></table><p class="small">Still in the fur: ${F.att.length}</p>`;}
+function fox(x,y,ph,s=1.3){ctx.save();ctx.translate(x,y);ctx.scale(s,s);const l=Math.sin(ph)*8;ctx.strokeStyle=INK;ctx.lineWidth=5;ctx.lineCap='round';
+  [[-26,l],[-14,-l],[18,-l],[30,l]].forEach(([lx,o])=>{ctx.beginPath();ctx.moveTo(lx,-30);ctx.lineTo(lx+o,0);ctx.stroke();});
+  ell(ctx,-58,-56,26,10,-.5,'#E07A3F',INK,2);ell(ctx,-76,-66,8,6,-.5,'#fff',INK,2);ell(ctx,0,-46,44,22,0,'#E07A3F',INK,2.5);ell(ctx,6,-36,26,10,0,'#F6C9A8',null);
+  circ(46,-64,17,'#E07A3F',ctx,INK,2.5);ctx.beginPath();ctx.moveTo(56,-66);ctx.lineTo(74,-58);ctx.lineTo(56,-54);ctx.closePath();ctx.fillStyle='#F6C9A8';ctx.fill();ctx.lineWidth=2;ctx.stroke();circ(74,-58,3,INK,ctx,null);
+  ctx.fillStyle='#E07A3F';ctx.beginPath();ctx.moveTo(36,-76);ctx.lineTo(40,-94);ctx.lineTo(48,-78);ctx.closePath();ctx.fill();ctx.stroke();ctx.beginPath();ctx.moveTo(48,-79);ctx.lineTo(56,-94);ctx.lineTo(58,-76);ctx.closePath();ctx.fill();ctx.stroke();circ(50,-68,2.5,INK,ctx,null);ctx.restore();}
+function burrZoom(){return{t:'🔍 Zoom: burdock hooks',b:SV.wrap(`<rect width="300" height="160" fill="#F4E3C8"/>`+Array.from({length:14},(_,i)=>`<path d="M${10+i*21} 160 C${i*21} 110 ${30+i*21} 90 ${12+i*21} 50" stroke="#C47A3A" stroke-width="5" fill="none"/>`).join('')+[60,120,180,240].map(x=>`<path d="M${x} 10 L${x} 70 q0 14 -14 10" stroke="#6d4c41" stroke-width="5" fill="none" stroke-linecap="round"/>`).join('')+`<text x="150" y="150" text-anchor="middle" font-size="14" font-family="Nunito,sans-serif" fill="${INK}">hooked tips catch loops of fur</text>`,'0 0 300 160','Hooks catching fur')+`<p>Each burdock fruit is covered in tiny <b>hooks</b> that catch on fur, feathers and clothes. It hitches a ride and drops off later — sometimes far away.</p><p class="small">Fun fact: an engineer who found burrs on his dog invented Velcro® by copying this hook-and-loop idea.</p>`};}
+SC.push({name:'Animals: fur',
+ panel:()=>P('Module 2 · Station C · Animals (zoochory)','Hitch-hikers on fur 🦊',`<p class="small"><b>Zoo-</b> = animal. Drag a seed from the tray (top-left of the picture) onto the fox’s fur, or use the buttons. Then walk the fox.</p><div class="qcard"><h4>🔬 Which seed is more likely to be transported by an animal’s fur?</h4><div id="cPred"></div><div id="cPredFb"></div></div>
+ <div class="lab-row"><button class="btn sm" id="cAH">+ Hooked burr</button><button class="btn sm" id="cAS">+ Smooth seed</button></div>
+ <div class="lab-row"><button class="btn primary" id="cWalk">🐾 Walk the fox</button><button class="btn" id="cReset">↺ Reset</button></div>
+ <div class="result" id="cMsg">Put seeds on the fox, then walk it through meadow, forest and riverbank.</div><div id="cTab"></div>
+ <div class="key">🧠 Hooks or sticky coats = <b>external</b> animal dispersal. The seed is carried on the outside and falls off later.</div>`),
+ say:'Station C, animals. Drag seeds onto the fox’s fur. Seeds with hooks catch on fur. Smooth seeds slide off. Then walk the fox and see where the seeds end up.',
+ bind(){predict('#cPred','c_predict',OPTC);if(S.done.c_fur)revealPred('#cPredFb','c_predict',1,OPTC,'Hooks grip fur; smooth seeds slide off.');
+  $('#cAH').onclick=()=>addSeed('hook');$('#cAS').onclick=()=>addSeed('smooth');
+  $('#cWalk').onclick=()=>{if(F.walking)return;if(F.x>800){F.x=110;F.att=[];F.burrs=[3,3,3];}F.walking=true;cMsg('🐾 The fox trots through the meadow, forest and riverbank…');};
+  $('#cReset').onclick=()=>{Object.assign(F,{x:110,walking:false,att:[],falling:[],ground:[],tried:{hook:0,smooth:0},burrs:[3,3,3]});cStats();cMsg('Reset. Put seeds on the fox.');};cStats();},
+ update(dt){if(F.walking){F.x+=130*dt;F.ph+=dt*12;
+   F.plants.forEach((px,i)=>{if(F.burrs[i]>0&&Math.abs(F.x-px)<7){F.burrs[i]--;F.att.push({ox:rand(-40,40),oy:rand(-18,6),dropAt:F.x+rand(240,700)});F.tried.hook++;sfx.pop();cStats();}});
+   F.att=F.att.filter(a=>{if(F.x>=a.dropAt){F.falling.push({type:'hook',x:F.x+a.ox,y:GYF-60+a.oy,vy:0});return false;}return true;});
+   if(F.x>=880){F.x=880;F.walking=false;const far=F.ground.filter(g=>g.type==='hook'&&g.x>340).length,sf=F.ground.filter(g=>g.type==='smooth'&&g.x>340).length;
+    cMsg(`🏁 Walk finished. Hooked seeds dropped in <b>new places</b>: <b>${far}</b>. Smooth seeds carried beyond the meadow: <b>${sf}</b>.`+(F.tried.smooth?'':' Try a <b>smooth</b> seed too for a fair comparison.'));
+    if(F.tried.hook&&F.tried.smooth&&award('c_fur',10,'Compared hooked and smooth seeds'))revealPred('#cPredFb','c_predict',1,OPTC,'Hooks gripped the fur and were carried to the forest and riverbank; smooth seeds slid straight off.');}}
+  F.falling=F.falling.filter(f=>{f.vy+=600*dt;f.y+=f.vy*dt;if(f.y>=GYF-5){F.ground.push({type:f.type,x:f.x});cStats();return false;}return true;});},
+ draw(){ZF.forEach(([n,a,b,c])=>{ctx.fillStyle=c;ctx.fillRect(a,0,b-a,GYF);});soil(GYF,'#8A5A36','#4E321D',true);
+  [420,520,620].forEach(x=>tree(ctx,x,GYF,.8,'#3F7A4B','#5C9A66'));ctx.fillStyle='#8ECAE6';ctx.fillRect(900,GYF+3,100,H-GYF);ctx.strokeStyle=INK;ctx.lineWidth=2;ctx.strokeRect(900,GYF+3,100,H-GYF);
+  F.plants.forEach((x,i)=>{ctx.strokeStyle='#3f7f4d';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(x,GYF);ctx.lineTo(x,GYF-150);ctx.stroke();ell(ctx,x-18,GYF-40,24,10,-.4,'#52B26B',INK,2);ell(ctx,x+18,GYF-70,24,10,.4,'#52B26B',INK,2);for(let k=0;k<F.burrs[i];k++)drawBurr(ctx,x+(k-1)*15,GYF-152+(k%2)*12,1.5);});
+  ZF.forEach(([n,a,b])=>tag(n,(a+b)/2,GYF+50,null,null,'#52B788',15));tag('Burdock',165,GYF-200,165,GYF-160,'#8E6C8A',14);
+  F.ground.forEach(g=>g.type==='hook'?drawBurr(ctx,g.x,GYF-6,1.3):drawPlainSeed(ctx,g.x,GYF-6,1.3));
+  fox(F.x,GYF,F.walking?F.ph:0);const b=foxBody();F.att.forEach(a=>drawBurr(ctx,F.x+a.ox,b.y+a.oy,1.4));
+  F.falling.forEach(f=>f.type==='hook'?drawBurr(ctx,f.x,f.y,1.4):drawPlainSeed(ctx,f.x,f.y,1.4));
+  // tray
+  rr(14,60,230,92,14);ctx.fillStyle='rgba(255,255,255,.96)';ctx.fill();ctx.lineWidth=2.5;ctx.strokeStyle=INK;ctx.stroke();font(13,900);ctx.fillStyle=INK;ctx.textAlign='left';ctx.fillText('Seed tray – drag onto the fox',26,78);
+  drawBurr(ctx,70,118,2);drawPlainSeed(ctx,180,118,2);font(12,800);ctx.textAlign='center';ctx.fillText('hooked',70,145);ctx.fillText('smooth',180,145);
+  if(F.drag){if(F.drag.type==='hook')drawBurr(ctx,F.drag.x,F.drag.y,1.8);else drawPlainSeed(ctx,F.drag.x,F.drag.y,1.8);if(onFox(F.drag.x,F.drag.y))circle(b.x,b.y,70,null,'#F77F00',3);}
+  if(!F.walking&&F.x<150&&!F.att.length&&!F.drag)tag('Drop seeds on my fur!',F.x+40,GYF-190,F.x,GYF-110,'#E07A3F',14);
+  banner('External dispersal: seeds on fur',34,'#C1121F');},
+ down(x,y){if(F.walking)return false;if(Math.hypot(x-70,y-118)<26){F.drag={type:'hook',x,y};return true;}if(Math.hypot(x-180,y-118)<26){F.drag={type:'smooth',x,y};return true;}return false;},
+ move(x,y){if(F.drag){F.drag.x=x;F.drag.y=y;}},
+ up(x,y){if(!F.drag)return;const d=F.drag;F.drag=null;if(onFox(x,y))addSeed(d.type,x,y);else if(y>160){F.falling.push({type:d.type,x,y,vy:0});cMsg('Missed — drop the seed <b>onto the fox’s fur</b>.');}},
+ hot(){return[{x:165,y:GYF-150,r:40,dyn:burrZoom}];}
+});
+
+/* ===== 5 · ANIMALS: EATEN ===== */
+const GB=470,BD={x:820,y:120,tx:820,ty:120,state:'idle',t:0,berries:[[120,250],[160,225],[200,262],[140,300],[190,205],[230,240]],eaten:null,dest:null,drop:null,dig:0,sprout:0,flap:0};
+const DEST={meadow:[480,'open meadow'],edge:[680,'forest edge'],river:[880,'riverbank']};
+function c2(t){const e=$('#c2Msg');if(e)e.innerHTML=t;}
+function c2btns(){const f=$('#c2F'),d=$('#c2D');if(f)f.disabled=BD.state!=='idle';if(d)d.disabled=BD.state!=='ate';$$('[data-fly]').forEach(b=>b.disabled=BD.state!=='ready');}
+function feed(i){if(BD.state!=='idle')return;BD.eaten=i;const[x,y]=BD.berries[i];BD.tx=x+30;BD.ty=y-20;BD.state='toBerry';c2('🐦 The bird spots a juicy berry…');c2btns();}
+function bird(x,y,flap,flip=1,s=1.5){ctx.save();ctx.translate(x,y);ctx.scale(flip*s,s);ell(ctx,0,0,22,15,0,'#3A86C8',INK,2.2);circ(18,-12,11,'#3A86C8',ctx,INK,2.2);ctx.beginPath();ctx.moveTo(27,-14);ctx.lineTo(40,-10);ctx.lineTo(27,-7);ctx.closePath();ctx.fillStyle='#F4A261';ctx.fill();ctx.stroke();circ(21,-15,2.2,INK,ctx,null);
+  ctx.beginPath();ctx.moveTo(-4,-4);ctx.quadraticCurveTo(-14,-24-Math.sin(flap)*14,-26,-8-Math.sin(flap)*18);ctx.quadraticCurveTo(-14,-2,-4,-4);ctx.fillStyle='#2B6CA3';ctx.fill();ctx.stroke();ctx.beginPath();ctx.moveTo(-20,2);ctx.lineTo(-36,8);ctx.lineTo(-20,8);ctx.closePath();ctx.fill();ctx.stroke();ctx.restore();}
+function gut(p){const X=560,Y=260;rr(X-280,Y-140,560,270,20);ctx.fillStyle='rgba(255,255,255,.97)';ctx.fill();ctx.lineWidth=3;ctx.strokeStyle=INK;ctx.stroke();tag('Inside the bird — simplified',X,Y-112,null,null,'#5A3E72',15);
+  ctx.strokeStyle='#E8A0A0';ctx.lineWidth=28;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(X-230,Y-40);ctx.lineTo(X-100,Y-40);ctx.quadraticCurveTo(X-30,Y-40,X-30,Y+10);ctx.quadraticCurveTo(X-30,Y+60,X+70,Y+60);ctx.lineTo(X+230,Y+60);ctx.stroke();ctx.lineCap='butt';
+  font(13,800);ctx.fillStyle=INK;ctx.textAlign='center';ctx.fillText('mouth',X-230,Y-70);ctx.fillText('gizzard & stomach',X-50,Y-70);ctx.fillText('intestine',X+120,Y+100);ctx.fillText('exit',X+230,Y+100);
+  const path=t=>t<.3?[lerp(X-230,X-100,t/.3),Y-40]:t<.55?[lerp(X-100,X-30,(t-.3)/.25),lerp(Y-40,Y+10,(t-.3)/.25)]:t<.7?[lerp(X-30,X+70,(t-.55)/.15),lerp(Y+10,Y+60,(t-.55)/.15)]:[lerp(X+70,X+230,(t-.7)/.3),Y+60];
+  const[sx,sy]=path(p),fl=clamp(1-p/.6);if(fl>0)circle(sx,sy,11+12*fl,`rgba(193,18,31,${.35+.6*fl})`,INK,1.5);ell(ctx,sx,sy,6,9,0,'#C9A26A',INK,2);
+  tag(fl>0?'juicy flesh is digested':'tough seed coat survives ✓',sx,sy-42,null,null,fl>0?'#C1121F':'#52B788',14);}
+SC.push({name:'Animals: eaten',
+ panel:()=>P('Module 2 · Station C · Animals (internal)','A ride inside a bird 🐦🍒',`<p>Click a berry on the bush, or follow the steps:</p>
+ <div class="lab-row"><button class="btn primary" id="c2F">🍒 1 · Feed the bird</button><button class="btn" id="c2D">🔎 2 · Follow the seed inside</button></div>
+ <div class="lab-row"><b>3 · Fly to:</b><button class="btn sm" data-fly="meadow">Open meadow</button><button class="btn sm" data-fly="edge">Forest edge</button><button class="btn sm" data-fly="river">Riverbank</button><button class="btn sm" id="c2R">↺ Again</button></div>
+ <div class="result" id="c2Msg">Click a berry or press “Feed the bird”.</div>
+ <div class="key">Animals disperse seeds in two ways:<br>• <b>Externally</b> — hooks on fur (burdock).<br>• <b>Internally</b> — fruits are eaten; tough seeds survive and are deposited in droppings (cherries, berries).</div>
+ <div id="cEx"></div><div id="cCh"></div>`),
+ say:'Some fruits are eaten. The juicy flesh is digested, but the tough seed coat lets the seed survive. The seed is deposited later in the droppings, often far from the parent plant.',
+ bind(){$('#c2F').onclick=()=>{ac();feed(Math.floor(Math.random()*BD.berries.length));};
+  $('#c2D').onclick=()=>{if(BD.state!=='ate')return;BD.state='digest';BD.dig=0;c2('🔎 Inside the bird (simplified): the soft flesh is digested for energy… but the <b>tough seed coat</b> protects the seed.');c2btns();};
+  $$('[data-fly]').forEach(b=>b.onclick=()=>{if(BD.state!=='ready')return;BD.dest=b.dataset.fly;BD.tx=DEST[BD.dest][0];BD.ty=150;BD.state='flying';c2(`🕊️ Flying to the ${DEST[BD.dest][1]}… In small birds a seed often spends less than an hour in the gut; in large mammals it can be a day or more.`);c2btns();});
+  $('#c2R').onclick=()=>{Object.assign(BD,{x:820,y:120,tx:820,ty:120,state:'idle',eaten:null,dest:null,drop:null,sprout:0});c2('Click a berry or press “Feed the bird”.');c2btns();};c2btns();
+  renderQ('#cEx',{task:'c_explain',type:'mc',q:'💬 How does a cherry tree benefit when a bird eats its fruit?',opts:['The flesh is digested, but the seed’s hard coat survives; the seed is deposited in droppings away from the parent.','The bird digests the seed, which feeds the bird so it can plant more trees.','Birds carry the whole tree to a new place.','The seed sticks to the bird’s feathers with hooks.'],ans:0,hint:'Which part is eaten for energy, and which part is protected?',clue:SV.cherry()+'<span>The red flesh is the “reward”. The hard stone protects the seed.</span>',explain:'The plant “pays” the animal with sweet flesh. The tough stone or seed coat survives digestion, and the seed leaves the body later — often far away.',take:'Juicy fruit = reward; tough seed = survives the trip.'},{label:'Explained animal dispersal'});
+  renderQ('#cCh',{task:'c_chal',type:'multi2',q:'🏆 Challenge: a tropical plant makes bright red, sweet, juicy fruits with small, very tough seeds.',parts:[{label:'Part 1 · Most likely mechanism?',opts:['Wind','Water','Animals — eaten (internal)','Mechanical'],ans:2},{label:'Part 2 · Most important feature for surviving the journey?',opts:['The bright red colour','The tough seed coat','The sweet taste','Its small size'],ans:1}],hint:'Colour and sweetness attract the animal. What protects the seed inside it?',clue:SV.berry()+'<span>Attract → eat → digest the flesh → the seed must not be digested!</span>',explain:'Bright, sweet fruits attract animals (internal zoochory). The tough seed coat lets the seed survive digestion.',take:'Attract with the fruit, protect with the coat.'},{label:'Challenge complete'});},
+ update(dt){BD.flap+=dt*(BD.state==='flying'||BD.state==='toBerry'?14:3);
+  const mv=sp=>{const dx=BD.tx-BD.x,dy=BD.ty-BD.y,d=Math.hypot(dx,dy);if(d<3){BD.x=BD.tx;BD.y=BD.ty;return true;}BD.x+=dx/d*Math.min(d,sp*dt);BD.y+=dy/d*Math.min(d,sp*dt);return false;};
+  if(BD.state==='toBerry'&&mv(320)){BD.state='eating';BD.t=0;}
+  if(BD.state==='eating'){BD.t+=dt;if(BD.t>.8){BD.state='ate';sfx.pop();c2('😋 Gulp! The bird swallowed the berry whole — seed and all. Now follow the seed inside.');c2btns();}}
+  if(BD.state==='digest'){BD.dig+=dt/5;if(BD.dig>=1){BD.state='ready';c2('✅ The seed survived the gut. Choose where the bird flies next.');c2btns();}}
+  if(BD.state==='flying'&&mv(260)){BD.state='dropping';BD.drop={x:BD.x,y:BD.y+14,vy:0};sfx.pop();}
+  if(BD.state==='dropping'){const d=BD.drop;d.vy+=500*dt;d.y+=d.vy*dt;if(d.y>=GB-7){d.y=GB-7;BD.state='done';BD.sprout=0;c2(`🌱 Seed deposited at the ${DEST[BD.dest][1]} — about <b>${Math.round((BD.x-175)*.6)} m</b> from the parent, with a little natural fertiliser!`);award('c_gut',10,'Followed the seed through the bird');c2btns();}}
+  if(BD.state==='done')BD.sprout=Math.min(1,BD.sprout+dt*.6);},
+ draw(){skyBg('#BFE3F8','#F2FAFF',GB);cloudS(420,90,1);soil(GB);ctx.fillStyle='#8ECAE6';ctx.fillRect(930,GB+3,70,60);
+  rrect(ctx,167,240,18,GB-240,5,'#8B5E3C',INK,2.5);circ(175,230,85,'#5C9A66',ctx,INK,3);circ(120,265,46,'#4F8F5B',ctx,INK,2.5);circ(235,262,48,'#4F8F5B',ctx,INK,2.5);
+  BD.berries.forEach(([x,y],i)=>{if(i===BD.eaten&&BD.state!=='idle')return;drawBerry(ctx,x,y,1.9);});
+  tag('Parent cherry tree',175,110,null,null,'#C1121F',14);tree(ctx,700,GB,.55,'#3F7A4B','#5C9A66');
+  Object.values(DEST).forEach(([x,n])=>tag(n,x,GB+45,null,null,'#52B788',13));
+  if(BD.drop){const d=BD.drop;ell(ctx,d.x,d.y,13,7,0,'#F1EFE6',INK,1.5);ell(ctx,d.x,d.y-1,6,8,0,'#C9A26A',INK,1.8);if(BD.state==='done')seedling(ctx,d.x+14,GB,44,1,BD.sprout);}
+  bird(BD.x,BD.y,BD.flap,(BD.tx<BD.x-2||BD.state==='eating')?-1:1);
+  if(BD.state==='digest'||BD.state==='ready')gut(BD.state==='ready'?1:BD.dig);
+  banner('Internal dispersal: eaten and deposited',34,'#C1121F');},
+ hot(){return BD.state==='idle'?BD.berries.map(([x,y],i)=>({x,y,r:18,act(){feed(i);}})):[];}
+});
+
+/* ===== 6 · MECHANICAL ===== */
+const GD=520,PX=170,PY=250,MPX=170;
+const D={mat:40,ten:50,state:'closed',t:0,seeds:[],trials:[],quiver:0,auto:0,pend:null};
+const OPTD=['Nothing happens','The seeds just drop straight down','The pod bursts open and flings the seeds away','The pod rolls away from the plant'];
+function dMsg(t){const e=$('#dMsg');if(e)e.innerHTML=t;}
+function dTable(){const e=$('#dTab');if(!e)return;e.innerHTML=D.trials.length?`<table class="t"><tr><th>#</th><th>Maturity</th><th>Tension</th><th>What happened</th><th>Farthest</th></tr>${D.trials.map((r,i)=>`<tr><td>${i+1}</td><td>${r.m}%</td><td>${r.t}%</td><td>${r.w}</td><td class="n">${r.d?r.d.toFixed(1)+' m':'—'}</td></tr>`).join('')}</table>`:'<p class="small">No trials yet.</p>';}
+function dRecord(m,t,w,d){D.trials.push({m,t,w,d});dTable();if(D.trials.length>=3)award('d_exp',10,'Three pod trials');if(m>=80&&t>=60&&d>1&&S.pred.d_predict!=null)revealPred('#dPredFb','d_predict',2,OPTD,'A ripe pod with high tension burst open: the walls coiled suddenly and flung the seeds.');}
+function dTouch(auto){if(D.state!=='closed')return;const m=D.mat,t=D.ten;
+  if(m<80){D.quiver=.7;sfx.pop();dRecord(m,t,'Unripe — nothing happened',0);dMsg('🟢 The pod wobbles but stays shut. It is <b>not mature</b>: the seeds aren’t ready and the seams are still firmly joined.');return;}
+  D.state='burst';D.t=0;D.seeds=[];for(let i=0;i<5;i++){let v,a;if(t<25){v=rand(.2,.8);a=rand(-.3,.3);}else{v=1.5+5.5*t/100*rand(.85,1.1);a=rand(15,65)*Math.PI/180;}D.seeds.push({x:0,y:.6,vx:v*Math.cos(a),vy:v*Math.sin(a),done:false});}
+  sfx.burst();D.pend={m,t,auto};}
+SC.push({name:'Mechanical',
+ panel:()=>P('Module 2 · Station D · Mechanical (autochory)','Can plants launch their own seeds? 💥',`<p class="small"><b>Auto-</b> = self. Example: <b>Impatiens</b> (touch-me-not). Click the pod or press the button.</p><div class="qcard"><h4>🔬 What will happen when you touch a fully ripe pod with high tension?</h4><div id="dPred"></div><div id="dPredFb"></div></div>
+ <div class="lab-row" style="display:block">🌱 Pod maturity <output id="dMo">${D.mat}%</output><input type="range" id="dM" min="0" max="100" step="5" value="${D.mat}" aria-label="Pod maturity"></div>
+ <div class="lab-row" style="display:block">🌀 Tension in pod walls <output id="dTo">${D.ten}%</output><input type="range" id="dT" min="0" max="100" step="5" value="${D.ten}" aria-label="Tension"></div>
+ <div class="lab-row"><button class="btn primary" id="dGo">👆 Touch the pod</button><button class="btn" id="dNew">🌱 Grow a new pod</button></div>
+ <div class="result" id="dMsg">Set maturity and tension, then touch the pod.</div><div id="dTab"></div>
+ <details><summary>📘 The science: maturity → tension → sudden release</summary><ul><li>In <b>Impatiens</b>, living cells in the pod walls fill with water and push hard, stretching the walls.</li><li>In many <b>legumes</b> (pea family) the pod walls dry and shrink unevenly, so they twist and pull on the seams.</li><li>Not every pea plant does this the same way: many <b>garden peas</b> were bred to keep their pods closed; wild relatives, gorse and lupins can pop open.</li><li>Distance is short (usually up to a few metres) — but no wind, water or animal is needed.</li></ul></details>
+ <div id="dEx"></div><div id="dCh"></div>`),
+ say:'Station D, mechanical dispersal. As the pod ripens, tension builds in its walls. When the ripe pod is touched, the seams split, the walls coil suddenly, and the seeds are flung away.',
+ bind(){predict('#dPred','d_predict',OPTD);if(S.done.d_exp&&S.pred.d_predict!=null)revealPred('#dPredFb','d_predict',2,OPTD,'A ripe, tense pod bursts and flings its seeds.');
+  $('#dM').oninput=e=>{D.mat=+e.target.value;$('#dMo').textContent=D.mat+'%';if(D.state!=='closed'){D.state='closed';D.seeds=[];}D.auto=0;};
+  $('#dT').oninput=e=>{D.ten=+e.target.value;$('#dTo').textContent=D.ten+'%';if(D.state!=='closed'){D.state='closed';D.seeds=[];}D.auto=0;};
+  $('#dGo').onclick=()=>{ac();dTouch(false);};$('#dNew').onclick=()=>{D.state='closed';D.seeds=[];D.auto=0;dMsg('A fresh pod has grown.');};dTable();
+  renderQ('#dEx',{task:'d_explain',type:'mc',q:'💬 What causes Impatiens seeds to be thrown away from the plant?',opts:['As the fruit matures, tension builds in the pod walls; when the seams split, the walls coil suddenly and fling the seeds.','The plant uses muscles to throw the seeds.','Wind blows the pod open.','Animals squeeze the pod.'],ans:0,hint:'Plants have no muscles. Think of a stretched spring.',clue:SV.pod(true)+'<span>After bursting, the walls curl up like released springs.</span>',explain:'Tension stored in the pod walls is released all at once when the seams split, so the walls coil and throw the seeds.',take:'Ripe pod + stored tension + trigger = seeds launched.'},{label:'Explained mechanical dispersal'});
+  renderQ('#dCh',{task:'d_chal',type:'order',q:'🏆 Challenge: put the cause-and-effect chain in order (first at the top).',items:['The fruit (pod) matures.','The pod walls change as they ripen.','Tension builds up along the seams.','A touch, or further drying, splits the seams.','The walls coil suddenly.','The seeds are flung away from the parent.'],hint:'Start with ripening. What builds up before anything is released?',clue:SV.pod()+'→'+SV.pod(true),explain:'Maturation → changes in pod walls → tension → seams split → walls coil → seeds released.',take:'Ripen → tense → split → coil → launch.'},{label:'Cause-and-effect chain'});},
+ update(dt){D.quiver-=dt;if(D.state==='closed'&&D.mat===100&&D.ten>=90){D.auto+=dt;if(D.auto>2){dTouch(true);dMsg('💥 The fully ripe pod burst <b>on its own</b> — the tension was too great!');}}
+  if(D.state==='burst'){D.t+=dt;let all=true;D.seeds.forEach(s=>{if(s.done)return;all=false;const st=dt*.8;s.x+=s.vx*st;s.y+=s.vy*st;s.vy-=9.8*st;if(s.y<=-(GD-PY-50)/MPX+.6&&s.vy<0)s.done=true;});
+   if(all&&D.pend){const p=D.pend;D.pend=null;const d=Math.max(...D.seeds.map(s=>s.x));dRecord(p.m,p.t,p.t<25?'Split slowly — seeds dropped':(p.auto?'Burst by itself':'Burst when touched'),d);
+    dMsg(p.t<25?`🌰 The pod split, but with <b>little tension</b> the seeds just dropped about ${d.toFixed(1)} m away.`:`💥 <b>Bang!</b> The walls coiled and flung the seeds — the farthest landed <b>${d.toFixed(1)} m</b> away. Try other tension values and compare.`);}}},
+ draw(){skyBg('#BFE3F8','#F2FAFF',GD);cloudS(520,100,1);soil(GD,'#8A5A36','#4E321D',false);
+  font(14,800);ctx.fillStyle='#fff';ctx.textAlign='center';for(let m=0;m<=4;m++){const x=PX+m*MPX;ctx.fillRect(x-1.5,GD+12,3,12);ctx.fillText(m+' m',x,GD+40);}
+  ctx.strokeStyle='#3f7f4d';ctx.lineWidth=7;ctx.beginPath();ctx.moveTo(PX-40,GD);ctx.quadraticCurveTo(PX-52,380,PX-12,PY-50);ctx.stroke();ctx.lineWidth=2.5;ctx.strokeStyle=INK;ctx.stroke();
+  [[PX-80,440,-.5],[PX-12,410,.5],[PX-68,350,-.6],[PX+14,320,.4]].forEach(([x,y,r])=>ell(ctx,x,y,32,12,r,'#52B26B',INK,2));ell(ctx,PX-62,PY-44,16,12,0,'#F48FB1',INK,2);
+  const m=D.mat,t=D.ten;
+  if(D.state==='closed'){const q=D.quiver>0?Math.sin(now*60)*4*D.quiver:(m>=80&&t>=70?Math.sin(now*30)*1.6:0);const len=46+40*m/100,wid=12+8*m/100,col=m<50?'#5E8C31':m<80?'#7FA650':'#A8C66C';
+   ctx.save();ctx.translate(PX+q,PY);ctx.strokeStyle='#3f7f4d';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(-12,-50);ctx.lineTo(0,-8);ctx.stroke();ell(ctx,0,len/2,wid,len/2,0,col,INK,3);
+   ctx.strokeStyle=`rgba(${t>60?'193,18,31':'43,45,66'},${.3+t/150})`;ctx.lineWidth=1+t/35;ctx.beginPath();ctx.moveTo(0,3);ctx.lineTo(0,len-3);ctx.moveTo(-wid*.55,8);ctx.quadraticCurveTo(-wid*.7,len/2,-wid*.3,len-5);ctx.moveTo(wid*.55,8);ctx.quadraticCurveTo(wid*.7,len/2,wid*.3,len-5);ctx.stroke();ctx.restore();
+   tag(m<80?'Unripe pod':'Ripe pod',PX+150,PY+20,PX+wid+4,PY+len/2,m<80?'#5E8C31':'#FFB703',15);}
+  else{ctx.save();ctx.translate(PX,PY);for(let i=0;i<5;i++){const a=i/5*Math.PI*2;ctx.save();ctx.rotate(a*.25-.5);ctx.beginPath();ctx.strokeStyle='#A8C66C';ctx.lineWidth=8;ctx.lineCap='round';const c=Math.min(1,D.t*4)*(t<25?.4:1);ctx.arc(12*Math.cos(a),18+12*c,13+10*(1-c),a,a+Math.PI*(.6+1.4*c));ctx.stroke();ctx.restore();}ctx.restore();
+   D.seeds.forEach(s=>drawPlainSeed(ctx,PX+s.x*MPX,Math.min(PY+50-(s.y-.6)*MPX,GD-5),1.3,0,'#6B4423'));tag('Coiled pod walls',PX+150,PY-40,PX+18,PY+10,'#A8C66C',15);}
+  rr(W-250,64,230,84,12);ctx.fillStyle='rgba(255,255,255,.96)';ctx.fill();ctx.lineWidth=2.5;ctx.strokeStyle=INK;ctx.stroke();font(14,900);ctx.fillStyle=INK;ctx.textAlign='left';ctx.textBaseline='middle';ctx.fillText('Maturity',W-238,88);ctx.fillText('Tension',W-238,124);
+  rr(W-150,80,116,14,7);ctx.fillStyle='#EEE';ctx.fill();if(m>0){rr(W-150,80,Math.max(14,116*m/100),14,7);ctx.fillStyle='#8AB17D';ctx.fill();}rr(W-150,116,116,14,7);ctx.fillStyle='#EEE';ctx.fill();if(t>0){rr(W-150,116,Math.max(14,116*t/100),14,7);ctx.fillStyle=t>60?'#E63946':'#F4A261';ctx.fill();}
+  banner('Mechanical dispersal: the plant launches its seeds',34,'#8B6B4A');},
+ hot(){return D.state==='closed'?[{x:PX,y:PY+40,r:55,act(){ac();dTouch(false);}}]:[];}
+});
+/* ===== 7 · INVESTIGATE ===== */
+const SEEDS={dandelion:{n:'Dandelion (parachute)',h:.6,vt:.3,cp:1,float:20,hooks:.02,fleshy:0,pod:0,feat:'a parachute of fine hairs'},
+ maple:{n:'Maple (wing)',h:12,vt:1,cp:.9,float:40,hooks:.02,fleshy:0,pod:0,feat:'a papery wing'},
+ coconut:{n:'Coconut (air-filled husk)',h:20,vt:9,cp:.02,float:5000,hooks:0,fleshy:0,pod:0,feat:'an air-filled, waterproof husk'},
+ burdock:{n:'Burdock (hooks)',h:1.2,vt:2.5,cp:.15,float:8,hooks:.9,fleshy:0,pod:0,feat:'hooks'},
+ cherry:{n:'Cherry (juicy fruit)',h:6,vt:6,cp:.05,float:0,hooks:0,fleshy:1,pod:0,feat:'juicy fruit around a hard stone'},
+ impatiens:{n:'Impatiens (exploding pod)',h:.8,vt:3,cp:.2,float:6,hooks:0,fleshy:0,pod:1,feat:'a pod that bursts open'},
+ plain:{n:'Smooth heavy seed (no adaptation)',h:1,vt:5,cp:.1,float:0,hooks:.02,fleshy:0,pod:0,feat:'no special structure'}};
+const MECH={wind:'Wind',water:'Water',fur:'Animal – fur (external)',gut:'Animal – eaten (internal)',mech:'Mechanical – pod'};
+const ENV={field:{n:'Windy open field',wind:7,water:0,mammal:2,bird:1},forest:{n:'Calm forest',wind:1.5,water:0,mammal:4,bird:3},river:{n:'Riverside',wind:4,water:1,mammal:2,bird:2},meadow:{n:'Meadow with grazing mammals',wind:4,water:0,mammal:8,bird:2},woodland:{n:'Woodland full of birds',wind:2,water:0,mammal:3,bird:8},dry:{n:'Dry rocky hillside',wind:6,water:0,mammal:1,bird:1}};
+const STR=[.5,1,1.5],STRN=['low','medium','high'],CAT=['Not dispersed','Very short (<1 m)','Short (1–10 m)','Far (10–50 m)','Very far (>50 m)'];
+const QSL=['Which seed travels farthest by wind?','Does the same seed travel farther when the wind is stronger?','Which mechanism suits each seed best?','Do hooks help seeds travel on animals?','Can a seed with no adaptation be dispersed far?','Does the environment change how far a seed travels?'];
+const L={seed:'dandelion',mech:'wind',env:'field',str:1,pred:'',q:0,exps:[],anim:0};
+function lModel(seed,mech,env,str){const s=SEEDS[seed],e=ENV[env],k=STR[str];let d=0,why='';
+  if(mech==='wind'){const w=e.wind*k;d=s.h/s.vt*w*s.cp;why=s.cp>.5?`It has ${s.feat}: a large surface area for its mass, so it falls slowly and the wind (${w.toFixed(1)} m/s) carries it.`:`It has ${s.feat}, not a wind adaptation, so it falls quickly and lands close to the parent.`;}
+  else if(mech==='water'){if(!e.water){why='There is no flowing water in this environment, so water cannot disperse the seed.';}else if(!s.float){why='It is denser than water and sinks, so the current cannot carry it.';}else{d=s.float*k;why=s.float>1000?`Its ${s.feat} makes it float for a long time, so the current carries it a long way.`:'It floats only briefly, so it travels a short distance before sinking or washing ashore.';}}
+  else if(mech==='fur'){d=e.mammal*k*30*s.hooks;why=s.hooks>.5?`Its hooks grip fur, so animals (${e.mammal>5?'many':'few'} here) carry it before it drops off.`:'It has no hooks or sticky surface, so it rarely stays on fur.';}
+  else if(mech==='gut'){d=s.fleshy?e.bird*k*45:0;why=s.fleshy?'Animals eat the juicy fruit; the hard stone survives digestion and is deposited later. More birds here = more journeys.':'It has no juicy fruit to attract animals, so animals do not swallow and carry it.';}
+  else{d=s.pod?rand(1.5,4.5):0;why=s.pod?'Its pod builds tension and bursts, throwing seeds a few metres — no wind, water or animals needed.':'It has no pod mechanism, so it cannot launch itself and just falls.';}
+  return{d,why};}
+const lCat=d=>d<.05?0:d<1?1:d<10?2:d<50?3:4;
+function lChanges(a,b){const n=[];if(a.seed!==b.seed)n.push('seed type');if(a.mech!==b.mech)n.push('mechanism');if(a.env!==b.env)n.push('environment');if(a.str!==b.str)n.push('strength');return n;}
+function lFair(){const e=$('#lFair');if(!e)return;const l=L.exps[L.exps.length-1];if(!l){e.innerHTML='3 · <b>Change one variable.</b> First experiment — set up any test.';return;}const d=lChanges(L,l);e.className='result '+(d.length===1?'good':d.length>1?'warn':'');e.innerHTML=d.length===0?'🔁 Same set-up as last time — a repeat checks reliability.':d.length===1?`✅ <b>Fair test:</b> only the <b>${d[0]}</b> changes compared with experiment ${L.exps.length}.`:`⚠️ You are changing <b>${d.length} variables</b> (${d.join(', ')}). Change only one to know what caused any difference.`;}
+function lNb(){const e=$('#lNb');if(!e)return;e.innerHTML=L.exps.length?`<div class="tscroll"><table class="t"><tr><th>#</th><th>Seed</th><th>Mechanism</th><th>Conditions</th><th>Prediction</th><th>Observation</th><th>Result</th><th>Explanation</th></tr>${L.exps.map((x,i)=>`<tr><td>${i+1}</td><td>${SEEDS[x.seed].n}</td><td>${MECH[x.mech]}</td><td>${ENV[x.env].n}, ${STRN[x.str]}${x.ch.length>1?' ⚠️':''}</td><td>${CAT[x.pred]}</td><td>avg ${fmtD(x.mean)}</td><td>${CAT[x.c]} — ${x.c===x.pred?'supported ✓':'not supported'}</td><td>${x.why}</td></tr>`).join('')}</table></div>`:'<p class="small">Your experiments are recorded here automatically.</p>';}
+const sel=(id,obj,val,f)=>`<select id="${id}" style="width:100%">${Object.entries(obj).map(([k,v])=>`<option value="${k}" ${k===val?'selected':''}>${f?f(v):v}</option>`).join('')}</select>`;
+SC.push({name:'Investigate',
+ panel:()=>P('Module 3 · Experimental lab','Which dispersal method works best? 🧪',`<p class="small">Each run does <b>3 trials</b> and gives the average. Follow the scientific method:</p>
+ <div class="lab-row" style="display:block">1 · Question ${sel('lQ',Object.fromEntries(QSL.map((q,i)=>[i,q])),String(L.q))}</div>
+ <div class="lab-row" style="display:block">2 · Prediction <select id="lP" style="width:100%"><option value="">— choose —</option>${CAT.map((c,i)=>`<option value="${i}" ${String(i)===L.pred?'selected':''}>${c}</option>`).reverse().join('')}</select></div>
+ <div class="lab-row" style="display:block">🌰 Seed ${sel('lS',SEEDS,L.seed,v=>v.n)}</div>
+ <div class="lab-row" style="display:block">🚚 Mechanism ${sel('lM',MECH,L.mech)}</div>
+ <div class="lab-row" style="display:block">🏞️ Environment ${sel('lE',ENV,L.env,v=>v.n)}</div>
+ <div class="lab-row" style="display:block">💪 Strength of wind / current / animals <output id="lSo">${STRN[L.str]}</output><input type="range" id="lStr" min="0" max="2" value="${L.str}" aria-label="Strength"></div>
+ <div class="result" id="lFair"></div><button class="btn primary" id="lRun">🧪 4 · Run 3 trials & observe</button><div class="result" id="lOut">Results appear on the picture and here.</div><div id="lEx"></div>
+ <h4>📓 Laboratory notebook</h4><div id="lNb"></div>`),
+ say:'Investigate. Ask a question, make a prediction, change one variable, observe, compare results and explain. Each run does three trials.',
+ bind(){['lS','lM','lE'].forEach((id,i)=>$('#'+id).onchange=e=>{L[['seed','mech','env'][i]]=e.target.value;lFair();});$('#lQ').onchange=e=>L.q=+e.target.value;$('#lP').onchange=e=>L.pred=e.target.value;
+  $('#lStr').oninput=e=>{L.str=+e.target.value;$('#lSo').textContent=STRN[L.str];lFair();};
+  $('#lRun').onclick=()=>{ac();if(L.pred===''){$('#lFair').className='result warn';$('#lFair').innerHTML='🤔 Make a <b>prediction</b> first — scientists predict before they test.';$('#lP').focus();return;}
+   const b=lModel(L.seed,L.mech,L.env,L.str),tr=[0,1,2].map(()=>b.d*rand(.75,1.25)),mean=tr.reduce((a,c)=>a+c,0)/3,c=lCat(mean),prev=L.exps[L.exps.length-1],ch=prev?lChanges(L,prev):[];
+   const x={seed:L.seed,mech:L.mech,env:L.env,str:L.str,pred:+L.pred,tr,mean,c,why:b.why,ch};L.exps.push(x);L.anim=0;sfx.whoosh();
+   award('l_exp1',5,'First lab experiment');if(L.exps.length>=3)award('l_exp3',10,'Three experiments');if(prev&&ch.length===1)award('l_fair',10,'Fair test in the lab');
+   $('#lOut').className='result '+(c===x.pred?'good':'warn');$('#lOut').innerHTML=`Average: <b>${fmtD(mean)}</b> → <b>${CAT[c]}</b>. Your prediction: <i>${CAT[x.pred]}</i> — ${c===x.pred?'supported ✓':'not supported. That’s useful evidence!'}`;
+   const wrong=['The seed travelled because it was heavier than the others.','It was pure luck — seed structure does not matter.','The environment made the seed grow wings during the experiment.'];const opts=shuffle([b.why,...shuffle(wrong).slice(0,2)]);
+   renderQ('#lEx',{task:'l_explain',type:'mc',q:`5–6 · Compare & explain: which statement best explains experiment ${L.exps.length}?`,opts,ans:opts.indexOf(b.why),hint:'Does the seed’s structure match the mechanism you chose?',clue:`<span>Seed feature: <b>${SEEDS[x.seed].feat}</b> · Mechanism: <b>${MECH[x.mech]}</b></span>`,explain:b.why,take:'A seed travels far only when its structure matches the mechanism.'},{label:'Explained a lab result',fresh:true});
+   lNb();lFair();};lFair();lNb();},
+ update(dt){L.anim=Math.min(1,L.anim+dt/2);},
+ draw(){ctx.fillStyle='#FAF8F3';ctx.fillRect(0,0,W,H);rr(16,60,W-32,H-76,18);ctx.fillStyle='#fff';ctx.fill();ctx.lineWidth=3;ctx.strokeStyle=INK;ctx.stroke();
+  const x=L.exps[L.exps.length-1];
+  // trial lanes
+  font(16,900);ctx.fillStyle=INK;ctx.textAlign='left';ctx.textBaseline='middle';ctx.fillText(x?`Experiment ${L.exps.length}: ${SEEDS[x.seed].n} · ${MECH[x.mech]} · ${ENV[x.env].n}`:'Set up an experiment in the panel →',36,88);
+  const lx=150,lw=780,lg=d=>clamp((Math.log10(Math.max(d,.05))+1.3)/5);
+  [.1,1,10,100,1000].forEach(v=>{const px=lx+lg(v)*lw;ctx.strokeStyle='#ddd';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(px,108);ctx.lineTo(px,300);ctx.stroke();font(12,800);ctx.fillStyle='#777';ctx.textAlign='center';ctx.fillText(fmtD(v),px,314);});
+  for(let i=0;i<3;i++){const y=140+i*55;font(14,800);ctx.fillStyle=INK;ctx.textAlign='left';ctx.fillText('Trial '+(i+1),36,y);rr(lx,y-14,lw,28,14);ctx.fillStyle='#F1ECFA';ctx.fill();ctx.lineWidth=2;ctx.strokeStyle=INK;ctx.stroke();
+   if(x){const p=ease(clamp(L.anim*1.3-i*.15)),px=lx+lg(x.tr[i])*lw*p;if(x.tr[i]>.05){rr(lx,y-14,Math.max(28,px-lx),28,14);ctx.fillStyle=['#2A9D8F','#52B788','#95D5B2'][i];ctx.fill();ctx.stroke();}
+    const sx=Math.max(lx+14,px);if(x.seed==='dandelion')drawDandelion(ctx,sx,y,1.2);else if(x.seed==='maple')drawSamara(ctx,sx,y,1,0);else if(x.seed==='coconut')drawCoconut(ctx,sx,y,.9,0);else if(x.seed==='burdock')drawBurr(ctx,sx,y,1.1);else if(x.seed==='cherry')drawBerry(ctx,sx,y,1.4);else drawPlainSeed(ctx,sx,y,1.2);
+    if(p>=1)tag(fmtD(x.tr[i]),Math.min(px+60,W-70),y,null,null,'#FFB703',13);}}
+  // comparison chart
+  font(15,900);ctx.fillStyle=INK;ctx.textAlign='left';ctx.fillText('5 · Compare all experiments (average distance, log scale)',36,350);
+  const ex=L.exps.slice(-8),bw=Math.min(90,(W-120)/Math.max(ex.length,1)-12);
+  ctx.strokeStyle=INK;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(60,370);ctx.lineTo(60,540);ctx.lineTo(W-40,540);ctx.stroke();
+  ex.forEach((e,i)=>{const h=lg(e.mean)*160,bx=80+i*(bw+12);rr(bx,540-h,bw,Math.max(h,2),6);ctx.fillStyle=e.c>=3?'#2A9D8F':e.c===0?'#E63946':'#F4A261';ctx.fill();ctx.lineWidth=2;ctx.strokeStyle=INK;ctx.stroke();
+   font(12,900);ctx.fillStyle=INK;ctx.textAlign='center';ctx.fillText('#'+(L.exps.length-ex.length+i+1),bx+bw/2,555);ctx.fillText(fmtD(e.mean),bx+bw/2,530-h);font(11,700);ctx.fillText(e.seed,bx+bw/2,570);});
+  if(!ex.length){font(15,700);ctx.fillStyle='#888';ctx.textAlign='center';ctx.fillText('No experiments yet',W/2,460);}
+  banner('Investigate: change one variable at a time',34,'#2D6A4F');}
+});
+
+/* ===== 8 · SURVIVAL ===== */
+const GE=420,TXE=450;
+const ZE=[{k:'dry',n:'Dry rocky slope',a:0,b:165,water:0,light:3,space:3,soil:1,col:'#E8D7B0'},{k:'field',n:'Open field',a:165,b:335,water:2,light:3,space:2,soil:2,col:'#CDE6B5'},{k:'crowd',n:'Near the parent',a:335,b:565,water:1,light:0,space:0,soil:2,col:'#BFD7B0'},{k:'shade',n:'Shaded forest',a:565,b:710,water:2,light:1,space:2,soil:2,col:'#A9C9A0'},{k:'rich',n:'Rich clearing',a:710,b:855,water:2,light:2,space:3,soil:3,col:'#D6E8C4'},{k:'river',n:'Riverbank',a:855,b:1000,water:3,light:2,space:2,soil:2,col:'#CFE8EC'}];
+const DISTE={wind:{dry:.25,field:.3,crowd:.1,shade:.12,rich:.1,river:.13},water:{river:.7,rich:.15,crowd:.15},animal:{rich:.35,field:.25,shade:.15,river:.1,crowd:.15},mech:{crowd:.6,shade:.25,field:.15}};
+const MNE={wind:'🌬️ Wind',water:'🌊 Water',animal:'🐦 Animals',mech:'💥 Mechanical'};
+const E={seeds:[],mech:null,phase:'none',t:0,evald:new Set(),hist:{},sel:null};
+const zoneE=k=>ZE.find(z=>z.k===k),germ=z=>z.water>=1,estab=z=>germ(z)&&z.light>=2&&z.space>=2&&z.soil>=2&&z.water>=2;
+function whyE(z){if(!germ(z))return'No water — the seed cannot absorb water, so it cannot germinate.';if(z.light<2)return'It germinates, but there is too little light for this sun-loving seedling to photosynthesise enough. (A shade-tolerant species might survive.)';if(z.space<2)return'It germinates, but shade and crowding from the parent and siblings mean the seedling loses the competition.';return z.k==='river'?'Moist soil, light and space: it establishes — though a flood could still wash it away.':'Water, light, space and minerals are all available: the seedling becomes established.';}
+function eRelease(m){E.mech=m;E.phase='fly';E.t=0;E.evald=new Set();E.sel=null;E.seeds=[];const d=DISTE[m];
+  for(let i=0;i<10;i++){let r=Math.random(),acc=0,k=Object.keys(d)[0];for(const kk in d){acc+=d[kk];if(r<=acc){k=kk;break;}}const z=zoneE(k);E.seeds.push({i,k,tx:rand(z.a+18,z.b-18),x:TXE+rand(-50,50),y:GE-260,t:0,delay:i*.15,landed:false,gs:null});}
+  sfx.whoosh();eUI();}
+function eUI(){const m=$('#eMsg');if(!m)return;$('#eS').disabled=E.phase!=='landed';
+  m.innerHTML=E.phase==='none'?'Choose a mechanism to release 10 seeds.':E.phase==='fly'?`${MNE[E.mech]} is carrying the seeds away…`:E.phase==='landed'?'All 10 seeds have <b>arrived</b>. Click a seed to <b>evaluate</b> it, then run a growing season.':(()=>{const g=E.seeds.filter(s=>s.gs!=='nogerm').length,e=E.seeds.filter(s=>s.gs==='est').length;return`${MNE[E.mech]}: <b>10</b> dispersed → <b>10</b> arrived → <b>${g}</b> germinated → <b>${e}</b> established. Every seed was dispersed — not every seed survived. Try another mechanism!`;})();
+  $('#eBtns').innerHTML=E.phase==='landed'||E.phase==='after'?'<b>Seeds:</b> '+E.seeds.map(s=>`<button class="btn sm" data-sd="${s.i}">${s.i+1}</button>`).join(' '):'';
+  const ks=Object.keys(E.hist);$('#eHist').innerHTML=ks.length?`<table class="t"><tr><th>Mechanism</th><th>Germinated</th><th>Established</th></tr>${ks.map(k=>`<tr><td>${MNE[k]}</td><td class="n">${E.hist[k].g}/10</td><td class="n">${E.hist[k].e}/10</td></tr>`).join('')}</table>`:'';}
+function eEval(i){const s=E.seeds[i],z=zoneE(s.k);E.sel=i;sfx.pop();const dots=v=>'●'.repeat(v)+'○'.repeat(3-v);
+  const box=$('#eZone');if(!box)return;box.innerHTML=`<div class="qcard"><h4>🔎 Seed ${i+1} landed in: ${z.n}</h4><p style="font-size:15px">💧 Water ${dots(z.water)} · ☀️ Light ${dots(z.light)}<br>↔️ Space ${dots(z.space)} · 🪨 Minerals ${dots(z.soil)}</p><b>Stage 3 · Will it germinate?</b> <button class="btn sm" data-g="1">Yes</button> <button class="btn sm" data-g="0">No</button><div id="eG"></div></div>`;
+  box.onclick=ev=>{const g=ev.target.closest('[data-g]'),es=ev.target.closest('[data-e]');
+   if(g){const ok=(+g.dataset.g===1)===germ(z);box.querySelectorAll('[data-g]').forEach(b=>b.disabled=true);ok?sfx.ok():sfx.bad();
+    $('#eG').innerHTML=`<div class="fb ${ok?'ok':'hint'}">${ok?'✅ Good judgement.':'🔄 Look again.'} ${germ(z)?'There is water, so it can germinate (if oxygen and temperature are suitable too).':'No water — germination is impossible here.'}</div>`+(germ(z)?`<b>Stage 4 · Will the seedling become established?</b> <button class="btn sm" data-e="1">Yes</button> <button class="btn sm" data-e="0">No</button><div id="eE"></div>`:'');if(!germ(z))done();}
+   if(es){const ok=(+es.dataset.e===1)===estab(z);box.querySelectorAll('[data-e]').forEach(b=>b.disabled=true);ok?sfx.ok():sfx.bad();$('#eE').innerHTML=`<div class="fb ${ok?'ok':'hint'}">${ok?'✅ Correct.':'🔄 Not quite.'} ${whyE(z)}</div>`;done();}};
+  function done(){E.evald.add(i);if(E.evald.size>=3)award('e_eval',10,'Evaluated three seeds');}}
+SC.push({name:'Survival',
+ panel:()=>P('Module 4 · Ecological survival','Can a seed survive in its new environment? 🌍',`<p>Thought experiment: this parent plant can use <b>any</b> mechanism. Release 10 seeds and follow each one:</p><p style="font-weight:900;font-size:15px">1 Dispersal → 2 Arrival → 3 Germination → 4 Establishment</p>
+ <div class="lab-row">${Object.entries(MNE).map(([k,n])=>`<button class="btn sm" data-rel="${k}">${n}</button>`).join('')}</div>
+ <button class="btn primary" id="eS" disabled>☀️🌧️ Run a growing season</button><div class="result" id="eMsg"></div><div class="lab-row" id="eBtns"></div><div id="eZone"></div><div id="eHist"></div>
+ <div class="def">Successful dispersal ≠ successful germination</div><ul><li><b>Germination</b> needs water, oxygen and a suitable temperature. Whether light is needed <b>varies between species</b>.</li><li><b>Establishment</b> (seedling → young plant) depends strongly on <b>light</b>, plus <b>space</b> and <b>minerals</b>.</li></ul><div id="eEx"></div>`),
+ say:'Can a seed survive in its new environment? A seed can travel far and still land somewhere unsuitable. Successful dispersal does not mean successful germination.',
+ bind(){$$('[data-rel]').forEach(b=>b.onclick=()=>{ac();eRelease(b.dataset.rel);});
+  $('#eS').onclick=()=>{if(E.phase!=='landed')return;E.phase='season';E.t=0;E.seeds.forEach(s=>{const z=zoneE(s.k);s.gs=estab(z)?'est':germ(z)?'germfail':'nogerm';});sfx.grow();eUI();$('#eMsg').innerHTML='☀️🌧️ A growing season passes…';};
+  $('#eBtns').onclick=e=>{const b=e.target.closest('[data-sd]');if(b)eEval(+b.dataset.sd);};eUI();
+  renderQ('#eEx',{task:'e_explain',type:'mc',q:'💬 A dandelion seed is blown 2 km and lands on a dry rocky slope. Which statement is correct?',opts:['Dispersal was successful, but the seed will probably not germinate because there is no water.','Because it travelled so far, it is certain to grow into a plant.','Dispersal failed, because it did not land near its parent.','It will germinate without water because it has a parachute.'],ans:0,hint:'Separate the journey (dispersal) from what happens after landing.',clue:'<span>1 Dispersal ✓ → 2 Arrival ✓ → 3 Germination ✗ (💧 none) → 4 Establishment ✗</span>',explain:'Dispersal only means the seed moved away from the parent. Germination needs water (plus oxygen and a suitable temperature); establishment needs light, space and minerals.',take:'Successful dispersal ≠ successful germination.'},{label:'Explained survival'});},
+ update(dt){E.t+=dt;if(E.phase==='fly'){E.seeds.forEach(s=>{if(s.landed||E.t<s.delay)return;s.t+=dt/1.4;if(s.t>=1){s.landed=true;sfx.drip();}});if(E.seeds.every(s=>s.landed)){E.phase='landed';award('e_release',5,'Released seeds');eUI();}}
+  if(E.phase==='season'&&E.t>3.6){E.phase='after';const g=E.seeds.filter(s=>s.gs!=='nogerm').length,e=E.seeds.filter(s=>s.gs==='est').length;E.hist[E.mech]={g,e};award('e_season',10,'Ran a growing season');eUI();}},
+ draw(){skyBg('#BFE3F8','#F2FAFF',GE);
+  ZE.forEach(z=>{ctx.fillStyle=z.col;ctx.fillRect(z.a,70,z.b-z.a,GE-70);ctx.strokeStyle='rgba(43,45,66,.25)';ctx.setLineDash([6,6]);ctx.beginPath();ctx.moveTo(z.a,70);ctx.lineTo(z.a,GE);ctx.stroke();ctx.setLineDash([]);});
+  [[40,GE-8],[100,GE-6],[70,GE-16]].forEach(([x,y])=>ell(ctx,x,y,26,10,0,'#B8A88A',INK,2));tree(ctx,610,GE,.85,'#2F6B3E','#3F7A4B');tree(ctx,680,GE,.7,'#2F6B3E','#3F7A4B');ctx.fillStyle='rgba(20,40,30,.15)';ctx.fillRect(565,70,145,GE-70);
+  soil(GE,'#8A5A36','#4E321D',false);ctx.fillStyle='#8ECAE6';ctx.fillRect(935,GE-4,65,H-GE+4);ctx.strokeStyle=INK;ctx.lineWidth=2;ctx.strokeRect(935,GE-4,65,H-GE+4);
+  ZE.forEach((z,i)=>{tag(z.n,(z.a+z.b)/2,90+(i%2)*34,null,null,['#CDA877','#95D5B2','#6BAA75','#2F6B3E','#C8693A','#219EBC'][i],13);
+   font(14,800);ctx.fillStyle='#fff';ctx.textAlign='center';ctx.textBaseline='middle';const cx=(z.a+z.b)/2,d=v=>'●'.repeat(v)||'–';ctx.fillText(`💧${d(z.water)} ☀️${d(z.light)}`,cx,GE+40);ctx.fillText(`↔️${d(z.space)} 🪨${d(z.soil)}`,cx,GE+64);});
+  font(13,700);ctx.fillStyle='#fff';ctx.textAlign='left';ctx.fillText('● = level of water, light, space and soil minerals in each zone',14,H-16);
+  tree(ctx,TXE,GE,1.05);
+  E.seeds.forEach(s=>{if(!s.landed){if(E.t<s.delay)return;const p=clamp(s.t);let x=lerp(s.x,s.tx,p),y=lerp(s.y,GE-5,p)-Math.sin(p*Math.PI)*(E.mech==='mech'?70:150);if(E.mech==='water'){y=p<.4?lerp(s.y,GE-5,p/.4):GE-5;}
+    if(E.mech==='wind')drawDandelion(ctx,x,y-10,1.5);else drawPlainSeed(ctx,x,y,1.4);if(E.mech==='animal')bird(x,y-22,now*14,s.tx>s.x?1:-1,.8);return;}
+   if(E.phase==='season'||E.phase==='after'){const p=clamp(E.t/3.5);if(s.gs==='est')seedling(ctx,s.tx,GE,44,1,p);else if(s.gs==='germfail')seedling(ctx,s.tx,GE,28,clamp(1-p*1.1),Math.min(1,p*1.6));else drawPlainSeed(ctx,s.tx,GE-6,1.4,0,p>.5?'#7a6a55':'#A47148');}else drawPlainSeed(ctx,s.tx,GE-6,1.4);
+   if(E.sel===s.i)circle(s.tx,GE-10,18,null,'#F77F00',3.5);font(13,900);ctx.fillStyle=INK;ctx.textAlign='center';ctx.fillText(s.i+1,s.tx,GE-28-(s.i%2)*14);});
+  if(E.phase==='after'){const g=E.seeds.filter(s=>s.gs!=='nogerm').length,e=E.seeds.filter(s=>s.gs==='est').length;cornerPill(`10 → 10 → ${g} → ${e}`);}
+  banner('Dispersal ≠ germination ≠ establishment',34,'#2D6A4F');},
+ hot(){return(E.phase==='landed'||E.phase==='after')?E.seeds.map(s=>({x:s.tx,y:GE-8,r:20,act(){eEval(s.i);}})):[];}
+});
+/* ===== 9 · KNOWLEDGE CHECK ===== */
+let QI=0,QREV=null;
+const QSPOT=[60,130,200,270,690,750,810,870,930,330,620,960];
+const qList=()=>QREV||QUIZ.map((q,i)=>i);
+function qShow(){const L2=qList();QI=clamp(QI,0,L2.length-1);const i=L2[QI];
+  $('#qNav').innerHTML=L2.map((j,k)=>`<button class="qdot ${k===QI?'cur':''} ${S.done[QUIZ[j].task]?'ok':QUIZ[j]._rev?'rev':''}" data-k="${k}" aria-label="Question ${j+1}">${j+1}</button>`).join('');
+  $('#qSc').textContent=`${quizCorrect()} / 12`;renderQ('#qBox',QUIZ[i],{title:`Question ${i+1} of 12`,label:'Quiz question',onDone:()=>{$('#qSc').textContent=`${quizCorrect()} / 12`;qShow2();}});
+  $('#qPrev').disabled=QI===0;$('#qNext').textContent=QI===L2.length-1?'Finish ✓':'Next question →';}
+function qShow2(){$$('#qNav .qdot').forEach((b,k)=>{const j=qList()[k];b.classList.toggle('ok',!!S.done[QUIZ[j].task]);b.classList.toggle('rev',!S.done[QUIZ[j].task]&&!!QUIZ[j]._rev);});}
+SC.push({name:'Quiz',
+ panel:()=>P('Module 5 · Knowledge check','Think like a biologist 🏆',`<p>12 questions. Wrong answer? You get help in 3 stages: <b>💡 hint → 👀 visual clue → 📘 explanation</b>. Every correct answer disperses a seed to a new home! Score: <span class="score" id="qSc">0 / 12</span></p>
+ <div class="qnav" id="qNav"></div><div id="qBox"></div><div class="lab-row"><button class="btn" id="qPrev">← Previous</button><button class="btn go" id="qNext">Next question →</button></div>
+ <div class="lab-row"><button class="btn sm" id="qRev">🔁 Review the ones I missed</button><button class="btn sm" id="qRst">↺ Restart</button></div><div id="qSum"></div>`),
+ say:'Knowledge check. Twelve questions. If you make a mistake, you will get a hint, then a visual clue, then an explanation.',
+ bind(){$('#qNav').onclick=e=>{const b=e.target.closest('[data-k]');if(b){QI=+b.dataset.k;qShow();}};$('#qPrev').onclick=()=>{QI--;qShow();};
+  $('#qNext').onclick=()=>{if(QI<qList().length-1){QI++;qShow();}else{const n=quizCorrect();$('#qSum').innerHTML=`<div class="fb ${n>=9?'ok':'hint'}"><b>${n>=10?'🏆 Excellent biological thinking!':n>=7?'👍 Good work!':'🌱 Keep growing!'}</b> You have ${n} of 12 correct. ${n<12?'Use “Review the ones I missed” — answering again later makes memories stronger.':'Now go to <b>Remember</b> to lock it in.'}</div>`;}};
+  $('#qRev').onclick=()=>{const m=QUIZ.map((q,i)=>i).filter(i=>!S.done[QUIZ[i].task]||QUIZ[i]._rev);if(!m.length){toast('Nothing to review — all correct! 🎉');return;}QREV=shuffle(m);QI=0;QREV.forEach(i=>QUIZ[i]._att=0);qShow();};
+  $('#qRst').onclick=()=>{QREV=null;QI=0;QUIZ.forEach(q=>{q._att=0;q._rev=false;});qShow();};qShow();},
+ draw(){skyBg();sunS(900,120,26);soil(GE+50);tree(ctx,TXE,GE+50,1.2);const n=quizCorrect();
+  QUIZ.forEach((q,i)=>{const x=QSPOT[i];if(S.done[q.task])seedling(ctx,x,GE+50,44,1,1);else{ctx.setLineDash([4,5]);circle(x,GE+40,12,null,'rgba(43,45,66,.35)',2);ctx.setLineDash([]);}});
+  for(let i=0;i<12;i++){const x=290+i*38,y=128;ctx.save();ctx.translate(x,y);ctx.beginPath();for(let k=0;k<10;k++){const r=k%2?7:16,a=k*Math.PI/5-Math.PI/2;ctx.lineTo(Math.cos(a)*r,Math.sin(a)*r);}ctx.closePath();ctx.fillStyle=i<n?'#FFD60A':'#E9ECEF';ctx.fill();ctx.lineWidth=1.5;ctx.strokeStyle=INK;ctx.stroke();ctx.restore();}
+  tag(`${n} seed${n===1?'':'s'} found a new home`,500,175,null,null,'#52B788',15);banner(n>=12?'Perfect! Master of seed dispersal 🎓':'Each correct answer disperses a seed',34,'#5A3E72');}
+});
+
+/* ===== 10 · REMEMBER ===== */
+const CARDS=[{L:'W',n:'WIND',col:'#219EBC',ex:'Dandelion, maple, ash',ad:'Parachute of hairs or a wing',me:'Falls slowly; moving air carries it',mem:'“Light and fluffy, I ride the breeze.”'},
+ {L:'W',n:'WATER',col:'#1D6B5F',ex:'Coconut',ad:'Air-filled husk + waterproof shell',me:'Floats and drifts on currents',mem:'“Full of air, I float everywhere.”'},
+ {L:'A',n:'ANIMALS',col:'#C1121F',ex:'Burdock · cherries · berries',ad:'Hooks, or juicy fruit + tough seed',me:'Carried on fur, or eaten & deposited',mem:'“Stick on or get eaten — I still travel.”'},
+ {L:'M',n:'MECHANICAL',col:'#8B6B4A',ex:'Impatiens, some legumes',ad:'Pod walls that store tension',me:'Ripe pod splits; walls coil; seeds fly',mem:'“Ripe, tense, pop — I launch myself!”'}];
+const FLIP=new Set();
+const CHECK=[['Definition: seeds move away from the parent plant',/away|spread|move|parent/i],['Less competition for light, water, minerals, space',/compet|light|mineral|space/i],['Colonising new areas',/new (area|place|habitat)|coloni/i],['Wind: parachutes or wings, slow fall',/wind|parachut|wing|dandelion|maple/i],['Water: floating fruits like the coconut',/water|float|coconut/i],['Animals: hooks on fur, or eaten fruits',/animal|hook|fur|eat|bird|berr|cherr/i],['Mechanical: pods burst and fling seeds',/mechan|pod|burst|explo|impatiens/i],['Structure is adapted to the mechanism',/adapt|structure/i],['Dispersal does not guarantee germination',/germin|surviv|guarantee/i]];
+let tLeft=60,tInt=null,tDone=false;
+function tCheck(){const n=$$('#tList input:checked').length,f=$('#tFb');if(!f)return;f.innerHTML=`<p class="small">Covered: <b>${n}/9</b> essential ideas.</p>`;if(tDone&&n>=6&&award('r_teach',15,'Taught it back'))f.innerHTML+='<div class="fb ok">🗣️ Great explanation — you covered the key biology!</div>';}
+const KEYS={wind:/wind|air|anemo/i,water:/water|sea|river|hydro|float/i,animal:/anim|zoo|bird|fur|mammal/i,mech:/mech|explo|self|auto|pod|burst/i};
+SC.push({name:'Remember',
+ panel:()=>P('Module 6 · Remember the science!','W – W – A – M 🧠',`<p>Click each card on the picture to flip it. Then test your memory <b>without looking</b>.</p>
+ <h4>🧠 Retrieval practice</h4><p class="small">Name the four dispersal methods from memory (any order):</p><div id="rcIn" style="display:grid;grid-template-columns:1fr 1fr;gap:6px">${[1,2,3,4].map(i=>`<input type="text" aria-label="Method ${i}" placeholder="Method ${i}" autocomplete="off">`).join('')}</div>
+ <div class="lab-row"><button class="btn primary" id="rcGo">Check my memory</button><button class="btn sm" id="rcClr">↺ Clear</button></div><div id="rcFb"></div><div id="rcM"></div>
+ <h4>🗣️ Teach it back</h4><p><b>Explain seed dispersal to another student in 60 seconds.</b> Talk, or type key words — the checklist lights up.</p>
+ <div class="lab-row"><span class="timer" id="tT">60</span><button class="btn primary" id="tGo">▶ Start 60 s</button><button class="btn sm" id="tR">↺</button></div>
+ <textarea id="tTx" aria-label="Your explanation" placeholder="Key words while you talk… (optional)"></textarea><div class="check" id="tList">${CHECK.map(([t],i)=>`<label><input type="checkbox" data-k="${i}"> ${t}</label>`).join('')}</div><div id="tFb"></div>
+ <h4>🔁 Spaced review</h4><p class="small">Come back after a break: three random questions from earlier.</p><button class="btn" id="spGo">Give me 3 review questions</button><div id="spBox"></div>`),
+ say:'Remember the science. Four methods, four letters: W, W, A, M. Wind, water, animals, mechanical. Click each card to flip it.',
+ bind(){$('#rcGo').onclick=()=>{const got=new Set();$$('#rcIn input').forEach(inp=>{let hit=null;for(const k in KEYS)if(KEYS[k].test(inp.value)&&!got.has(k)){hit=k;break;}if(hit)got.add(hit);inp.style.borderColor=hit?'#1B7A4B':inp.value?'#B42318':'';});
+   const miss=4-got.size;if(!miss){$('#rcFb').innerHTML='<div class="fb ok">✅ All four from memory: <b>Wind, Water, Animals, Mechanical</b>. Now match the examples.</div>';sfx.ok();
+    renderQ('#rcM',{task:'r_recall',type:'match',q:'Match each example from memory:',items:[{t:'Maple',svg:SV.maple(),target:0},{t:'Coconut',svg:SV.coconut(),target:1},{t:'Berries',svg:SV.berry(),target:2},{t:'Pea pod',svg:SV.pea(),target:3}],targets:['W · Wind','W · Water','A · Animals','M · Mechanical'],hint:'Wing, float, food, pod.',clue:'<span>W – W – A – M</span>',explain:'Maple → wind (wing); coconut → water (floats); berries → animals (eaten); pea pod → mechanical (some legume pods twist open).',take:'W-W-A-M!'},{label:'Retrieval practice',fresh:true});}
+   else{$('#rcFb').innerHTML=`<div class="fb hint">💡 You recalled <b>${got.size}/4</b>. The letters are <b>W – W – A – M</b>. Try again without looking at the cards.</div>`;sfx.bad();}};
+  $('#rcClr').onclick=()=>{$$('#rcIn input').forEach(i=>{i.value='';i.style.borderColor='';});$('#rcFb').innerHTML='';$('#rcM').innerHTML='';};
+  $('#tTx').oninput=()=>{const v=$('#tTx').value;$$('#tList input').forEach((cb,i)=>{const h=CHECK[i][1].test(v);cb.closest('label').classList.toggle('auto',h);if(h)cb.checked=true;});tCheck();};$('#tList').onchange=tCheck;
+  $('#tGo').onclick=()=>{if(tInt)return;tLeft=60;tDone=false;$('#tT').textContent=60;tInt=setInterval(()=>{tLeft--;const e=$('#tT');if(e)e.textContent=tLeft;if(tLeft<=10&&tLeft>0)tone(700,700,.05);if(tLeft<=0){clearInterval(tInt);tInt=null;tDone=true;sfx.chime();if(e)e.textContent='⏰';tCheck();const f=$('#tFb');if(f)f.innerHTML+='<p>Time! Tick everything you explained — aim for at least 6.</p>';}},1000);};
+  $('#tR').onclick=()=>{clearInterval(tInt);tInt=null;tLeft=60;$('#tT').textContent=60;};tCheck();
+  $('#spGo').onclick=()=>{const pool=shuffle(QUIZ.map((q,i)=>i)).slice(0,3);$('#spBox').innerHTML=pool.map((i,k)=>`<div id="sp${k}"></div>`).join('');pool.forEach((i,k)=>renderQ('#sp'+k,{...QUIZ[i],_att:0,_rev:false},{fresh:true,label:'Spaced review'}));};},
+ draw(){ctx.fillStyle='#FAF8F3';ctx.fillRect(0,0,W,H);
+  CARDS.forEach((c,i)=>{const x=22+i*244,y=74,w=224,h=440,on=FLIP.has(i);rr(x,y+6,w,h,20);ctx.fillStyle='rgba(43,45,66,.2)';ctx.fill();rr(x,y,w,h,20);ctx.fillStyle=on?'#fff':c.col;ctx.fill();ctx.lineWidth=4;ctx.strokeStyle=INK;ctx.stroke();
+   ctx.textAlign='center';ctx.textBaseline='middle';
+   if(!on){font(110,900);ctx.fillStyle='#fff';ctx.fillText(c.L,x+w/2,y+110);font(26,900);ctx.fillText(c.n,x+w/2,y+200);circle(x+w/2,y+300,62,'#fff',INK,3);
+    if(i===0)drawDandelion(ctx,x+w/2,y+312,2.6);else if(i===1)drawCoconut(ctx,x+w/2,y+300,2.4,0);else if(i===2)drawBurr(ctx,x+w/2,y+300,3.2);else{ell(ctx,x+w/2,y+300,14,34,0,'#8DB45A',INK,3);}
+    font(15,800);ctx.fillStyle='#fff';ctx.fillText('click to flip',x+w/2,y+405);}
+   else{font(30,900);ctx.fillStyle=c.col;ctx.fillText(c.L+' · '+c.n,x+w/2,y+36);const rows=[['Example',c.ex],['Adaptation',c.ad],['Mechanism',c.me],['Remember',c.mem]];let yy=y+80;
+    rows.forEach(([k,v])=>{font(13,900);ctx.fillStyle='#777';ctx.textAlign='left';ctx.fillText(k.toUpperCase(),x+16,yy);yy+=22;font(17,800);ctx.fillStyle=INK;const words=v.split(' ');let line='';words.forEach(wd=>{const t=line?line+' '+wd:wd;if(ctx.measureText(t).width>w-32){ctx.fillText(line,x+16,yy);yy+=22;line=wd;}else line=t;});ctx.fillText(line,x+16,yy);yy+=36;});}});
+  tag(`${FLIP.size}/4 cards studied`,500,552,null,null,'#FFB703',15);banner('Remember: W – W – A – M',34,'#5A3E72');},
+ hot(){return CARDS.map((c,i)=>({x:134+i*244,y:294,r:115,act(){FLIP.has(i)?FLIP.delete(i):FLIP.add(i);sfx.pop();if(FLIP.size===4)award('r_cards',5,'Studied all four cards');}}));}
+});
+
+/* ===== 11 · SUMMARY ===== */
+SC.push({name:'Summary',
+ panel:()=>P('Whiteboard notes','Remember these 4 things ✅',`<ol><li><b>Seed dispersal</b> = the movement of seeds away from the parent plant.</li><li><b>Why?</b> Less competition for light, water, minerals and space — and new areas to colonise.</li><li><b>How?</b> W-W-A-M: <b>wind</b> (parachutes, wings), <b>water</b> (air-filled, waterproof fruits), <b>animals</b> (hooks; juicy fruits with tough seeds), <b>mechanical</b> (pods that burst).</li><li><b>Dispersal ≠ survival.</b> A seed still needs the right conditions to germinate and become established.</li></ol><div class="key">🧠 <b>Structure tells you the mechanism:</b> look at a seed and ask “what is this shape for?”</div><p class="small">Use ◀ Back to replay any scene. Teachers: see 🧑‍🏫 Teacher Mode.</p>`),
+ say:'Remember four things. Seed dispersal is the movement of seeds away from the parent plant. It reduces competition and lets plants colonise new areas. Seeds travel by wind, water, animals or mechanical release. And dispersal does not guarantee germination.',
+ draw(){ctx.fillStyle='#F7F7F2';ctx.fillRect(0,0,W,H);rr(14,14,W-28,H-28,18);ctx.fillStyle='#fff';ctx.fill();ctx.lineWidth=5;ctx.strokeStyle='#ADB5BD';ctx.stroke();
+  font(32,900);ctx.fillStyle='#2D6A4F';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('SEED DISPERSAL',W/2,52);font(16,700);ctx.fillStyle=INK;ctx.fillText('The movement of seeds away from the parent plant',W/2,84);
+  CARDS.forEach((c,i)=>{const x=40+i*235,y=112;rr(x,y,215,250,16);ctx.fillStyle='#FAF8F3';ctx.fill();ctx.lineWidth=3;ctx.strokeStyle=c.col;ctx.stroke();font(22,900);ctx.fillStyle=c.col;ctx.fillText(c.L+' · '+c.n,x+107,y+26);
+   if(i===0)drawDandelion(ctx,x+107,y+100,2.4);else if(i===1)drawCoconut(ctx,x+107,y+90,2,0);else if(i===2){drawBurr(ctx,x+80,y+90,2.4);drawBerry(ctx,x+140,y+90,2.4);}else{ell(ctx,x+107,y+90,12,30,0,'#8DB45A',INK,3);}
+   font(14,800);ctx.fillStyle=INK;ctx.fillText(c.ex,x+107,y+158);font(13,700);ctx.fillText(c.ad,x+107,y+186);ctx.fillText(c.me,x+107,y+212);});
+  const box=(x,title,lines,col)=>{rr(x,388,450,160,14);ctx.fillStyle=col;ctx.fill();ctx.lineWidth=3;ctx.strokeStyle=INK;ctx.stroke();font(19,900);ctx.fillStyle=INK;ctx.textAlign='left';ctx.fillText(title,x+16,414);font(16,700);lines.forEach((l,i)=>ctx.fillText(l,x+16,446+i*26));};
+  box(40,'Why disperse? ⚖️',['• Less competition: light, water,','  minerals and space','• Colonise new areas','• Escape pests that gather near the parent'],'#E9F7EF');
+  box(510,'Dispersal ≠ germination 🌱',['1 Dispersal → 2 Arrival →','3 Germination (water, O₂, warmth) →','4 Establishment (light, space, minerals)','A far journey can still end badly!'],'#F1ECFA');}
+});
+/* ============ UI ============ */
+let cur=0,T=0,playing=true,speed=1,narrate=false;const visited=new Set([0]);
+const panel=$('#panel'),hint=$('#hint'),pop=$('#popup');
+function renderDots(){$('#dots').innerHTML=SC.map((s,i)=>`<button class="dot ${i===cur?'cur':visited.has(i)?'done':''}" data-i="${i}">${i+1}. ${s.name}</button>`).join('');}
+$('#dots').onclick=e=>{const b=e.target.closest('.dot');if(b){ac();go(+b.dataset.i);}};
+function speak(txt){try{speechSynthesis.cancel();if(!narrate)return;const u=new SpeechSynthesisUtterance(txt);u.lang='en-GB';u.rate=.95;speechSynthesis.speak(u);}catch(e){}}
+function go(i){cur=clamp(i,0,SC.length-1);T=0;visited.add(cur);hidePop();const s=SC[cur];panel.innerHTML=s.panel();s.enter&&s.enter();s.bind&&s.bind();
+  playing=true;updPlay();renderDots();$('#next').classList.remove('pulse');
+  hint.style.display=s.hot||s.down?'block':'none';hint.textContent=s.down?'👆 Drag seeds onto the fox':cur===10?'👆 Click a card to flip it':'👆 Click the picture to learn more';clearTimeout(window._ht);window._ht=setTimeout(()=>hint.style.display='none',7000);
+  speak(s.say);try{history.replaceState(null,'','#scene-'+(cur+1));}catch(e){}panel.scrollTop=0;}
+function updPlay(){$('#play').textContent=playing?'⏸ Pause':'▶ Play';}
+$('#play').onclick=()=>{ac();if(SC[cur].dur&&T>=1){T=0;SC[cur].enter&&SC[cur].enter();}playing=!playing;updPlay();};
+$('#replay').onclick=()=>{ac();go(cur);};$('#next').onclick=()=>{ac();go(cur+1);};$('#prev').onclick=()=>{ac();go(cur-1);};
+$('#speed').onchange=e=>speed=+e.target.value;
+$('#snd').onclick=e=>{soundOn=!soundOn;e.target.className='btn '+(soundOn?'on':'off');e.target.textContent=soundOn?'🔊 Sound':'🔇 Sound';};
+$('#narr').onclick=e=>{narrate=!narrate;e.target.className='btn '+(narrate?'on':'off');e.target.textContent='🗣 Narrate: '+(narrate?'on':'off');if(narrate)speak(SC[cur].say);else try{speechSynthesis.cancel();}catch(_){} };
+document.addEventListener('keydown',e=>{if(/INPUT|SELECT|TEXTAREA/.test(e.target.tagName)||e.target.closest('.panel,.modal:not(.hidden)'))return;if(e.key==='ArrowRight')go(cur+1);if(e.key==='ArrowLeft')go(cur-1);if(e.key===' '){e.preventDefault();$('#play').click();}if(e.key==='Escape')hidePop();});
+/* popups and canvas pointer */
+function hidePop(){pop.style.display='none';}
+$('#popx').onclick=hidePop;
+function cxy(e){const r=cv.getBoundingClientRect();return{x:(e.clientX-r.left)/r.width*W,y:(e.clientY-r.top)/r.height*H,r};}
+function hit(x,y){const s=SC[cur];if(!s.hot)return null;return s.hot().find(h=>Math.hypot(h.x-x,h.y-y)<h.r)||null;}
+let dragging=false;
+cv.addEventListener('pointerdown',e=>{ac();const{x,y}=cxy(e);const s=SC[cur];if(s.down&&s.down(x,y)){dragging=true;try{cv.setPointerCapture(e.pointerId);}catch(_){}e.preventDefault();}});
+cv.addEventListener('pointermove',e=>{const{x,y}=cxy(e);if(dragging){SC[cur].move&&SC[cur].move(x,y);return;}const s=SC[cur];cv.style.cursor=hit(x,y)||(s.down&&((Math.hypot(x-70,y-118)<26)||(Math.hypot(x-180,y-118)<26)))?'pointer':'default';});
+cv.addEventListener('pointerup',e=>{if(!dragging)return;dragging=false;const{x,y}=cxy(e);SC[cur].up&&SC[cur].up(x,y);cv._skipClick=true;});
+cv.addEventListener('click',e=>{if(cv._skipClick){cv._skipClick=false;return;}const{x,y,r}=cxy(e);const h=hit(x,y);if(!h){hidePop();return;}
+  if(h.act)h.act();let c=h.dyn?h.dyn():h;if(!c||!c.t){return;}
+  $('#poph').innerHTML=c.t;$('#popb').innerHTML=c.b;pop.style.display='block';sfx.pop();
+  const px=h.x/W*r.width,py=h.y/H*r.height,pw=pop.offsetWidth,ph=pop.offsetHeight;pop.style.left=Math.max(8,Math.min(r.width-pw-8,px+24))+'px';pop.style.top=Math.max(8,Math.min(r.height-ph-8,py-ph/2))+'px';});
+/* modals */
+function openM(id){$('#'+id).classList.remove('hidden');const b=$('#'+id+' .xbtn')||$('#'+id+' button');b&&b.focus();}
+document.addEventListener('click',e=>{const c=e.target.closest('[data-close]');if(c)c.closest('.modal').classList.add('hidden');else if(e.target.classList&&e.target.classList.contains('modal'))e.target.classList.add('hidden');});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')$$('.modal').forEach(m=>m.classList.add('hidden'));});
+$('#ptsBtn').onclick=()=>openM('badgeModal');$('#teacherBtn').onclick=()=>openM('teacher');
+$('#ttabs').onclick=e=>{const b=e.target.closest('[data-tp]');if(!b)return;$$('#ttabs button').forEach(x=>x.classList.toggle('on',x===b));$$('.tpanel').forEach(p=>p.classList.toggle('on',p.id==='tp-'+b.dataset.tp));};
+/* teacher content */
+$('#tp-obj').innerHTML=`<h4>Students will be able to:</h4><ul><li>Explain what seed dispersal is and why seeds are dispersed away from the parent plant.</li><li>Explain how dispersal reduces competition and helps plants colonise new areas.</li><li>Identify the four mechanisms: wind (anemochory), water (hydrochory), animals (zoochory), mechanical/explosive (autochory).</li><li>Relate seed and fruit structures to their mechanism.</li><li>Explain how seed structure and environmental conditions affect dispersal success.</li><li>Distinguish dispersal, arrival, germination and establishment.</li><li>Apply biological reasoning to real-life examples.</li></ul><p class="small">Inquiry cycle: Observe → Predict → Experiment → Analyse → Explain → Remember. Feedback in three stages (hint → visual clue → explanation). Points reward reasoning, not speed.</p>`;
+$('#tp-flow').innerHTML=`<table class="t"><tr><th>Time</th><th>Scenes</th><th>What to do</th></tr><tr><td>0–4 min</td><td>1 · Problem</td><td>Click sun, rain, soil, seedlings. Class votes on the prediction, then runs a growing season (≈2/14 survive).</td></tr><tr><td>4–10 min</td><td>2 · Why disperse</td><td>Play the spreading animation (≈11/14 survive). Definition + advantages; explain question.</td></tr><tr><td>10–20 min</td><td>3–7 · Wind, Water, Animals ×2, Mechanical</td><td>≈2 min each: parachute vs no structure (same wind); coconut vs heavy seed; hooked vs smooth; bird journey; unripe vs ripe pod.</td></tr><tr><td>20–25 min</td><td>8 · Investigate</td><td>Pairs run 3 experiments changing one variable; check the notebook.</td></tr><tr><td>25–30 min</td><td>10 · Quiz</td><td>Individual or class voting.</td></tr><tr><td>Extension</td><td>9 · Survival, 11 · Remember, 12 · Summary</td><td>Dispersal ≠ germination, W-W-A-M cards, 60-second teach-back, spaced review.</td></tr></table><p class="small">Projector tip: turn on 🗣 Narrate and use ← → arrow keys to move between scenes.</p>`;
+const ansOf=q=>q.type==='multi2'?q.parts.map(p=>`${p.label.replace(/^Part \d · /,'')} → <b>${p.opts[p.ans]}</b>`).join('<br>'):q.type==='order'?q.items.map((t,i)=>`${i+1}. ${t}`).join('<br>'):q.type==='match'?q.items.map(it=>`${it.t} → <b>${q.targets[it.target]}</b>`).join(' · '):q.type==='multi'?q.ans.map(a=>'<b>'+q.opts[a]+'</b>').join('<br>'):q.type==='img'?'<b>'+q.opts[q.ans].t+'</b>':'<b>'+q.opts[q.ans]+'</b>';
+$('#tp-key').innerHTML=QUIZ.map((q,i)=>`<div class="answer"><b>Q${i+1}.</b> ${q.q}<br>✔ ${ansOf(q)}<br><span class="small">${q.explain}</span></div>`).join('')+`<div class="answer"><b>Predictions:</b> Problem → competition, most die · Wind → parachute · Water → coconut · Fur → hooked seed · Mechanical → pod bursts and flings seeds.</div><div class="answer"><b>Challenges:</b> Wind → parachute + light, 2 m, wind 4–6 m/s. Water → floating ability “few air spaces” or more AND waterproof coat (or current ≥ ~19 km/day). Bird → animals-eaten + tough seed coat. Pod chain → matures → walls change → tension → seams split → walls coil → seeds flung.</div><div class="answer"><b>Survival:</b> germination needs water (dry slope fails); establishment needs light, space, minerals and water at least “medium” (shade and crowded zones fail).</div>`;
+$('#tp-sci').innerHTML=`<ul><li><b>Models are simplified.</b> Wind distance = height ÷ falling speed × wind speed (parachute ≈ 0.3 m/s, wing ≈ 1 m/s, none ≈ 4 m/s, increased by mass).</li><li><b>Coconut:</b> a fibrous drupe — skin (exocarp), air-filled husk (mesocarp), shell (endocarp); seed = endosperm + embryo. Viable at sea for roughly 3–4 months (model: 110 days).</li><li><b>Explosive dispersal:</b> Impatiens uses water pressure (turgor) in pod-wall cells; many legumes use uneven drying. Many garden peas have non-shattering pods.</li><li><b>Gut passage:</b> often under an hour in small birds, longer in mammals; some seeds germinate better afterwards, others are destroyed.</li><li><b>Germination vs light:</b> water, oxygen and a suitable temperature are required; light needs vary between species, while light strongly affects establishment.</li><li>Extensions: scatter-hoarding (squirrels, jays), ant dispersal.</li></ul>`;
+$('#tp-ctl').innerHTML=`<div class="lab-row"><button class="btn" id="tUnlock">✅ Mark all scenes visited</button><button class="btn primary" id="tReset">↺ Reset the whole simulation</button></div><p class="small">Progress is stored only in this browser. Reset before another class uses the device.</p>`;
+$('#tp-ctl').onclick=e=>{if(e.target.id==='tUnlock'){SC.forEach((s,i)=>visited.add(i));renderDots();}if(e.target.id==='tReset'){$('#teacher').classList.add('hidden');openM('confirmBox');}};
+$('#cfYes').onclick=()=>{try{localStorage.removeItem('seedDisp9');}catch(e){}location.hash='';location.reload();};
+/* sizing + loop */
+function resize(){const r=cv.getBoundingClientRect(),d=Math.min(2,window.devicePixelRatio||1);cv.width=Math.round(r.width*d);cv.height=Math.round(r.width*.6*d);}
+window.addEventListener('resize',resize);
+let last=performance.now();
+function loop(ts){const dt=Math.min(.05,(ts-last)/1000);last=ts;now+=dt;const s=SC[cur];
+  if(playing&&s.dur){T=Math.min(1,T+dt*speed/s.dur);if(T>=1){playing=false;updPlay();$('#next').classList.add('pulse');}}
+  try{if(playing||(s.dur&&T>=1))s.update&&s.update(dt*speed);ctx.setTransform(cv.width/W,0,0,cv.height/H,0,0);ctx.clearRect(0,0,W,H);ctx.setLineDash([]);ctx.globalAlpha=1;s.draw(T);}catch(err){console.error(err);}
+  requestAnimationFrame(loop);}
+resize();hud();{const m=location.hash.match(/scene-(\d+)/);go(m?+m[1]-1:0);}requestAnimationFrame(loop);
+</script>
+</body></html>
