@@ -70,6 +70,31 @@
     <div class="section-head"><h2>BioBesir videos</h2><p>Animated biology expeditions in Albanian. I guide students through living structures as an explorer and narrate each episode myself.</p></div>
     <div class="video-feature">
       <figure class="video-frame">
+        <video controls preload="none" playsinline poster="assets/video/truri-elektrik.jpg">
+          <source src="assets/video/truri-elektrik.mp4" type="video/mp4">
+          Your browser cannot play this video. <a href="assets/video/truri-elektrik.mp4">Download it here.</a>
+        </video>
+      </figure>
+      <div class="video-info">
+        <span class="tag">Episode 2</span>
+        <h3 lang="sq">Truri elektrik: udhëtim përgjatë një neuroni</h3>
+        <p class="meta">Grades 9–12 · 3:39 · Albanian</p>
+        <p lang="sq">Ndjekim një sinjal nervor nga dendritet, përgjatë aksonit dhe mielinës, deri te sinapsa. Pastaj shohim një shembull nga jeta: si na motivon dopamina dhe si reagon trupi kur ndiejmë erën e picës.</p>
+        <ol class="chapters" lang="sq" aria-label="Chapters">
+          <li><button type="button" data-t="0"><time>0:00</time>Sinjali misterioz</button></li>
+          <li><button type="button" data-t="20"><time>0:20</time>Takimi me neuronin</button></li>
+          <li><button type="button" data-t="43"><time>0:43</time>Udhëtimi elektrik</button></li>
+          <li><button type="button" data-t="66"><time>1:06</time>Autostrada e mielinës</button></li>
+          <li><button type="button" data-t="90"><time>1:30</time>Sinapsa</button></li>
+          <li><button type="button" data-t="119"><time>1:59</time>Një shembull nga jeta</button></li>
+          <li><button type="button" data-t="144"><time>2:24</time>Dopamina</button></li>
+          <li><button type="button" data-t="167"><time>2:47</time>Trupi reagon</button></li>
+          <li><button type="button" data-t="190"><time>3:10</time>Misioni u krye!</button></li>
+        </ol>
+      </div>
+    </div>
+    <div class="video-feature">
+      <figure class="video-frame">
         <video id="bio-video" controls preload="none" playsinline poster="assets/video/ekspedita-qeliza-bimore.jpg">
           <source src="assets/video/ekspedita-qeliza-bimore.mp4" type="video/mp4">
           Your browser cannot play this video. <a href="assets/video/ekspedita-qeliza-bimore.mp4">Download it here.</a>
@@ -96,7 +121,7 @@
   </div>
 </section>
 <script>
-{const v=document.getElementById('bio-video');document.querySelectorAll('.chapters button').forEach(b=>b.addEventListener('click',()=>{v.currentTime=+b.dataset.t;const p=v.play();if(p&&p.catch)p.catch(()=>{});}));}
+{document.querySelectorAll('.video-feature').forEach(f=>{const v=f.querySelector('video');f.querySelectorAll('.chapters button').forEach(b=>b.addEventListener('click',()=>{v.currentTime=+b.dataset.t;const p=v.play();if(p&&p.catch)p.catch(()=>{});}));});}
 </script>
 
 <section class="section" id="about">

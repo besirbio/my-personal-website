@@ -337,6 +337,7 @@ p { margin: 0 0 1em; }
 .tl span { display: block; font-size: 0.95rem; color: var(--muted); line-height: 1.5; }
 
 /* ---------- Videos ---------- */
+.video-feature + .video-feature { margin-top: 56px; padding-top: 56px; border-top: 1px solid rgba(34, 26, 82, 0.12); }
 .video-feature { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 32px 48px; align-items: start; }
 .video-frame { margin: 0; border-radius: var(--r-md); overflow: hidden; background: var(--hema-deep); box-shadow: 0 24px 60px -30px rgba(34, 26, 82, 0.6); }
 .video-frame video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; background: var(--hema-deep); }
