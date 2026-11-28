@@ -31,6 +31,8 @@ def page(path, title, desc, body, current=None, extra_head='', extra_js=''):
     b = '../' * depth
     nav_items = [('Study', SM + 'studyingmaterials.html', 'study'), ('Writing', 'writings.html', 'writing'),
                  ('CV', 'Portfolio.html', 'cv'), ('Contact', 'index.html#contact', 'contact')]
+    if path == 'index.html':
+        nav_items = nav_items[:1] + [('Videos', 'index.html#videos', 'videos')] + nav_items[1:]
     nav = '\n'.join(f'      <a href="{b}{h}"{" aria-current=\"page\"" if k == current else ""}>{n}</a>' for n, h, k in nav_items)
     footer_social = ''.join(f'<li><a href="{h}" target="_blank" rel="noopener">{n}</a></li>' for n, h in SOCIALS)
     doc = f'''<!DOCTYPE html>
@@ -76,7 +78,7 @@ def page(path, title, desc, body, current=None, extra_head='', extra_js=''):
       <h2>On this site</h2>
       <ul>
         <li><a href="{b}{SM}studyingmaterials.html">Study materials</a></li>
-        <li><a href="{b}writings.html">Writing</a></li>
+{'        <li><a href="index.html#videos">Videos</a></li>\n' if path == 'index.html' else ''}        <li><a href="{b}writings.html">Writing</a></li>
         <li><a href="{b}Portfolio.html">CV</a></li>
       </ul>
     </div>
@@ -124,13 +126,14 @@ GRADES = [
      L('10', 'Effect of light intensity on photosynthesis', ('interactive', 'Virtual lab', 'simulations/grade8/10-light-intensity-virtual-lab.html')),
   ])]},
  {'id': 'grade9', 'num': '9', 'label': 'Grade 9', 'mm_page': 'mindmappings9thgrade.html',
-  'intro': 'Plants: how a leaf is built, chloroplasts and photosynthesis, flowers and pollination, the journey of a pollen grain, and seed germination.',
+  'intro': 'Plants: how a leaf is built, chloroplasts and photosynthesis, flowers and pollination, the journey of a pollen grain, seed germination and seed dispersal.',
   'terms': [('Lessons', [
      L('1', 'Leaf structure', pdf('grade9', '1. Leaf Structure.pdf', 'Reading')),
      L('2', 'Chloroplasts and photosynthesis', pdf('grade9', '2. Chloroplast and Photosynthesis.pdf', 'Reading & worksheet')),
      L('6', 'Flowering plants and pollination', pdf('grade9', '6. Flowering Plants and Pollination.pdf', 'Textbook')),
      L('7', 'Pollen grains: structure and journey', pdf('grade9', '7. Pollen Grains - Structure and Journey.pdf', 'Textbook'), ('interactive', 'Interactive lab', 'simulations/grade9/7-pollen-grain-journey.html')),
      L('8', 'Seed germination', pdf('grade9', '8. Seed Germination.pdf', 'Textbook'), ('interactive', 'Simulation', 'simulations/grade9/8-seed-germination.html')),
+     L('9', 'Seed dispersal and its causes', pdf('grade9', '9. Seed Dispersal.pdf', 'Textbook'), ('interactive', 'Simulation', 'simulations/grade9/9-seed-dispersal.html')),
   ])]},
  {'id': 'grade10', 'num': '10', 'label': 'Grade 10', 'mm_page': 'mindmappings10thgrade.html',
   'intro': 'The chemistry and structure of the cell, then the diversity of life from viruses to animals.',
@@ -231,6 +234,11 @@ GRADES = [
   'terms': [('Lab exercises', [
      L('', 'Cell staining and microscopy', pdf('ScienceClub', 'Laboratory Exercises in Cell Staining and Microscopy.pdf', 'Lab manual')),
   ])]},
+ {'id': 'special-sessions', 'num': 'Special sessions', 'label': 'Special sessions', 'kind': 'Interactive labs', 'mm_page': None,
+  'intro': 'Stand-alone interactive laboratories that go beyond a single lesson. Each one takes a whole topic from start to finish, with activities, challenges and a final assessment.',
+  'terms': [('Virtual laboratories', [
+     L('', 'DNA Lab: DNA, RNA and the genetic code', ('interactive', '3D virtual lab', 'simulations/special/dna-lab.html')),
+  ])]},
 ]
 
 # extra mind-map files (duplicates) -> grade for back link
@@ -287,7 +295,7 @@ def build_grade(g):
 def build_hub():
     b = '../'
     cards = ''.join(f'''
-    <a href="{g["id"]}.html"><span class="num{" word" if not g["num"].isdigit() else ""}">{E(g["num"])}</span><span><span class="lab">{"Grade " + g["num"] if g["num"].isdigit() else "Extra-curricular"}</span><br><span class="cnt">{count(g)} {"lesson" if count(g) == 1 else "lessons"}</span></span></a>''' for g in GRADES)
+    <a href="{g["id"]}.html"><span class="num{" word" if not g["num"].isdigit() else ""}">{E(g["num"])}</span><span><span class="lab">{"Grade " + g["num"] if g["num"].isdigit() else g.get("kind", "Extra-curricular")}</span><br><span class="cnt">{count(g)} {"lesson" if count(g) == 1 else "lessons"}</span></span></a>''' for g in GRADES)
     flat = []
     for g in GRADES:
         for _, ls in g['terms']:
@@ -670,11 +678,84 @@ def build_home():
   </div>
 </section>
 
+<section class="section lab-band" id="dna-lab">
+  <div class="wrap lab-feature">
+    <a class="lab-shot" href="simulations/special/dna-lab.html"><img src="assets/img/dna-lab.jpg" alt="3D model of DNA replication: helicase opens the double helix while two DNA polymerases build the leading and lagging strands" width="1280" height="720" loading="lazy"><span class="lab-play">Enter the lab →</span></a>
+    <div class="lab-info">
+      <span class="tag">Special session</span>
+      <h2>DNA Lab: DNA, RNA and the genetic code</h2>
+      <p class="meta">Interactive 3D virtual laboratory · Secondary school · English</p>
+      <p>Build a double helix base by base, watch one DNA molecule become two, transcribe a gene into mRNA and decode it on a ribosome. Then change a single letter and see what happens to the protein.</p>
+      <ol class="lab-mods" aria-label="Lab modules"><li>Nucleic acids</li><li>Build DNA</li><li>Replication</li><li>Transcription</li><li>Translation</li><li>Mutations</li><li>Final assessment</li></ol>
+      <a class="btn btn-solid" href="simulations/special/dna-lab.html">Enter the DNA lab</a>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="videos">
+  <div class="wrap">
+    <div class="section-head"><h2>BioBesir videos</h2><p>Animated biology expeditions in Albanian. I guide students through living structures as an explorer and narrate each episode myself.</p></div>
+    <div class="video-feature">
+      <figure class="video-frame">
+        <video controls preload="none" playsinline poster="assets/video/truri-elektrik.jpg">
+          <source src="assets/video/truri-elektrik.mp4" type="video/mp4">
+          Your browser cannot play this video. <a href="assets/video/truri-elektrik.mp4">Download it here.</a>
+        </video>
+      </figure>
+      <div class="video-info">
+        <span class="tag">Episode 2</span>
+        <h3 lang="sq">Truri elektrik: udhëtim përgjatë një neuroni</h3>
+        <p class="meta">Grades 9–12 · 3:39 · Albanian</p>
+        <p lang="sq">Ndjekim një sinjal nervor nga dendritet, përgjatë aksonit dhe mielinës, deri te sinapsa. Pastaj shohim një shembull nga jeta: si na motivon dopamina dhe si reagon trupi kur ndiejmë erën e picës.</p>
+        <ol class="chapters" lang="sq" aria-label="Chapters">
+          <li><button type="button" data-t="0"><time>0:00</time>Sinjali misterioz</button></li>
+          <li><button type="button" data-t="20"><time>0:20</time>Takimi me neuronin</button></li>
+          <li><button type="button" data-t="43"><time>0:43</time>Udhëtimi elektrik</button></li>
+          <li><button type="button" data-t="66"><time>1:06</time>Autostrada e mielinës</button></li>
+          <li><button type="button" data-t="90"><time>1:30</time>Sinapsa</button></li>
+          <li><button type="button" data-t="119"><time>1:59</time>Një shembull nga jeta</button></li>
+          <li><button type="button" data-t="144"><time>2:24</time>Dopamina</button></li>
+          <li><button type="button" data-t="167"><time>2:47</time>Trupi reagon</button></li>
+          <li><button type="button" data-t="190"><time>3:10</time>Misioni u krye!</button></li>
+        </ol>
+      </div>
+    </div>
+    <div class="video-feature">
+      <figure class="video-frame">
+        <video id="bio-video" controls preload="none" playsinline poster="assets/video/ekspedita-qeliza-bimore.jpg">
+          <source src="assets/video/ekspedita-qeliza-bimore.mp4" type="video/mp4">
+          Your browser cannot play this video. <a href="assets/video/ekspedita-qeliza-bimore.mp4">Download it here.</a>
+        </video>
+      </figure>
+      <div class="video-info">
+        <span class="tag">Episode 1</span>
+        <h3 lang="sq">Ekspedita brenda qelizës bimore</h3>
+        <p class="meta">Grade 7 · 3:44 · Albanian</p>
+        <p lang="sq">Hyjmë brenda një qelize të gjethes dhe zbulojmë si mbrohet ajo dhe si e prodhon vetë ushqimin: muri, membrana, bërthama, vakuola, kloroplastet dhe mitokondritë.</p>
+        <ol class="chapters" lang="sq" aria-label="Chapters">
+          <li><button type="button" data-t="0"><time>0:00</time>Misioni</button></li>
+          <li><button type="button" data-t="22"><time>0:22</time>Muri qelizor</button></li>
+          <li><button type="button" data-t="45"><time>0:45</time>Membrana qelizore</button></li>
+          <li><button type="button" data-t="67"><time>1:07</time>Citoplazma</button></li>
+          <li><button type="button" data-t="86"><time>1:26</time>Bërthama</button></li>
+          <li><button type="button" data-t="106"><time>1:46</time>Vakuola</button></li>
+          <li><button type="button" data-t="131"><time>2:11</time>Kloroplastet</button></li>
+          <li><button type="button" data-t="161"><time>2:41</time>Mitokondritë</button></li>
+          <li><button type="button" data-t="187"><time>3:07</time>Përmbledhja</button></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+<script>
+{{document.querySelectorAll('.video-feature').forEach(f=>{{const v=f.querySelector('video');f.querySelectorAll('.chapters button').forEach(b=>b.addEventListener('click',()=>{{v.currentTime=+b.dataset.t;const p=v.play();if(p&&p.catch)p.catch(()=>{{}});}}));}});}}
+</script>
+
 <section class="section" id="about">
   <div class="wrap about">
     <figure>
-      <img src="assets/img/portrait.jpg" alt="Besir Zeneli in a lab coat in a school biology laboratory" width="818" height="997" loading="lazy">
-      <figcaption>In the school lab, Skopje.</figcaption>
+      <img src="assets/img/portrait.jpg" alt="Besir Zeneli in a lab coat at his desk with a microscope and biology books" width="818" height="1022" loading="lazy">
+      <figcaption>At my desk, Skopje.</figcaption>
     </figure>
     <div class="text">
       <h2>About me</h2>

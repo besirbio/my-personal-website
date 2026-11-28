@@ -1,0 +1,1905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="BIOBESIR DNA Lab – an interactive 3D virtual laboratory on DNA, RNA, replication, transcription, translation and the genetic code.">
+<link rel="icon" type="image/png" href="../../android-chrome-192x192.png">
+<title>BIOBESIR Molecular Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* VOICE: calm science-museum lab, precise and encouraging
+   IDEA: a molecular bench – the 3D specimen is centre stage, the lab notebook sits beside it
+   PICTURE: live Three.js molecules filling the stage
+   COLOUR and TYPE: deep lab-night blue, DNA violet, cyan instrument light; Sora + Inter
+   LAYOUT: modules rail | 3D stage with instrument bar | notebook panel; stacks on phones */
+:root{color-scheme:dark;--bg:#070b18;--bg2:#0d1428;--card:#121b35;--card2:#18233f;--line:#25325a;--ink:#e9edfa;--mute:#9aa6c9;--acc:#9d4edd;--acc2:#4cc9f0;--ok:#2ec4b6;--bad:#ff5d73;--warn:#ffd166;--r:14px}
+*{box-sizing:border-box;min-width:0}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Inter,system-ui,sans-serif;overflow:hidden}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--acc2);outline-offset:2px}
+h1,h2,h3{font-family:Sora,Inter,sans-serif;margin:0;line-height:1.15}
+.app{display:grid;grid-template-rows:58px 1fr;height:100%}
+header{display:flex;align-items:center;gap:14px;padding:0 16px;background:linear-gradient(90deg,#0b1230,#120a2c);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;font-family:Sora;font-weight:800;letter-spacing:.3px;white-space:nowrap}
+.brand svg{flex:none}
+.brand small{display:block;font:500 11px Inter;color:var(--mute);letter-spacing:0}
+.prog{flex:1;display:flex;align-items:center;gap:10px;justify-content:flex-end}
+.pdots{display:flex;gap:5px}
+.pdot{width:22px;height:8px;border-radius:5px;background:#26315a}
+.pdot.done{background:linear-gradient(90deg,var(--ok),var(--acc2))}
+.ptxt{color:var(--mute);font-size:13px;white-space:nowrap}
+.hbtn{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:7px 12px;font-size:13px;font-weight:600;min-height:38px}
+.hbtn:hover{border-color:var(--acc2)}
+main{display:grid;grid-template-columns:230px minmax(0,1fr) 400px;min-height:0}
+nav{background:var(--bg2);border-right:1px solid var(--line);overflow:auto;padding:12px 10px}
+.navt{font-size:12px;color:var(--mute);padding:4px 8px 8px}
+.nb{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:none;border:1px solid transparent;border-radius:12px;padding:9px 10px;margin-bottom:4px;min-height:48px}
+.nb:hover{background:var(--card)}
+.nb.on{background:var(--card2);border-color:var(--line)}
+.nb .num{flex:none;width:28px;height:28px;border-radius:9px;display:grid;place-items:center;font:700 13px Sora;background:#22305a;color:var(--acc2)}
+.nb.done .num{background:var(--ok);color:#06231f}
+.nb b{display:block;font-size:13.5px;font-weight:600;line-height:1.2}
+.nb span.s{display:block;font-size:11.5px;color:var(--mute)}
+.stage{position:relative;min-height:0;background:radial-gradient(ellipse at 50% 40%,#16204a 0%,#0a1024 55%,#060914 100%);overflow:hidden}
+#c3d{position:absolute;inset:0}
+#c3d canvas{display:block;width:100%!important;height:100%!important;touch-action:none}
+#labels{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.lbl{position:absolute;left:0;top:0;transform:translate(-50%,-50%);white-space:nowrap;font-size:12px;font-weight:600;padding:3px 8px;border-radius:999px;background:rgba(10,16,40,.82);border:1px solid rgba(255,255,255,.18);color:#fff;will-change:transform}
+.lbl.big{font-size:13px;background:rgba(255,255,255,.93);color:#111a33;border-color:#fff}
+.lbl.small{font-size:10.5px;padding:1px 6px}
+.lbl.tag{background:rgba(157,78,221,.85);border-color:#c77dff}
+.topbar{position:absolute;left:12px;right:12px;top:10px;display:flex;gap:8px;align-items:flex-start;pointer-events:none}
+.chip{pointer-events:auto;background:rgba(12,18,44,.85);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:12px;color:var(--mute);backdrop-filter:blur(6px)}
+.banner{margin-left:auto;max-width:min(460px,60%);background:rgba(18,27,53,.92);border:1px solid #3a4a80;border-radius:12px;padding:8px 12px;font-size:13px;pointer-events:auto}
+.banner:empty{display:none}
+.banner b{color:var(--acc2)}
+.legend{position:absolute;left:12px;bottom:72px;display:flex;flex-wrap:wrap;gap:6px;max-width:70%;pointer-events:none}
+.legend span{display:flex;align-items:center;gap:6px;font-size:11.5px;background:rgba(10,16,40,.8);border:1px solid var(--line);border-radius:999px;padding:3px 9px}
+.legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.ctrl{position:absolute;left:10px;right:10px;margin:0 auto;width:fit-content;bottom:12px;display:flex;gap:6px;align-items:center;background:rgba(12,18,44,.9);border:1px solid var(--line);border-radius:14px;padding:6px;backdrop-filter:blur(8px);max-width:calc(100% - 20px);flex-wrap:wrap;justify-content:center}
+.cb{background:var(--card2);border:1px solid var(--line);border-radius:10px;min-width:44px;height:44px;padding:0 10px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px}
+.cb:hover{border-color:var(--acc2)}
+.cb.on{background:#2a1f55;border-color:var(--acc)}
+.cb[disabled]{opacity:.35;cursor:default}
+.ctrl select{height:44px;background:var(--card2);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:0 8px;font-size:14px}
+.ctrl input[type=range]{width:120px;accent-color:var(--acc2)}
+.info{position:absolute;left:12px;top:52px;width:min(330px,calc(100% - 24px));background:rgba(15,22,48,.96);border:1px solid #3b4c86;border-radius:14px;padding:14px 16px;box-shadow:0 12px 40px rgba(0,0,0,.45);display:none}
+.info.show{display:block;animation:pop .2s ease}
+.info h3{font-size:16px;margin-bottom:6px;color:#fff}
+.info p{margin:0 0 6px;color:#cdd5f0;font-size:13.5px}
+.info .x{position:absolute;right:8px;top:6px;background:none;border:0;font-size:20px;color:var(--mute);width:36px;height:36px}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}}
+.overlay{position:absolute;inset:0;display:grid;place-items:center;background:rgba(6,9,20,.92);z-index:5;text-align:center;padding:20px}
+.overlay.hide{display:none}
+.spin{width:54px;height:54px;border-radius:50%;border:4px solid #26315a;border-top-color:var(--acc2);animation:sp 1s linear infinite;margin:0 auto 14px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.panel{background:var(--bg2);border-left:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
+.phead{padding:14px 16px 10px;border-bottom:1px solid var(--line)}
+.phead .k{font-size:12px;color:var(--acc2);font-weight:600}
+.phead h2{font-size:19px;margin:2px 0 10px}
+.steps{display:flex;gap:4px;flex-wrap:wrap}
+.steps button{flex:1 1 auto;background:var(--card);border:1px solid var(--line);border-radius:9px;padding:6px 9px;font-size:12px;font-weight:600;color:var(--mute);min-height:36px}
+.steps button.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.steps button.done:not(.on){color:var(--ok);border-color:#1f6f68}
+.pbody{flex:1;overflow:auto;padding:16px}
+.pfoot{display:flex;justify-content:space-between;gap:8px;padding:10px 16px;border-top:1px solid var(--line)}
+.btn{background:var(--card2);border:1px solid var(--line);border-radius:11px;padding:10px 14px;font-weight:600;font-size:14px;min-height:44px}
+.btn:hover{border-color:var(--acc2)}
+.btn.pri{background:linear-gradient(135deg,#7b2cbf,#4361ee);border-color:transparent;color:#fff}
+.btn.sm{padding:6px 10px;min-height:38px;font-size:13px}
+.btn[disabled]{opacity:.4;cursor:default}
+.pbody h3{font-size:15.5px;margin:4px 0 8px;color:#fff}
+.pbody p{margin:0 0 10px;color:#cfd6f1}
+.pbody ul{margin:0 0 10px;padding-left:20px;color:#cfd6f1}
+.pbody li{margin-bottom:4px}
+.goal{background:#151f40;border:1px solid var(--line);border-left:3px solid var(--acc2);border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:13.5px}
+.note{font-size:12.5px;color:var(--mute);background:#0f1733;border:1px dashed #33426f;border-radius:10px;padding:8px 10px;margin:10px 0}
+.task{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:12px}
+.task .q{font-weight:600;margin-bottom:8px;color:#fff}
+.opts{display:grid;gap:7px}
+.opt{text-align:left;background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-height:44px}
+.opt:hover:not([disabled]){border-color:var(--acc2)}
+.opt.right{background:#0f3b3a;border-color:var(--ok)}
+.opt.wrong{background:#3d1424;border-color:var(--bad)}
+.opt[disabled]{cursor:default}
+.fb{margin-top:8px;font-size:13.5px;border-radius:9px;padding:8px 10px;display:none}
+.fb.ok{display:block;background:#0e3634;color:#b8fff6}
+.fb.no{display:block;background:#3a1322;color:#ffd0d8}
+.fb.hint{display:block;background:#3a3112;color:#ffeeb8}
+.bases{display:flex;gap:8px;flex-wrap:wrap}
+.bbtn{width:52px;height:52px;border-radius:12px;border:2px solid rgba(255,255,255,.25);font:800 20px Sora;color:#10142a}
+.bbtn:hover{transform:translateY(-1px);border-color:#fff}
+.bA{background:#ff6b6b}.bT{background:#ffd166}.bG{background:#06d6a0}.bC{background:#4cc9f0}.bU{background:#f8961e}
+.seq{display:flex;flex-wrap:wrap;gap:4px;font:700 15px Sora;align-items:center;margin:6px 0}
+.seq .e{color:var(--mute);font:600 12px Inter;margin:0 4px}
+.cell{width:32px;height:36px;border-radius:8px;display:grid;place-items:center;background:#1b2648;border:1px solid var(--line);color:#fff}
+.cell.cur{border:2px solid var(--warn);box-shadow:0 0 0 3px rgba(255,209,102,.2)}
+.cell.f{color:#10142a}
+.cell.gap{width:8px;background:none;border:0}
+.cell.btnc{cursor:pointer}
+.cell.btnc:hover{border-color:var(--acc2)}
+.cell.sel{outline:3px solid #fff}
+.cell.mut{box-shadow:0 0 0 3px #ff5d73}
+.score{display:flex;gap:10px;margin:8px 0}
+.score div{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px;text-align:center}
+.score b{display:block;font:800 20px Sora;color:var(--acc2)}
+.score span{font-size:11.5px;color:var(--mute)}
+table.cmp{width:100%;border-collapse:collapse;font-size:13px;margin:6px 0 12px}
+table.cmp th,table.cmp td{border-bottom:1px solid var(--line);padding:7px 6px;text-align:left;vertical-align:top}
+table.cmp th{color:var(--acc2);font-weight:600}
+.sortrow{display:flex;align-items:center;gap:6px;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--line)}
+.sortrow .lab{font-size:13.5px;font-weight:600}
+.seg{display:flex;gap:4px}
+.seg button{background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:6px 9px;font-size:12.5px;min-height:38px;font-weight:600}
+.seg button.right{background:#0f3b3a;border-color:var(--ok)}
+.seg button.wrong{background:#3d1424;border-color:var(--bad)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.chipb{background:var(--card2);border:1px solid var(--line);border-radius:999px;padding:7px 12px;font-weight:600;font-size:13px;min-height:40px}
+.chipb.used{opacity:.3}
+.chain{display:flex;flex-wrap:wrap;gap:5px;min-height:46px;align-items:center;background:#0f1733;border:1px dashed #33426f;border-radius:10px;padding:6px;margin:6px 0}
+.aa{border-radius:999px;padding:6px 11px;font-weight:700;font-size:13px;color:#10142a}
+.done-badge{display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,#0f3b3a,#13294f);border:1px solid var(--ok);border-radius:12px;padding:12px;margin:10px 0;font-weight:600}
+.modal{position:fixed;inset:0;background:rgba(3,6,16,.75);display:none;place-items:center;z-index:50;padding:14px}
+.modal.show{display:grid}
+.mbox{background:var(--bg2);border:1px solid var(--line);border-radius:16px;width:min(980px,100%);max-height:92vh;display:flex;flex-direction:column}
+.mhead{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.mhead h2{font-size:18px;flex:1}
+.mhead input{flex:1 1 220px;height:44px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:0 12px;font-size:16px}
+.mbody{overflow:auto;padding:14px 16px}
+.ctab{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.cgrp h4{margin:0 0 6px;font:700 13px Sora;color:var(--mute)}
+.cgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}
+.cod{border:1px solid var(--line);border-radius:8px;padding:5px 2px;text-align:center;background:var(--card);min-height:44px}
+.cod b{display:block;font:700 13px Sora;letter-spacing:.5px}
+.cod span{font-size:11px;color:#cfd6f1}
+.cod.dim{opacity:.18}
+.cod.hit{outline:2px solid var(--warn)}
+.cdet{margin-top:12px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;min-height:60px}
+.k-np{background:#2b2a4a}.k-p{background:#173a45}.k-ac{background:#4a1d2e}.k-bs{background:#1d2f5a}.k-st{background:#4a2a10}.k-mt{background:#0f3b2a}
+.dash{position:absolute;inset:0;overflow:auto;padding:28px clamp(16px,4vw,48px);background:linear-gradient(90deg,rgba(6,9,20,.94) 0%,rgba(6,9,20,.7) 55%,rgba(6,9,20,.15) 100%)}
+.dash h1{font-size:clamp(28px,4vw,44px);max-width:620px;text-wrap:balance}
+.dash .lead{max-width:560px;color:#c7cff0;font-size:16px;margin:12px 0 20px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;max-width:760px}
+.mc{text-align:left;background:rgba(18,27,53,.9);border:1px solid var(--line);border-radius:14px;padding:14px;min-height:118px}
+.mc:hover{border-color:var(--acc2)}
+.mc .n{font:800 12px Sora;color:var(--acc2)}
+.mc b{display:block;font:700 15px Sora;margin:4px 0}
+.mc span{font-size:12.5px;color:var(--mute)}
+.mc.done{border-color:#1f6f68}
+.mc.done .n::after{content:"  ✓ completed";color:var(--ok)}
+.flow{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 18px}
+.flow span{background:#1b2648;border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-size:12px;font-weight:600}
+.shake{animation:sh .35s}
+@keyframes sh{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+@media (max-width:1180px){main{grid-template-columns:minmax(0,1fr) 370px;grid-template-rows:auto 1fr}nav{grid-column:1/-1;display:flex;gap:6px;overflow-x:auto;border-right:0;border-bottom:1px solid var(--line);padding:6px 8px}.navt{display:none}.nb{flex:none;width:auto;margin:0;min-height:44px;padding:6px 10px}.nb span.s{display:none}}
+@media (max-width:760px){body{overflow:auto}.app{height:auto;min-height:100%}main{grid-template-columns:minmax(0,1fr)}.stage{height:56vh;min-height:340px}.panel{border-left:0;border-top:1px solid var(--line)}.pbody{overflow:visible}.ptxt{display:none}.pdot{width:12px}.brand small{display:none}.hbtn{padding:6px 9px}header{gap:8px;padding:0 10px}.ctrl{bottom:8px;gap:4px;padding:4px}.cb{min-width:40px;height:40px;padding:0 8px}.cb .t{display:none}.ctrl input[type=range]{width:80px}.legend{bottom:64px;max-width:96%}.banner{max-width:100%;font-size:12px}.topbar .chip{display:none}.ctab{grid-template-columns:minmax(0,1fr)}.dash{background:rgba(6,9,20,.88)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="brand"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path d="M8 3c0 8 14 8 14 12S8 19 8 27M22 3c0 8-14 8-14 12s14 4 14 12" fill="none" stroke="#c77dff" stroke-width="2.4" stroke-linecap="round"/><path d="M10 7h10M9.5 23h11M12 11h6M12 19h6" stroke="#4cc9f0" stroke-width="2" stroke-linecap="round"/></svg><div>BIOBESIR MOLECULAR LAB<small>DNA · RNA · The Genetic Code</small></div></div>
+  <div class="prog"><span class="ptxt" id="ptxt">0 / 7 completed</span><div class="pdots" id="pdots"></div>
+  <button class="hbtn" id="btnCodon">Codon table</button><a class="hbtn" href="../../index.html#dna-lab" style="text-decoration:none;display:flex;align-items:center">← Website</a></div>
+</header>
+<main>
+  <nav id="nav" aria-label="Modules"></nav>
+  <section class="stage" id="stage">
+    <div id="c3d"></div>
+    <div id="labels"></div>
+    <div class="topbar"><span class="chip" id="hintChip">Drag to rotate · scroll or pinch to zoom · tap parts to inspect</span><div class="banner" id="banner"></div></div>
+    <div class="legend" id="legend"></div>
+    <div class="info" id="info"><button class="x" id="infoX" aria-label="Close">×</button><h3 id="infoT"></h3><div id="infoB"></div></div>
+    <div class="ctrl" id="ctrl">
+      <button class="cb" id="bPlay" title="Play / Pause"><span id="playIco">❚❚</span><span class="t" id="playTxt">Pause</span></button>
+      <button class="cb" id="bStep" title="Next step">▶|<span class="t">Step</span></button>
+      <button class="cb" id="bReset" title="Reset process">↺<span class="t">Reset</span></button>
+      <select id="speed" title="Animation speed" aria-label="Animation speed"><option value="0.25">0.25×</option><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select>
+      <button class="cb" id="bCam" title="Reset camera">⌖<span class="t">Camera</span></button>
+      <button class="cb on" id="bLbl" title="Show / hide labels">Aa<span class="t">Labels</span></button>
+    </div>
+    <div class="dash" id="dash"></div>
+    <div class="overlay" id="loading"><div><div class="spin"></div><h3>Preparing the molecular lab…</h3><p style="color:#9aa6c9">Loading the 3D engine</p></div></div>
+    <div class="overlay hide" id="err"><div style="max-width:420px"><h3 style="margin-bottom:8px">The 3D lab could not start</h3><p id="errMsg" style="color:#cfd6f1">Check your internet connection and reload the page.</p><button class="btn pri" onclick="location.reload()">Reload</button></div></div>
+  </section>
+  <aside class="panel" id="panel">
+    <div class="phead"><div class="k" id="pk">Laboratory</div><h2 id="ph">Welcome</h2><div class="steps" id="steps"></div></div>
+    <div class="pbody" id="pbody"></div>
+    <div class="pfoot"><button class="btn" id="pPrev">← Back</button><button class="btn pri" id="pNext">Next →</button></div>
+  </aside>
+</main>
+</div>
+<div class="modal" id="codonModal" role="dialog" aria-modal="true" aria-label="Codon table">
+  <div class="mbox">
+    <div class="mhead"><h2>The genetic code – mRNA codon table</h2><input id="cSearch" placeholder="Search: codon (GCU), amino acid (Alanine, Ala, A) or 'stop'" aria-label="Search codon table"><button class="btn sm" id="cClose">Close</button></div>
+    <div class="mbody"><div class="chips" id="cKey"></div><div class="ctab" id="ctab"></div><div class="cdet" id="cdet">Tap a codon to see which amino acid it codes for.</div></div>
+  </div>
+</div>
+<script>
+window.__labErr=function(m){var o=document.getElementById('err');document.getElementById('errMsg').textContent=m;o.classList.remove('hide');document.getElementById('loading').classList.add('hide')};
+setTimeout(function(){if(!window.__labReady)window.__labErr('The 3D engine (Three.js) did not load. Check your internet connection, then reload the page.')},20000);
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+{
+
+/* ================= CORE ENGINE ================= */
+const $ = s => document.querySelector(s);
+const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const sstep = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const V = (x, y, z) => new THREE.Vector3(x, y, z);
+
+const BASE_HEX = { A: 0xff6b6b, T: 0xffd166, G: 0x06d6a0, C: 0x4cc9f0, U: 0xf8961e };
+const BASE_CSS = { A: '#ff6b6b', T: '#ffd166', G: '#06d6a0', C: '#4cc9f0', U: '#f8961e' };
+const BASE_NAME = { A: 'Adenine', T: 'Thymine', G: 'Guanine', C: 'Cytosine', U: 'Uracil' };
+const PURINE = { A: 1, G: 1 };
+const DNA_PAIR = { A: 'T', T: 'A', G: 'C', C: 'G' };
+const RNA_FROM_TEMPLATE = { A: 'U', T: 'A', G: 'C', C: 'G' };
+const HB = { A: 2, T: 2, U: 2, G: 3, C: 3 };
+
+const S = { speed: 1, playing: true, labelsOn: true, mod: null, pickables: [], labels: [], root: null, t0: performance.now() };
+
+function initEngine() {
+  const host = $('#c3d');
+  let renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+  } catch (e) { window.__labErr('Your browser or device does not support WebGL, which the 3D lab needs. Try an up-to-date Chrome, Edge, Firefox or Safari.'); throw e; }
+  const mobile = Math.min(innerWidth, innerHeight) < 700;
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, mobile ? 1.5 : 2));
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.05;
+  host.appendChild(renderer.domElement);
+  const scene = new THREE.Scene();
+  const pm = new THREE.PMREMGenerator(renderer);
+  scene.environment = pm.fromScene(new RoomEnvironment(), 0.04).texture;
+  const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 300);
+  camera.position.set(0, 2, 18);
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true; controls.dampingFactor = 0.08;
+  controls.minDistance = 3; controls.maxDistance = 60;
+  scene.add(new THREE.HemisphereLight(0xbfd4ff, 0x1a1030, 0.9));
+  const dl = new THREE.DirectionalLight(0xffffff, 1.6); dl.position.set(6, 10, 8); scene.add(dl);
+  const rim = new THREE.PointLight(0xc77dff, 40, 60); rim.position.set(-10, -4, -8); scene.add(rim);
+  const rim2 = new THREE.PointLight(0x4cc9f0, 30, 60); rim2.position.set(10, 6, -6); scene.add(rim2);
+  // floating dust
+  const n = mobile ? 140 : 260, pos = new Float32Array(n * 3);
+  for (let i = 0; i < n; i++) { pos[i * 3] = (Math.random() - .5) * 70; pos[i * 3 + 1] = (Math.random() - .5) * 40; pos[i * 3 + 2] = -6 - Math.random() * 40; }
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  const dust = new THREE.Points(g, new THREE.PointsMaterial({ color: 0x8aa0ff, size: 0.08, transparent: true, opacity: .55 }));
+  scene.add(dust);
+  Object.assign(S, { renderer, scene, camera, controls, dust });
+  const ro = new ResizeObserver(resize); ro.observe($('#stage')); resize();
+  setupPicking();
+}
+function resize() {
+  const st = $('#stage'), w = st.clientWidth, h = st.clientHeight;
+  if (!w || !h) return;
+  S.renderer.setSize(w, h, false);
+  S.camera.aspect = w / h; S.camera.updateProjectionMatrix();
+  S.W = w; S.H = h;
+  // keep models framed on narrow screens
+  if (S.mod && S.mod.cam) fitCam(false);
+}
+function fitCam(snap = true) {
+  const m = S.mod; if (!m || !m.cam) return;
+  const [p, t] = m.cam; const asp = S.W / S.H || 1.5;
+  const k = asp < 1 ? 1.15 / Math.max(asp, .5) : asp < 1.3 ? 1.15 : 1;
+  const tgt = V(...t), dir = V(...p).sub(tgt).multiplyScalar(k);
+  if (snap) { S.camera.position.copy(tgt.clone().add(dir)); S.controls.target.copy(tgt); S.controls.update(); }
+  S.camFit = { tgt, pos: tgt.clone().add(dir) };
+}
+
+/* ---------- materials & geometry caches ---------- */
+const MAT = {};
+function mat(hex, o = {}) {
+  const key = hex + JSON.stringify(o);
+  if (!MAT[key]) MAT[key] = new THREE.MeshStandardMaterial(Object.assign({ color: hex, roughness: .38, metalness: .08 }, o));
+  return MAT[key];
+}
+function glassMat(hex, op = .25) { return new THREE.MeshPhysicalMaterial({ color: hex, roughness: .25, metalness: 0, transparent: true, opacity: op, depthWrite: false, clearcoat: .6, side: THREE.DoubleSide }); }
+const GEO = {
+  sph: new THREE.SphereGeometry(1, 24, 16),
+  sphLo: new THREE.SphereGeometry(1, 14, 10),
+  cyl: new THREE.CylinderGeometry(1, 1, 1, 12),
+  pent: new THREE.CylinderGeometry(0.34, 0.34, 0.16, 5),
+  hex: new THREE.CylinderGeometry(1, 1, 1, 6),
+  box: new THREE.BoxGeometry(1, 1, 1)
+};
+function mesh(geo, m, s = 1) { const o = new THREE.Mesh(geo, m); if (typeof s === 'number') o.scale.setScalar(s); else o.scale.set(...s); return o; }
+const _up = V(0, 1, 0);
+function placeCyl(o, a, b, r) {
+  const d = V().subVectors(b, a), L = d.length();
+  o.position.copy(a).addScaledVector(d, .5);
+  o.scale.set(r, Math.max(L, 1e-4), r);
+  if (L > 1e-6) o.quaternion.setFromUnitVectors(_up, d.divideScalar(L));
+}
+function stick(a, b, r = .07, hex = 0x9aa6c9) { const o = mesh(GEO.cyl, mat(hex)); placeCyl(o, a, b, r); return o; }
+
+const TEX = {};
+function letterSprite(txt, bg = '#ffffff', fg = '#10142a', size = .5) {
+  const key = txt + bg + fg;
+  if (!TEX[key]) {
+    const c = document.createElement('canvas'); c.width = c.height = 128; const x = c.getContext('2d');
+    x.fillStyle = bg; x.beginPath(); x.arc(64, 64, 58, 0, 7); x.fill();
+    x.lineWidth = 6; x.strokeStyle = 'rgba(16,20,42,.85)'; x.stroke();
+    x.fillStyle = fg; x.font = `800 ${txt.length > 2 ? 44 : 70}px Sora, Inter, sans-serif`; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(txt, 64, 68);
+    TEX[key] = new THREE.CanvasTexture(c); TEX[key].colorSpace = THREE.SRGBColorSpace;
+  }
+  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: TEX[key], depthTest: true, transparent: true }));
+  s.scale.setScalar(size); s.renderOrder = 2; return s;
+}
+
+/* ---------- labels ---------- */
+function addLabel(target, text, cls = '', off = [0, 0, 0]) {
+  const d = el('div', 'lbl ' + cls); d.textContent = text; $('#labels').appendChild(d);
+  const L = { d, target, off: V(...off), show: true }; S.labels.push(L); return L;
+}
+function clearLabels() { S.labels.forEach(l => l.d.remove()); S.labels = []; }
+const _v = V();
+function updateLabels() {
+  for (const L of S.labels) {
+    let vis = S.labelsOn && L.show;
+    if (vis) {
+      if (L.target.isObject3D) { if (!L.target.visible || (L.target.parent && !L.target.parent.visible)) vis = false; L.target.getWorldPosition(_v); } else _v.copy(L.target);
+      _v.add(L.off).project(S.camera);
+      if (_v.z > 1 || Math.abs(_v.x) > 1.15 || Math.abs(_v.y) > 1.15) vis = false;
+    }
+    if (!vis) { if (L.d.style.display !== 'none') L.d.style.display = 'none'; continue; }
+    L.d.style.display = '';
+    L.d.style.transform = `translate(${(_v.x * .5 + .5) * S.W}px,${(-_v.y * .5 + .5) * S.H}px) translate(-50%,-50%)`;
+  }
+}
+
+/* ---------- picking & info card ---------- */
+function setupPicking() {
+  const rc = new THREE.Raycaster(), cv = S.renderer.domElement; let down = null;
+  cv.addEventListener('pointerdown', e => { down = [e.clientX, e.clientY]; });
+  cv.addEventListener('pointerup', e => {
+    if (!down || Math.hypot(e.clientX - down[0], e.clientY - down[1]) > 8) return;
+    const r = cv.getBoundingClientRect();
+    rc.setFromCamera({ x: (e.clientX - r.left) / r.width * 2 - 1, y: -(e.clientY - r.top) / r.height * 2 + 1 }, S.camera);
+    const hits = rc.intersectObjects(S.pickables, true).filter(h => { let o = h.object; while (o) { if (!o.visible) return false; o = o.parent; } return true; });
+    let pick = null, obj = null;
+    for (const h of hits) { let o = h.object; while (o && !o.userData.pick) o = o.parent; if (o) { pick = o.userData.pick; obj = o; break; } }
+    if (!pick) return;
+    flash(obj);
+    if (S.mod && S.mod.onPick && S.mod.onPick(pick, obj) === true) return;
+    showInfo(pick.title, pick.text);
+  });
+  $('#infoX').onclick = hideInfo;
+}
+function showInfo(t, html) { $('#infoT').textContent = t; $('#infoB').innerHTML = html; $('#info').classList.add('show'); }
+function hideInfo() { $('#info').classList.remove('show'); }
+function pickable(o, title, text, extra = {}) { o.userData.pick = Object.assign({ title, text }, extra); S.pickables.push(o); return o; }
+const flashes = [];
+function flash(o) {
+  o.traverse(m => { if (m.isMesh && m.material && m.material.emissive) { if (!m.userData.ownMat) { m.material = m.material.clone(); m.userData.ownMat = 1; } flashes.push({ m, t: 0 }); } });
+}
+function updateFlashes(dt) {
+  for (let i = flashes.length - 1; i >= 0; i--) { const f = flashes[i]; f.t += dt; const k = Math.max(0, 1 - f.t / .9); f.m.material.emissive.setRGB(k * .6, k * .55, k * .3); if (k <= 0) flashes.splice(i, 1); }
+}
+function banner(html) { $('#banner').innerHTML = html || ''; }
+function legend(items) { $('#legend').innerHTML = (items || []).map(([c, t]) => `<span><i style="background:${c}"></i>${t}</span>`).join(''); }
+
+/* ---------- disposal ---------- */
+function clearWorld() {
+  if (S.root) { S.scene.remove(S.root); S.root.traverse(o => { if (o.geometry && !Object.values(GEO).includes(o.geometry)) o.geometry.dispose(); if (o.material && o.userData.ownMat) o.material.dispose(); }); }
+  S.root = new THREE.Group(); S.scene.add(S.root);
+  S.pickables = []; clearLabels(); hideInfo(); banner(''); legend([]); flashes.length = 0;
+}
+
+/* ---------- action queue (timed animation steps) ---------- */
+class Queue {
+  constructor() { this.q = []; this.cur = null; this.t = 0; }
+  add(dur, start, tick) { this.q.push({ dur, start, tick }); return this; }
+  wait(dur) { return this.add(dur); }
+  get busy() { return !!this.cur || this.q.length > 0; }
+  clear() { this.q = []; this.cur = null; }
+  update(dt) {
+    let guard = 0;
+    while (dt > 0 && guard++ < 20) {
+      if (!this.cur) { if (!this.q.length) return; this.cur = this.q.shift(); this.t = 0; this.cur.start && this.cur.start(); }
+      const rem = this.cur.dur - this.t, use = Math.min(rem, dt); this.t += use; dt -= use;
+      this.cur.tick && this.cur.tick(clamp(this.t / (this.cur.dur || 1), 0, 1));
+      if (this.t >= this.cur.dur) this.cur = null;
+    }
+  }
+}
+
+/* ================= NUCLEIC-ACID CHAIN RENDERER ================= */
+const SUGAR_R = .34, PAIR_SPAN = 2.6;            // backbone-to-backbone distance of a base pair
+const BASE_LEN = b => (PURINE[b] ? 1.0 : .68);    // purine + pyrimidine always = 1.68 → fits the span with an H-bond gap
+const LTEX = {};
+function letterTex(t) {
+  if (!LTEX[t]) {
+    const c = document.createElement('canvas'); c.width = c.height = 128; const x = c.getContext('2d');
+    x.font = '800 92px Sora, Inter, sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle';
+    x.lineWidth = 10; x.strokeStyle = 'rgba(255,255,255,.95)'; x.strokeText(t, 64, 70); x.fillStyle = '#10142a'; x.fillText(t, 64, 70);
+    LTEX[t] = new THREE.CanvasTexture(c); LTEX[t].colorSpace = THREE.SRGBColorSpace;
+  }
+  return LTEX[t];
+}
+const LPLANE = new THREE.PlaneGeometry(1, 1);
+const _x = V(), _y = V(), _z = V(), _m = new THREE.Matrix4();
+let SHAPE_MODE = 'block';
+
+class Nt {
+  constructor(parent, base, o = {}) {
+    this.base = base; this.o = o; this.axis = o.axis ? o.axis.clone() : V(1, 0, 0);
+    this.g = new THREE.Group(); parent.add(this.g);
+    const sugarHex = o.sugarHex ?? (o.rna ? 0xc77dff : 0x9d4edd);
+    this.sugar = mesh(GEO.pent, mat(sugarHex)); this.g.add(this.sugar);
+    this.bg = new THREE.Group(); this.g.add(this.bg);
+    const L = this.len = o.len || BASE_LEN(base);
+    if (o.ghost) {
+      const gm = glassMat(0xffffff, .22);
+      const s = mesh(GEO.box, gm, [.5, L, .12]); s.position.y = L / 2; this.bg.add(s);
+      const ed = new THREE.LineSegments(new THREE.EdgesGeometry(GEO.box), new THREE.LineBasicMaterial({ color: 0xffd166, transparent: true, opacity: .9 }));
+      ed.scale.set(.5, L, .12); ed.position.y = L / 2; this.bg.add(ed); this.ghostEdge = ed;
+      this.sugar.material = glassMat(0xffffff, .2);
+    } else {
+      const bm = mat(BASE_HEX[base] ?? 0xcccccc);
+      this.block = mesh(GEO.box, bm, [.5, L, .12]); this.block.position.y = L / 2; this.bg.add(this.block);
+      // ring-shape representation: purines = two fused rings, pyrimidines = one ring
+      this.shape = new THREE.Group(); this.bg.add(this.shape);
+      const rings = PURINE[base] ? [[.25, .27], [.7, .22]] : [[.36, .3]];
+      rings.forEach(([y, r]) => { const h = mesh(GEO.hex, bm, [r, .12, r]); h.rotation.x = Math.PI / 2; h.position.y = PURINE[base] ? y * L : L / 2; this.shape.add(h); });
+      for (const side of [1, -1]) {
+        const p = new THREE.Mesh(LPLANE, new THREE.MeshBasicMaterial({ map: letterTex(base), transparent: true, depthWrite: false }));
+        p.scale.setScalar(.42); p.position.set(0, L * .55, .065 * side); if (side < 0) p.rotation.y = Math.PI; this.bg.add(p);
+      }
+      this.setShape(SHAPE_MODE);
+    }
+    this.p = V(); this.d = V(0, 1, 0); this.tp = V(); this.td = V(0, 1, 0);
+    this.s = 0; this.vis = true; this.k = 1;
+    if (o.pick !== false && !o.ghost) pickable(this.g, `${BASE_NAME[base]} (${base}) nucleotide`, o.info || `<p><b>${PURINE[base] ? 'Purine' : 'Pyrimidine'}</b> base – ${PURINE[base] ? 'two fused rings' : 'one ring'}.</p><p>${o.rna ? 'RNA nucleotide: ribose sugar.' : 'DNA nucleotide: deoxyribose sugar.'}</p>${o.extra || ''}`);
+  }
+  setShape(m) { if (!this.block) return; this.block.visible = m === 'block'; this.shape.visible = m === 'shape'; }
+  set(p, d, snap) { this.tp.copy(p); this.td.copy(d).normalize(); if (snap) { this.p.copy(p); this.d.copy(this.td); this.s = this.vis ? 1 : 0; } return this; }
+  show(v, snap) { this.vis = v; if (snap) this.s = v ? 1 : 0; return this; }
+  update(dt) {
+    const k = 1 - Math.exp(-dt * 5.5 * S.speed);
+    this.p.lerp(this.tp, k); this.d.lerp(this.td, k).normalize();
+    this.s += ((this.vis ? 1 : 0) - this.s) * k;
+    this.render();
+  }
+  render() {
+    const sc = this.s; this.g.visible = sc > .02;
+    if (!this.g.visible) return;
+    this.sugar.position.copy(this.p); this.sugar.scale.setScalar(sc);
+    _y.copy(this.d); _z.copy(this.axis).addScaledVector(_y, -this.axis.dot(_y));
+    if (_z.lengthSq() < 1e-4) _z.set(0, 0, 1); _z.normalize(); _x.crossVectors(_y, _z);
+    _m.makeBasis(_x, _y, _z); this.bg.quaternion.setFromRotationMatrix(_m);
+    this.bg.position.copy(this.p).addScaledVector(this.d, SUGAR_R * sc); this.bg.scale.setScalar(sc);
+  }
+  tip(out) { return out.copy(this.p).addScaledVector(this.d, SUGAR_R + this.len); }
+  dispose() { this.g.parent && this.g.parent.remove(this.g); }
+}
+
+class Strand {
+  constructor(parent, bbHex = 0x9d4edd, o = {}) { this.parent = parent; this.nts = []; this.links = []; this.hex = bbHex; this.o = o; }
+  add(nt) {
+    this.nts.push(nt);
+    if (this.nts.length > 1) {
+      const rod = mesh(GEO.cyl, mat(this.hex, { roughness: .5 })), ph = mesh(GEO.sphLo, mat(0xf4a261), .19);
+      this.parent.add(rod, ph); this.links.push({ rod, ph });
+      if (this.o.pickPh !== false) pickable(ph, 'Phosphate group', '<p>Phosphate groups link the sugars of neighbouring nucleotides through <b>phosphodiester bonds</b>, forming the sugar–phosphate backbone.</p>');
+    }
+    return nt;
+  }
+  update(dt) { this.nts.forEach(n => n.update(dt)); this.updLinks(); }
+  updLinks() {
+    this.links.forEach((l, i) => {
+      const a = this.nts[i], b = this.nts[i + 1], on = a.s > .5 && b.s > .5 && a.p.distanceTo(b.p) < 2.4 && !a.o.ghost && !b.o.ghost && (!this.o.linkOk || this.o.linkOk(i));
+      l.rod.visible = l.ph.visible = on; if (!on) return;
+      placeCyl(l.rod, a.p, b.p, .07); l.ph.position.lerpVectors(a.p, b.p, .5);
+    });
+  }
+}
+
+const DOT = new THREE.SphereGeometry(1, 8, 6);
+class Pair {
+  constructor(parent, a, b) {
+    this.a = a; this.b = b; this.n = HB[a.base] || 2; this.k = 0; this.on = true; this.dots = [];
+    this.g = new THREE.Group(); parent.add(this.g);
+    const m = new THREE.MeshBasicMaterial({ color: 0xfff3b0 });
+    for (let i = 0; i < this.n * 3; i++) { const d = new THREE.Mesh(DOT, m); d.scale.setScalar(.045); this.g.add(d); this.dots.push(d); }
+  }
+  update(dt) {
+    const ta = this.a.tip(V()), tb = this.b.tip(V()), dist = ta.distanceTo(tb);
+    const want = this.on && this.a.s > .9 && this.b.s > .9 && dist < .75 ? 1 : 0;
+    this.k += (want - this.k) * (1 - Math.exp(-dt * 4 * S.speed));
+    this.g.visible = this.k > .03; if (!this.g.visible) return;
+    // across-plate direction
+    _y.subVectors(tb, ta).normalize(); _z.copy(this.a.axis); _x.crossVectors(_y, _z).normalize();
+    const offs = this.n === 3 ? [-.16, 0, .16] : [-.1, .1];
+    offs.forEach((o, bi) => {
+      for (let j = 0; j < 3; j++) {
+        const d = this.dots[bi * 3 + j], f = (j + 1) / 4;
+        d.position.lerpVectors(ta, tb, f).addScaledVector(_x, o);
+        d.scale.setScalar(.045 * this.k);
+      }
+    });
+  }
+}
+
+/* helix geometry helpers: axis along x */
+const HX = { R: PAIR_SPAN / 2, rise: .62, twist: Math.PI / 5 };
+function helixPos(i, n, strand, o = {}) {
+  const rise = o.rise || HX.rise, x = (i - (n - 1) / 2) * rise + (o.x0 || 0), th = i * (o.twist ?? HX.twist) + (o.phase || 0);
+  const sgn = strand === 0 ? 1 : -1, cy = o.cy || 0, cz = o.cz || 0;
+  const p = V(x, cy + sgn * HX.R * Math.cos(th), cz + sgn * HX.R * Math.sin(th));
+  const d = V(0, cy - p.y, cz - p.z).normalize();
+  return [p, d];
+}
+
+/* a full duplex helper used by several modules */
+function buildDuplex(parent, seqTop, o = {}) {
+  const n = seqTop.length, top = new Strand(parent, o.topHex ?? 0x9d4edd), bot = new Strand(parent, o.botHex ?? 0x9d4edd), pairs = [];
+  for (let i = 0; i < n; i++) {
+    const b1 = seqTop[i], b2 = DNA_PAIR[b1];
+    const a = top.add(new Nt(parent, b1, { extra: o.extraTop }));
+    const b = bot.add(new Nt(parent, b2, { extra: o.extraBot }));
+    const [p1, d1] = helixPos(i, n, 0, o), [p2, d2] = helixPos(i, n, 1, o);
+    a.set(p1, d1, true); b.set(p2, d2, true);
+    pairs.push(new Pair(parent, a, b));
+  }
+  return { top, bot, pairs, update(dt) { top.update(dt); bot.update(dt); pairs.forEach(p => p.update(dt)); } };
+}
+
+/* ================= GENETIC CODE ================= */
+const AA = {
+  Phe: ['Phenylalanine', 'F', 'np'], Leu: ['Leucine', 'L', 'np'], Ile: ['Isoleucine', 'I', 'np'], Met: ['Methionine', 'M', 'mt'], Val: ['Valine', 'V', 'np'],
+  Ser: ['Serine', 'S', 'p'], Pro: ['Proline', 'P', 'np'], Thr: ['Threonine', 'T', 'p'], Ala: ['Alanine', 'A', 'np'], Tyr: ['Tyrosine', 'Y', 'p'],
+  His: ['Histidine', 'H', 'bs'], Gln: ['Glutamine', 'Q', 'p'], Asn: ['Asparagine', 'N', 'p'], Lys: ['Lysine', 'K', 'bs'], Asp: ['Aspartic acid', 'D', 'ac'],
+  Glu: ['Glutamic acid', 'E', 'ac'], Cys: ['Cysteine', 'C', 'p'], Trp: ['Tryptophan', 'W', 'np'], Arg: ['Arginine', 'R', 'bs'], Gly: ['Glycine', 'G', 'np'], Stop: ['Stop', '*', 'st']
+};
+const ONE2THREE = Object.fromEntries(Object.entries(AA).map(([k, v]) => [v[1], k]));
+const CODE = {};
+{
+  const B = 'UCAG', s = 'FFLLSSSSYY**CC*WLLLLPPPPHHQQRRRRIIIMTTTTNNKKSSRRVVVVAAAADDEEGGGG';
+  for (let i = 0; i < 64; i++) CODE[B[i >> 4] + B[(i >> 2) & 3] + B[i & 3]] = ONE2THREE[s[i]];
+}
+const CLASS_NAME = { np: 'non-polar', p: 'polar', ac: 'acidic (negative)', bs: 'basic (positive)', st: 'stop signal', mt: 'start codon / non-polar' };
+const AA_HEX = { Met: 0x2ec4b6, Ala: 0xf9c74f, Phe: 0xf3722c, Gly: 0x90be6d, Tyr: 0x43aa8b, Trp: 0x9b5de5, Val: 0xf15bb5, Ser: 0x00bbf9, Cys: 0xfee440, Leu: 0xff9f1c, Pro: 0xe07a5f, Thr: 0x81b29a, His: 0x577590, Gln: 0x4d908e, Asn: 0x277da1, Lys: 0x5390d9, Asp: 0xef476f, Glu: 0xd62828, Arg: 0x4361ee, Ile: 0xffb703 };
+const aaCss = a => '#' + (AA_HEX[a] ?? 0xcccccc).toString(16).padStart(6, '0');
+function translate(mrna) {
+  const out = []; let stopped = false;
+  for (let i = 0; i + 3 <= mrna.length; i += 3) { const a = CODE[mrna.slice(i, i + 3)]; if (a === 'Stop') { stopped = true; break; } out.push(a); }
+  return { aas: out, stopped };
+}
+
+/* ================= PROGRESS ================= */
+const PKEY = 'biobesir-lab-en-v1';
+const ORDER = ['m1', 'm2', 'm3', 'm4', 'm5', 'mut', 'final'];
+let PROG = {};
+try { PROG = JSON.parse(localStorage.getItem(PKEY) || '{}') || {}; } catch (e) { PROG = {}; }
+function saveProg() { try { localStorage.setItem(PKEY, JSON.stringify(PROG)); } catch (e) { } }
+function mark(id, key) {
+  PROG[id] = PROG[id] || {}; PROG[id][key] = true;
+  if (PROG[id].challenge && PROG[id].assess && !PROG[id].done) { PROG[id].done = true; toastDone(id); }
+  if (id === 'final' && key === 'assess') PROG[id].done = true;
+  saveProg(); renderProgress(); renderNav(); renderSteps();
+}
+const isDone = id => !!(PROG[id] && PROG[id].done);
+function renderProgress() {
+  const n = ORDER.filter(isDone).length;
+  $('#pdots').innerHTML = ORDER.map(id => `<span class="pdot ${isDone(id) ? 'done' : ''}" title="${MODS[id]?.title || ''}"></span>`).join('');
+  $('#ptxt').textContent = `${n} / ${ORDER.length} completed`;
+}
+function toastDone(id) { banner(`<b>✓ ${MODS[id].title}</b> completed – great work!`); }
+
+/* ================= MODULE FRAMEWORK ================= */
+const MODS = {};
+const STEP_NAMES = ['Explore', 'Learn', 'Interact', 'Challenge', 'Assess'];
+let CUR = null, STEP = 0;
+function renderNav() {
+  const items = [['home', '⌂', 'Lab dashboard', 'Overview & goals']].concat(ORDER.map(id => [id, MODS[id].num, MODS[id].title, MODS[id].sub]));
+  $('#nav').innerHTML = '<div class="navt">Laboratory modules</div>' + items.map(([id, n, t, s]) => `<button class="nb ${CUR === id ? 'on' : ''} ${isDone(id) ? 'done' : ''}" data-m="${id}"><span class="num">${isDone(id) ? '✓' : n}</span><span><b>${t}</b><span class="s">${s}</span></span></button>`).join('');
+  $('#nav').querySelectorAll('.nb').forEach(b => b.onclick = () => openModule(b.dataset.m));
+}
+function openModule(id) {
+  if (CUR && MODS[CUR] && MODS[CUR].leave) MODS[CUR].leave();
+  CUR = id; const m = MODS[id];
+  clearWorld(); S.mod = m; S.controls.autoRotate = false; S.playing = true; syncPlay();
+  $('#dash').style.display = id === 'home' ? '' : 'none';
+  m.build(S.root);
+  fitCam(true);
+  STEP = m.startStep || 0;
+  const c = m.ctrl || {};
+  $('#bPlay').disabled = !c.play; $('#bStep').disabled = !c.step; $('#bReset').disabled = !c.reset; $('#speed').disabled = !c.speed;
+  $('#ctrl').style.display = id === 'home' ? 'none' : '';
+  $('#pk').textContent = id === 'home' ? 'Laboratory' : (id === 'final' ? 'Final assessment' : id === 'mut' ? 'Extension laboratory' : 'Module ' + m.num);
+  $('#ph').textContent = m.title;
+  renderNav(); renderSteps(); renderBody();
+  try { history.replaceState(null, '', '#' + id); } catch (e) { }
+  if (innerWidth <= 760 && id !== 'home') $('#stage').scrollIntoView({ behavior: 'smooth' });
+}
+function renderSteps() {
+  const m = MODS[CUR]; if (!m) return;
+  const names = m.stepNames || STEP_NAMES;
+  const pr = PROG[CUR] || {};
+  $('#steps').innerHTML = m.steps ? names.map((n, i) => `<button class="${i === STEP ? 'on' : ''} ${(i === 3 && pr.challenge) || (i === 4 && pr.assess) ? 'done' : ''}" data-i="${i}">${i + 1}. ${n}</button>`).join('') : '';
+  $('#steps').querySelectorAll('button').forEach(b => b.onclick = () => { STEP = +b.dataset.i; renderSteps(); renderBody(); });
+  $('#pPrev').disabled = STEP === 0 && CUR === 'home';
+  $('#pNext').textContent = m.steps && STEP < m.steps.length - 1 ? 'Next →' : 'Next module →';
+}
+function renderBody() {
+  const m = MODS[CUR], b = $('#pbody'); b.innerHTML = ''; b.scrollTop = 0;
+  m.onStepChange && m.onStepChange(STEP);
+  if (m.steps) m.steps[STEP](b); else m.body(b);
+}
+$('#pNext').onclick = () => {
+  const m = MODS[CUR];
+  if (m.steps && STEP < m.steps.length - 1) { STEP++; renderSteps(); renderBody(); return; }
+  const i = CUR === 'home' ? -1 : ORDER.indexOf(CUR); if (i < ORDER.length - 1) openModule(ORDER[i + 1]);
+};
+$('#pPrev').onclick = () => {
+  const m = MODS[CUR];
+  if (m.steps && STEP > 0) { STEP--; renderSteps(); renderBody(); return; }
+  const i = ORDER.indexOf(CUR); openModule(i <= 0 ? 'home' : ORDER[i - 1]);
+};
+function syncPlay() { $('#playIco').textContent = S.playing ? '❚❚' : '▶'; $('#playTxt').textContent = S.playing ? 'Pause' : 'Play'; }
+function setPlaying(v) { S.playing = v; syncPlay(); S.mod && S.mod.onPlay && S.mod.onPlay(v); }
+$('#bPlay').onclick = () => setPlaying(!S.playing);
+$('#bStep').onclick = () => S.mod && S.mod.onStep && S.mod.onStep();
+$('#bReset').onclick = () => S.mod && S.mod.onReset && S.mod.onReset();
+$('#speed').onchange = e => S.speed = +e.target.value;
+$('#bCam').onclick = () => fitCam(true);
+$('#bLbl').onclick = () => { S.labelsOn = !S.labelsOn; $('#bLbl').classList.toggle('on', S.labelsOn); };
+
+/* ================= QUIZ ENGINE ================= */
+// types: mc | build | order
+function quiz(box, qs, o = {}) {
+  let i = 0, score = 0; const total = qs.length; const opts = Object.assign({ pass: Math.ceil(total * .7) }, o);
+  const run = () => {
+    box.innerHTML = '';
+    if (i >= total) return finish();
+    const q = qs[i], t = el('div', 'task');
+    t.innerHTML = `<div style="font-size:12px;color:var(--mute);margin-bottom:4px">${opts.label || 'Question'} ${i + 1} of ${total}${q.kind ? ' · ' + q.kind : ''}</div><div class="q">${q.q}</div>`;
+    box.appendChild(t);
+    let tries = 0; const fb = el('div', 'fb'), next = el('button', 'btn pri sm', i < total - 1 ? 'Next question →' : 'See result →'); next.style.cssText = 'margin-top:10px;display:none';
+    next.onclick = () => { i++; run(); };
+    const resolve = (ok, html) => {
+      if (ok) { if (tries === 0) score++; fb.className = 'fb ok'; fb.innerHTML = (tries === 0 ? '✓ Correct! ' : '✓ Correct on the second try (no point). ') + (q.ex || ''); next.style.display = ''; return true; }
+      tries++;
+      if (tries === 1) { fb.className = 'fb hint'; fb.innerHTML = '✗ Not quite. <b>Hint:</b> ' + (q.hint || 'Re-read the question carefully.') + (html || ''); return false; }
+      fb.className = 'fb no'; fb.innerHTML = '✗ ' + (q.reveal || '') + ' ' + (q.ex || ''); next.style.display = ''; return 'lock';
+    };
+    if (!q.type || q.type === 'mc') {
+      const o2 = el('div', 'opts'); const order = shuffle(q.opts.map((x, k) => k));
+      order.forEach(k => {
+        const b = el('button', 'opt', q.opts[k]);
+        b.onclick = () => {
+          const r = resolve(k === q.a);
+          if (r === true) { b.classList.add('right'); o2.querySelectorAll('button').forEach(x => x.disabled = true); }
+          else { b.classList.add('wrong'); b.disabled = true; if (r === 'lock') { o2.querySelectorAll('button').forEach(x => x.disabled = true); o2.children[order.indexOf(q.a)].classList.add('right'); } }
+        };
+        o2.appendChild(b);
+      });
+      q.reveal = q.reveal || `The correct answer is: <b>${q.opts[q.a]}</b>.`;
+      t.appendChild(o2);
+    } else if (q.type === 'build') {
+      const ans = []; const seq = el('div', 'seq'); const pad = el('div', 'bases'); pad.style.marginTop = '8px';
+      const draw = (marks) => {
+        seq.innerHTML = `<span class="e">${q.prefix || ''}</span>` + q.answer.split('').map((c, k) => {
+          const v = ans[k]; return `${q.group && k && k % 3 === 0 ? '<span class="cell gap"></span>' : ''}<span class="cell ${v ? 'f' : ''} ${k === ans.length ? 'cur' : ''}" style="${v ? 'background:' + BASE_CSS[v] : ''};${marks && marks[k] === 0 ? 'box-shadow:0 0 0 3px #ff5d73' : ''}">${v || ''}</span>`;
+        }).join('') + `<span class="e">${q.suffix || ''}</span>`;
+      };
+      draw();
+      q.bases.forEach(bs => { const b = el('button', 'bbtn b' + bs, bs); b.onclick = () => { if (ans.length < q.answer.length) { ans.push(bs); draw(); chk.disabled = ans.length < q.answer.length; } }; pad.appendChild(b); });
+      const del = el('button', 'btn sm', '⌫ Undo'); del.onclick = () => { ans.pop(); draw(); chk.disabled = true; };
+      const chk = el('button', 'btn pri sm', 'Check'); chk.disabled = true;
+      chk.onclick = () => {
+        const s = ans.join(''), marks = q.answer.split('').map((c, k) => +(s[k] === c));
+        const r = resolve(s === q.answer, ` (${marks.filter(x => !x).length} position(s) wrong – marked in red)`);
+        draw(marks);
+        if (r === true || r === 'lock') { pad.remove(); row.remove(); if (r === 'lock') seq.insertAdjacentHTML('afterend', `<div class="seq"><span class="e">Correct: ${q.prefix || ''}</span>${q.answer.split('').map(c => `<span class="cell f" style="background:${BASE_CSS[c]}">${c}</span>`).join('')}<span class="e">${q.suffix || ''}</span></div>`); }
+        else { ans.length = 0; setTimeout(() => { draw(); chk.disabled = true; }, 900); }
+      };
+      const row = el('div'); row.style.cssText = 'display:flex;gap:8px;margin-top:8px'; row.append(del, chk);
+      if (q.given) t.insertAdjacentHTML('beforeend', q.given);
+      t.append(seq, pad, row);
+    } else if (q.type === 'order') {
+      const picked = []; const chain = el('div', 'chain'), chips = el('div', 'chips');
+      const items = shuffle(q.items.concat(q.distract || []));
+      const draw = () => { chain.innerHTML = picked.length ? picked.map((x, k) => `<span class="aa" style="background:${q.color ? q.color(x) : '#c9d3ff'}">${k + 1}. ${x}</span>`).join('') : '<span style="color:var(--mute);font-size:13px">Tap the items below in the correct order…</span>'; };
+      items.forEach(x => { const b = el('button', 'chipb', x); b.onclick = () => { if (b.classList.contains('used')) return; picked.push(x); b.classList.add('used'); draw(); chk.disabled = picked.length !== q.items.length; }; chips.appendChild(b); });
+      const undo = el('button', 'btn sm', '⌫ Undo'); undo.onclick = () => { const x = picked.pop(); [...chips.children].find(c => c.textContent === x && c.classList.contains('used'))?.classList.remove('used'); draw(); chk.disabled = true; };
+      const chk = el('button', 'btn pri sm', 'Check'); chk.disabled = true;
+      chk.onclick = () => {
+        const ok = picked.join('|') === q.items.join('|'); const r = resolve(ok);
+        if (r === true || r === 'lock') { chips.remove(); row.remove(); if (r === 'lock') chain.insertAdjacentHTML('afterend', `<div style="font-size:13px;margin-top:6px">Correct order: <b>${q.items.join(' → ')}</b></div>`); }
+        else { picked.length = 0; chips.querySelectorAll('.used').forEach(c => c.classList.remove('used')); draw(); chk.disabled = true; }
+      };
+      const row = el('div'); row.style.cssText = 'display:flex;gap:8px;margin-top:8px'; row.append(undo, chk);
+      draw(); t.append(chain, chips, row);
+    }
+    if (q.tool) { const tb = el('button', 'btn sm', '🔍 Open codon table'); tb.style.marginTop = '8px'; tb.onclick = openCodon; t.appendChild(tb); }
+    t.append(fb, next);
+  };
+  const finish = () => {
+    const pass = score >= opts.pass;
+    box.innerHTML = `<div class="task"><div class="q">${opts.title || 'Result'}</div><div class="score"><div><b>${score}/${total}</b><span>first-try correct</span></div><div><b>${Math.round(score / total * 100)}%</b><span>score</span></div><div><b>${pass ? '✓' : '…'}</b><span>${pass ? 'passed' : `need ${opts.pass}`}</span></div></div><p>${pass ? (opts.passMsg || 'Well done – you have shown you understand this part.') : 'Review the Learn section and try again – the questions and option order will be reshuffled.'}</p></div>`;
+    const again = el('button', 'btn', '↺ Retry'); again.onclick = () => { i = 0; score = 0; qs = shuffle(qs); run(); };
+    box.appendChild(again);
+    opts.onDone && opts.onDone(score, total, pass);
+  };
+  run();
+}
+
+/* ================= CODON TABLE MODAL ================= */
+function buildCodonTable() {
+  const B = 'UCAG';
+  $('#cKey').innerHTML = Object.entries(CLASS_NAME).map(([k, v]) => `<span class="chipb k-${k}" style="cursor:default">${v}</span>`).join('');
+  $('#ctab').innerHTML = [...B].map(f => `<div class="cgrp"><h4>First base ${f}</h4><div class="cgrid">${[...B].flatMap(s => [...B].map(t => { const c = f + s + t, a = CODE[c], k = c === 'AUG' ? 'mt' : AA[a][2]; return `<button class="cod k-${k}" data-c="${c}"><b>${c}</b><span>${a === 'Stop' ? 'STOP' : a}${c === 'AUG' ? ' ★' : ''}</span></button>`; })).join('')}</div></div>`).join('');
+  $('#ctab').querySelectorAll('.cod').forEach(b => b.onclick = () => showCodon(b.dataset.c));
+  $('#cSearch').oninput = e => {
+    let q = e.target.value.trim().toLowerCase().replace(/[^a-z* ]/g, '');
+    const codonQ = /^[acgut]{1,3}$/.test(q) && !['ala', 'arg', 'cat'].includes(q);
+    if (codonQ) q = q.replace(/t/g, 'u');
+    $('#ctab').querySelectorAll('.cod').forEach(b => {
+      const c = b.dataset.c.toLowerCase(), a = CODE[b.dataset.c], info = AA[a];
+      const words = [a.toLowerCase(), ...info[0].toLowerCase().split(' '), a === 'Stop' ? 'stop' : '', a === 'Stop' ? 'termination' : '', c === 'aug' ? 'start' : ''];
+      const hit = !q || (codonQ ? c.startsWith(q) : words.some(h => h && h.startsWith(q)) || info[0].toLowerCase().startsWith(q));
+      b.classList.toggle('dim', !hit); b.classList.toggle('hit', !!q && hit);
+    });
+  };
+  $('#cClose').onclick = closeCodon;
+  $('#codonModal').onclick = e => { if (e.target.id === 'codonModal') closeCodon(); };
+  $('#btnCodon').onclick = openCodon;
+  addEventListener('keydown', e => { if (e.key === 'Escape') closeCodon(); });
+}
+function showCodon(c) {
+  const a = CODE[c], info = AA[a], syn = Object.keys(CODE).filter(k => CODE[k] === a);
+  $('#cdet').innerHTML = a === 'Stop'
+    ? `<b style="font:700 18px Sora">${c} → STOP</b><p style="margin:6px 0 0;color:#cfd6f1">A stop (termination) codon. No tRNA matches it; a <b>release factor</b> binds instead and the finished polypeptide is released. Stop codons: ${syn.join(', ')}.</p>`
+    : `<b style="font:700 18px Sora">${c} → ${info[0]} (${a}, ${info[1]})</b>${c === 'AUG' ? ' <span class="chipb k-mt" style="cursor:default">★ start codon</span>' : ''}<p style="margin:6px 0 0;color:#cfd6f1">Class: ${CLASS_NAME[info[2]]}. ${syn.length > 1 ? `${syn.length} codons code for ${info[0].toLowerCase()}: ${syn.join(', ')} – the code is <b>degenerate</b> (redundant).` : `This is the only codon for ${info[0].toLowerCase()}.`}</p>`;
+  $('#ctab').querySelectorAll('.cod').forEach(b => b.style.outline = b.dataset.c === c ? '2px solid #fff' : '');
+}
+function openCodon() { $('#codonModal').classList.add('show'); setTimeout(() => $('#cSearch').focus(), 50); }
+function closeCodon() { $('#codonModal').classList.remove('show'); }
+
+/* small helpers for panel content */
+function seqCells(seq, o = {}) {
+  return `<div class="seq">${o.pre ? `<span class="e">${o.pre}</span>` : ''}${seq.split('').map((c, k) => `${o.group && k && k % 3 === 0 ? '<span class="cell gap"></span>' : ''}<span class="cell ${c !== '?' && c !== '·' ? 'f' : ''} ${o.cur === k ? 'cur' : ''}" style="${BASE_CSS[c] ? 'background:' + BASE_CSS[c] : ''}">${c === '·' ? '' : c}</span>`).join('')}${o.post ? `<span class="e">${o.post}</span>` : ''}</div>`;
+}
+function doneBadge(t) { return `<div class="done-badge"><span style="font-size:22px">✓</span><span>${t}</span></div>`; }
+
+/* ================= HOME ================= */
+MODS.home = {
+  title: 'Welcome to the lab', num: '⌂', cam: [[0, 3, 17], [3, 0, 0]],
+  build(root) {
+    const g = new THREE.Group(); g.position.x = 4; root.add(g); this.g = g;
+    this.dx = buildDuplex(g, 'ATGCCAGTACGTTAGC', {});
+    S.controls.autoRotate = false;
+  },
+  update(dt) { this.dx.update(dt); this.g.rotation.x += dt * .25; },
+  body(b) {
+    b.innerHTML = `<div class="goal"><b>How this lab works.</b> Every module follows the same path: <b>Explore → Learn → Interact → Challenge → Assess</b>. Use the numbered tabs at the top of this panel.</div>
+    <h3>Using the 3D stage</h3><ul><li><b>Rotate:</b> drag with mouse or one finger.</li><li><b>Zoom:</b> scroll wheel or pinch.</li><li><b>Pan:</b> right-drag or two-finger drag.</li><li><b>Inspect:</b> tap any molecule part to read about it.</li><li>The instrument bar under the model gives <b>Play/Pause, Step, Reset, Speed, Camera</b> and <b>Labels</b>.</li></ul>
+    <h3>Colour code for bases</h3><div class="bases" style="margin-bottom:10px">${['A', 'T', 'G', 'C', 'U'].map(x => `<span class="bbtn b${x}" style="display:grid;place-items:center;cursor:default">${x}</span>`).join('')}</div>
+    <p style="font-size:13px">Every base also carries its letter, and purines (A, G) are drawn longer than pyrimidines (C, T, U), so colour is never the only clue.</p>
+    <div class="note">Models are educationally simplified and not to scale. Your progress is saved in this browser only.</div>
+    <button class="btn sm" id="resetProg">Reset my progress</button>`;
+    $('#resetProg').onclick = () => { PROG = {}; saveProg(); renderProgress(); renderNav(); renderDash(); b.querySelector('#resetProg').textContent = 'Progress cleared'; };
+  }
+};
+function renderDash() {
+  const d = $('#dash');
+  d.innerHTML = `<div style="font:700 13px Sora;color:#4cc9f0;margin-bottom:8px">Interactive 3D virtual laboratory · Secondary school biology</div>
+  <h1>DNA, RNA and the genetic code – explored molecule by molecule</h1>
+  <p class="lead">Build a double helix, watch DNA copy itself, transcribe a gene into mRNA and decode it on a ribosome. Then change one letter and see what happens to the protein.</p>
+  <div class="flow">${STEP_NAMES.map(s => `<span>${s}</span>`).join('<span style="background:none;border:0;padding:4px 0">→</span>')}</div>
+  <div class="cards">${ORDER.map(id => `<button class="mc ${isDone(id) ? 'done' : ''}" data-m="${id}"><span class="n">${id === 'final' ? 'FINAL' : id === 'mut' ? 'EXTENSION' : 'MODULE ' + MODS[id].num}</span><b>${MODS[id].title}</b><span>${MODS[id].goal}</span></button>`).join('')}</div>
+  <p style="margin-top:18px"><button class="btn pri" id="startBtn">${ORDER.some(isDone) ? 'Continue where you left off →' : 'Start Module 1 →'}</button></p>`;
+  d.querySelectorAll('.mc').forEach(b => b.onclick = () => openModule(b.dataset.m));
+  $('#startBtn').onclick = () => openModule(ORDER.find(id => !isDone(id)) || 'final');
+}
+
+/* ================= MODULE 1: NUCLEOTIDES ================= */
+const ATOM = { C: [0x7d8597, .2], N: [0x3a86ff, .2], O: [0xe63946, .2], P: [0xf4a261, .3], H: [0xf1f1f1, .12] };
+function atom(g, el2, p) { const m = mesh(GEO.sph, mat(ATOM[el2][0]), ATOM[el2][1]); m.position.copy(p); g.add(m); return m; }
+function ringLayout(base) {
+  // returns {atoms:[[el,name,x,y]], bonds:[[i,j]], subs:[[ringIdx, el, label]], center(s)}
+  if (!PURINE[base]) {
+    const c = [1, 0], names = ['N1', 'C2', 'N3', 'C4', 'C5', 'C6'], els = ['N', 'C', 'N', 'C', 'C', 'C'], ang = [180, 120, 60, 0, -60, -120];
+    const atoms = names.map((n, k) => [els[k], n, c[0] + Math.cos(ang[k] * Math.PI / 180), Math.sin(ang[k] * Math.PI / 180)]);
+    const subs = [[1, 'O', '=O']];
+    if (base === 'C') subs.push([3, 'N', 'NH₂']); else subs.push([3, 'O', '=O']);
+    if (base === 'T') subs.push([4, 'C', 'CH₃']);
+    return { atoms, rings: [[0, 1, 2, 3, 4, 5]], centers: [c], subs };
+  }
+  const r5 = 1 / (2 * Math.sin(Math.PI / 5)), c5 = [r5, 0], A = d => [c5[0] + r5 * Math.cos(d * Math.PI / 180), c5[1] + r5 * Math.sin(d * Math.PI / 180)];
+  const N9 = A(180), C8 = A(108), N7 = A(36), C5 = A(-36), C4 = A(-108);
+  const m = [(C4[0] + C5[0]) / 2, (C4[1] + C5[1]) / 2], nl = Math.hypot(m[0] - c5[0], m[1] - c5[1]), n = [(m[0] - c5[0]) / nl, (m[1] - c5[1]) / nl];
+  const hc = [m[0] + n[0] * .866, m[1] + n[1] * .866];
+  const a5 = Math.atan2(C5[1] - hc[1], C5[0] - hc[0]), a4 = Math.atan2(C4[1] - hc[1], C4[0] - hc[0]);
+  let diff = a4 - a5; while (diff > Math.PI) diff -= 2 * Math.PI; while (diff < -Math.PI) diff += 2 * Math.PI;
+  const step = diff > 0 ? -Math.PI / 3 : Math.PI / 3, H = k => [hc[0] + Math.cos(a5 + k * step), hc[1] + Math.sin(a5 + k * step)];
+  const atoms = [['N', 'N9', ...N9], ['C', 'C8', ...C8], ['N', 'N7', ...N7], ['C', 'C5', ...C5], ['C', 'C4', ...C4], ['C', 'C6', ...H(1)], ['N', 'N1', ...H(2)], ['C', 'C2', ...H(3)], ['N', 'N3', ...H(4)]];
+  const subs = base === 'A' ? [[5, 'N', 'NH₂']] : [[5, 'O', '=O'], [7, 'N', 'NH₂']];
+  return { atoms, rings: [[0, 1, 2, 3, 4], [3, 5, 6, 7, 8, 4]], centers: [c5, hc], subs };
+}
+function buildNucleotide(parent, type, base, o = {}) {
+  const g = new THREE.Group(); parent.add(g);
+  const rna = type === 'RNA';
+  const P2 = (a) => V(.8 * Math.cos(a * Math.PI / 180), .8 * Math.sin(a * Math.PI / 180), 0);
+  const O4 = P2(90), C1 = P2(18), C2 = P2(-54), C3 = P2(-126), C4 = P2(162);
+  const C5 = C4.clone().add(V(-.45, .85, .25)), O5 = C5.clone().add(V(-.8, .35, 0)), P = O5.clone().add(V(-.85, .45, -.1));
+  // --- sugar
+  const sg = new THREE.Group(); g.add(sg);
+  [[O4, 'O'], [C1, 'C'], [C2, 'C'], [C3, 'C'], [C4, 'C'], [C5, 'C']].forEach(([p, e]) => atom(sg, e, p));
+  [[O4, C1], [C1, C2], [C2, C3], [C3, C4], [C4, O4], [C4, C5]].forEach(([a, b]) => sg.add(stick(a, b)));
+  const O3 = C3.clone().add(V(-.3, -.8, .35)); atom(sg, 'O', O3); sg.add(stick(C3, O3)); const H3 = O3.clone().add(V(-.35, -.3, .2)); atom(sg, 'H', H3); sg.add(stick(O3, H3, .05));
+  let c2sub;
+  if (rna) { const O2 = C2.clone().add(V(.35, -.75, -.4)); c2sub = atom(sg, 'O', O2); sg.add(stick(C2, O2)); const H2 = O2.clone().add(V(.38, -.25, -.1)); atom(sg, 'H', H2); sg.add(stick(O2, H2, .05)); }
+  else { const H2 = C2.clone().add(V(.25, -.55, -.45)); c2sub = atom(sg, 'H', H2); sg.add(stick(C2, H2, .05)); }
+  const shp = new THREE.Shape([O4, C1, C2, C3, C4].map(p => new THREE.Vector2(p.x, p.y)));
+  const plate = new THREE.Mesh(new THREE.ShapeGeometry(shp), glassMat(rna ? 0xc77dff : 0x9d4edd, .45)); plate.userData.ownMat = 1; sg.add(plate);
+  pickable(sg, `Pentose sugar – ${rna ? 'ribose' : 'deoxyribose'}`, `<p>A five-carbon (pentose) sugar. Its carbons are numbered <b>1′ to 5′</b>: the base joins carbon 1′, the phosphate joins carbon 5′, and the next nucleotide links to the –OH on carbon 3′.</p><p>${rna ? '<b>Ribose</b> (RNA) has an –OH group on carbon 2′.' : '<b>Deoxyribose</b> (DNA) has only –H on carbon 2′ – “deoxy” means “one oxygen missing”.'}</p>`, { id: 'sugar' });
+  const c2g = new THREE.Group(); g.add(c2g); const halo2 = mesh(GEO.sph, glassMat(0xffd166, .18), .42); halo2.userData.ownMat = 1; halo2.position.copy(C2).lerp(c2sub.position, .5); c2g.add(halo2);
+  pickable(c2g, 'Carbon 2′ of the sugar', `<p>This position is the key difference between the two sugars: <b>${rna ? '–OH in ribose (RNA)' : '–H in deoxyribose (DNA)'}</b>.</p>`, { id: 'c2' });
+  // --- phosphate
+  const pg = new THREE.Group(); g.add(pg);
+  atom(pg, 'P', P); atom(pg, 'O', O5); pg.add(stick(O5, P, .08)); sg.add(stick(C5, O5));
+  const u = O5.clone().sub(P).normalize(), e1 = V(0, 0, 1).cross(u).normalize(), e2 = u.clone().cross(e1);
+  const ct = Math.cos(109.5 * Math.PI / 180), st = Math.sin(109.5 * Math.PI / 180);
+  [0, 120, 240].forEach((f, k) => { const ph = f * Math.PI / 180; const d = u.clone().multiplyScalar(ct).add(e1.clone().multiplyScalar(st * Math.cos(ph))).add(e2.clone().multiplyScalar(st * Math.sin(ph))); const q = P.clone().addScaledVector(d, .85); atom(pg, 'O', q); pg.add(stick(P, q, .08)); });
+  const halo = mesh(GEO.sph, glassMat(0xf4a261, .13), 1.35); halo.userData.ownMat = 1; halo.position.copy(P); pg.add(halo);
+  pickable(pg, 'Phosphate group', '<p>A phosphorus atom surrounded by four oxygen atoms (PO₄). It carries a <b>negative charge</b>, which makes DNA and RNA acidic.</p><p>In a strand, the phosphate of one nucleotide bonds to carbon 3′ of the next sugar – a <b>phosphodiester bond</b> – building the sugar–phosphate backbone.</p>', { id: 'phosphate' });
+  // --- base
+  const bg = new THREE.Group(); g.add(bg); const lay = ringLayout(base), sc = .78;
+  const local = lay.atoms.map(a => V(a[2] * sc, a[3] * sc, 0));
+  const bgr = new THREE.Group(); bg.add(bgr); bgr.position.copy(C1).add(V(.75, .2, 0)); bgr.rotation.set(-.55, -.25, .08);
+  lay.atoms.forEach((a, k) => atom(bgr, a[0], local[k]));
+  lay.rings.forEach(r => r.forEach((k, j) => bgr.add(stick(local[k], local[r[(j + 1) % r.length]]))));
+  lay.rings.forEach(r => { const s = new THREE.Shape(r.map(k => new THREE.Vector2(local[k].x, local[k].y))); const pl = new THREE.Mesh(new THREE.ShapeGeometry(s), glassMat(BASE_HEX[base], .55)); pl.userData.ownMat = 1; bgr.add(pl); });
+  const subLabels = [];
+  lay.subs.forEach(([k, e, lab]) => {
+    const cIdx = PURINE[base] ? (k >= 5 ? 1 : 0) : 0, c = lay.centers[cIdx];
+    const dir = V(lay.atoms[k][2] - c[0], lay.atoms[k][3] - c[1], 0).normalize(), q = local[k].clone().addScaledVector(dir, .75);
+    atom(bgr, e, q); bgr.add(stick(local[k], q)); subLabels.push([q, lab]);
+  });
+  g.updateMatrixWorld(true);
+  const nAtt = bgr.localToWorld(local[0].clone()); sg.add(stick(C1, g.worldToLocal(nAtt.clone()), .07, 0xffffff));
+  pickable(bg, `Nitrogenous base – ${o.quiz ? '?' : BASE_NAME[base]}`, o.quiz ? '<p>A nitrogen-containing ring structure. Count its rings and look at its side groups to identify it.</p>' : `<p><b>${BASE_NAME[base]} (${base})</b> is a <b>${PURINE[base] ? 'purine – two fused rings (a 6-ring + a 5-ring)' : 'pyrimidine – one six-membered ring'}</b>.</p><p>It joins carbon 1′ of the sugar through a nitrogen atom (N-glycosidic bond).${base === 'T' ? ' Thymine has a <b>methyl group (CH₃)</b> that uracil lacks.' : base === 'U' ? ' Uracil is like thymine without the methyl group.' : ''}</p>`, { id: 'base' });
+  // labels
+  const L = [];
+  L.push(addLabel(P, 'Phosphate group', 'big', [0, 1.6, 0]));
+  L.push(addLabel(V(0, 0, 0), o.quiz ? 'Pentose sugar' : `Pentose sugar (${rna ? 'ribose' : 'deoxyribose'})`, 'big', [0, -1.7, 0]));
+  L.push(addLabel(bgr.localToWorld(V(local.reduce((s, v) => s + v.x, 0) / local.length, 0, 0)), o.quiz ? 'Nitrogenous base' : `Base: ${BASE_NAME[base]} (${PURINE[base] ? 'purine' : 'pyrimidine'})`, 'big', [0, 1.9, 0]));
+  [[C1, '1′'], [C2, '2′'], [C3, '3′'], [C4, '4′'], [C5, '5′']].forEach(([p, t]) => L.push(addLabel(p, t, 'small', [0, .32, .1])));
+  if (!o.quiz) L.push(addLabel(c2sub.position, rna ? '2′ –OH' : '2′ –H', 'small tag', [.3, -.3, 0]));
+  L.push(addLabel(O3, '3′ –OH', 'small', [-.4, -.2, 0]));
+  if (!o.quiz) subLabels.forEach(([q, t]) => L.push(addLabel(bgr.localToWorld(q.clone()), t, 'small', [0, .3, 0])));
+  return { g, labels: L };
+}
+
+MODS.m1 = {
+  num: '1', title: 'Explore nucleic acids', sub: 'Nucleotides · DNA vs RNA', goal: 'Inspect a 3D nucleotide and compare DNA with RNA.',
+  cam: [[-.2, .6, 12.5], [-.2, .2, 0]], ctrl: { play: true, reset: true },
+  st: { type: 'DNA', base: 'A', view: 'nt', clicked: {}, quiz: false },
+  build(root) {
+    this.root = root; this.st.view = 'nt'; this.st.quiz = false; this.make();
+    legend([['#f4a261', 'Phosphorus'], ['#e63946', 'Oxygen'], ['#7d8597', 'Carbon'], ['#3a86ff', 'Nitrogen'], ['#f1f1f1', 'Hydrogen']]);
+    S.playing = false; syncPlay();
+  },
+  make() {
+    if (this.obj) { const g = this.obj.g; this.obj.labels.forEach(l => { l.d.remove(); S.labels.splice(S.labels.indexOf(l), 1); }); S.pickables = S.pickables.filter(p => { let o = p; while (o) { if (o === g) return false; o = o.parent; } return true; }); this.root.remove(g); }
+    hideInfo();
+    if (this.st.view === 'cmp') { this.obj = this.makeCompare(); return; }
+    this.obj = buildNucleotide(this.root, this.st.type, this.st.base, { quiz: this.st.quiz });
+  },
+  makeCompare() {
+    const g = new THREE.Group(); this.root.add(g); const L = [];
+    const top = new THREE.Group(); top.position.y = 2.3; g.add(top);
+    const dx = buildDuplex(top, 'ATGCAT', { extraTop: '<p>DNA: deoxyribose sugar, bases A, T, G, C, double-stranded.</p>' });
+    const bot = new THREE.Group(); bot.position.y = -2.6; g.add(bot);
+    const rs = new Strand(bot, 0xc77dff); 'AUGCAU'.split('').forEach((b, i) => { const n = rs.add(new Nt(bot, b, { rna: true, extra: '<p>RNA: ribose sugar, bases A, U, G, C, usually single-stranded.</p>' })); const [p, d] = helixPos(i, 6, 0); n.set(p, d, true); });
+    L.push(addLabel(V(-3.4, 2.3, 0), 'DNA · double helix · deoxyribose · T', 'big'), addLabel(V(-3.4, -2.6, 0), 'RNA · single strand · ribose · U', 'big'));
+    return { g, labels: L, upd: dt => { dx.update(dt); rs.update(dt); } };
+  },
+  update(dt) { if (this.obj && this.obj.upd) this.obj.upd(dt); },
+  onPlay(v) { S.controls.autoRotate = v; S.controls.autoRotateSpeed = 1.6; },
+  onReset() { this.st.view = 'nt'; this.make(); fitCam(true); },
+  onPick(p) {
+    if (p.id) { this.st.clicked[p.id] = 1; const c = $('#m1clicks'); if (c) c.innerHTML = this.clickList(); }
+    if (this.task && p.id) { this.task(p.id); return true; }
+  },
+  clickList() { return [['phosphate', 'Phosphate group'], ['sugar', 'Pentose sugar'], ['base', 'Nitrogenous base']].map(([k, t]) => `<li>${this.st.clicked[k] ? '✅' : '⬜'} ${t}</li>`).join(''); },
+  onStepChange(i) { if (i !== 3) { this.task = null; if (this.st.quiz) { this.st.quiz = false; this.make(); } } },
+  steps: [
+    function (b) {
+      const m = MODS.m1; if (m.st.view !== 'nt') { m.st.view = 'nt'; m.make(); }
+      b.innerHTML = `<div class="goal"><b>Goal:</b> discover the three parts that every nucleotide is made of.</div>
+      <p>This is one <b>nucleotide</b> – the building block (monomer) of DNA and RNA. Rotate it and tap each coloured region.</p>
+      <h3>Find all three parts</h3><ul id="m1clicks" style="list-style:none;padding:0">${m.clickList()}</ul>
+      <p style="font-size:13px">Look for the small numbers <b>1′–5′</b> on the sugar's carbon atoms. They matter later when we talk about 5′ and 3′ ends.</p>
+      <div class="note">Simplified ball-and-stick model: most hydrogen atoms are left out so the structure is easier to read. Press ▶ Play to let it rotate.</div>`;
+    },
+    function (b) {
+      const m = MODS.m1;
+      b.innerHTML = `<h3>Nucleic acids are polymers of nucleotides</h3>
+      <p>Each nucleotide = <b>phosphate group</b> + <b>pentose sugar</b> + <b>nitrogenous base</b>. Nucleotides join through <b>phosphodiester bonds</b> between the phosphate of one and carbon 3′ of the next sugar.</p>
+      <table class="cmp"><tr><th></th><th>DNA</th><th>RNA</th></tr>
+      <tr><td>Sugar</td><td>Deoxyribose (–H on C2′)</td><td>Ribose (–OH on C2′)</td></tr>
+      <tr><td>Bases</td><td>A, <b>T</b>, G, C</td><td>A, <b>U</b>, G, C</td></tr>
+      <tr><td>Strands</td><td>Usually double-stranded</td><td>Usually single-stranded</td></tr>
+      <tr><td>Main role</td><td>Stores genetic information</td><td>Carries and uses information (mRNA, tRNA, rRNA)</td></tr></table>
+      <h3>Try it in 3D</h3><p style="font-size:13px">Switch the nucleotide type and base. Watch carbon 2′ and the ring structure change.</p>
+      <div class="seg" style="margin-bottom:8px" id="m1type"><button data-t="DNA">DNA nucleotide</button><button data-t="RNA">RNA nucleotide</button></div>
+      <div class="bases" id="m1base"></div>
+      <p style="margin-top:12px"><button class="btn sm" id="m1cmp">${m.st.view === 'cmp' ? 'Back to single nucleotide' : 'Compare DNA and RNA strands in 3D'}</button></p>
+      <div class="note"><b>Purines</b> (A, G) have two rings; <b>pyrimidines</b> (C, T, U) have one. Thymine carries a methyl group (CH₃); uracil does not.</div>`;
+      const drawBases = () => {
+        const set = m.st.type === 'DNA' ? 'ATGC' : 'AUGC';
+        if (!set.includes(m.st.base)) m.st.base = m.st.base === 'T' ? 'U' : m.st.base === 'U' ? 'T' : 'A';
+        $('#m1base').innerHTML = [...set].map(x => `<button class="bbtn b${x}" data-b="${x}" style="${x === m.st.base ? 'outline:3px solid #fff' : ''}" title="${BASE_NAME[x]}">${x}</button>`).join('');
+        $('#m1base').querySelectorAll('button').forEach(x => x.onclick = () => { m.st.base = x.dataset.b; m.st.view = 'nt'; m.make(); drawBases(); });
+        $('#m1type').querySelectorAll('button').forEach(x => x.style.borderColor = x.dataset.t === m.st.type ? '#9d4edd' : '');
+      };
+      $('#m1type').querySelectorAll('button').forEach(x => x.onclick = () => { m.st.type = x.dataset.t; m.st.view = 'nt'; drawBases(); m.make(); $('#m1cmp').textContent = 'Compare DNA and RNA strands in 3D'; });
+      $('#m1cmp').onclick = () => { m.st.view = m.st.view === 'cmp' ? 'nt' : 'cmp'; m.make(); $('#m1cmp').textContent = m.st.view === 'cmp' ? 'Back to single nucleotide' : 'Compare DNA and RNA strands in 3D'; };
+      drawBases();
+    },
+    function (b) {
+      const items = [['Deoxyribose', 'DNA'], ['Ribose', 'RNA'], ['Thymine (T)', 'DNA'], ['Uracil (U)', 'RNA'], ['Adenine (A)', 'Both'], ['Guanine (G)', 'Both'], ['Cytosine (C)', 'Both'], ['Usually double-stranded', 'DNA'], ['Usually single-stranded', 'RNA'], ['Phosphate group', 'Both']];
+      b.innerHTML = `<div class="goal"><b>Sort the features.</b> Does each feature belong to DNA, RNA or both?</div><div id="m1sort"></div><div id="m1sres" style="margin-top:10px"></div>`;
+      let right = 0, answered = 0;
+      shuffle(items).forEach(([f, a]) => {
+        const r = el('div', 'sortrow', `<span class="lab">${f}</span><span class="seg">${['DNA', 'RNA', 'Both'].map(x => `<button>${x}</button>`).join('')}</span>`);
+        let tried = 0;
+        r.querySelectorAll('button').forEach(btn => btn.onclick = () => {
+          if (btn.textContent === a) { btn.classList.add('right'); r.querySelectorAll('button').forEach(x => x.disabled = true); if (!tried) right++; answered++; }
+          else { btn.classList.add('wrong'); btn.disabled = true; tried++; }
+          if (answered === items.length) $('#m1sres').innerHTML = `<div class="fb ok">Sorted! ${right}/${items.length} correct on the first try. Remember: <b>T only in DNA, U only in RNA</b>; A, G and C appear in both.</div>`;
+        });
+        $('#m1sort').appendChild(r);
+      });
+    },
+    function (b) {
+      const m = MODS.m1; m.st.view = 'nt';
+      b.innerHTML = `<div class="goal"><b>Challenge:</b> find the parts on the 3D model, then identify a mystery nucleotide.</div><div id="m1ch"></div>`;
+      const box = $('#m1ch');
+      const tasks = shuffle([['phosphate', 'Tap the <b>phosphate group</b>.'], ['sugar', 'Tap the <b>pentose sugar</b>.'], ['base', 'Tap the <b>nitrogenous base</b>.'], ['c2', 'Tap the position that tells you whether the sugar is ribose or deoxyribose (carbon <b>2′</b>).']]);
+      let k = 0, first = 0, miss = 0;
+      m.st.type = 'DNA'; m.st.base = 'G'; m.st.quiz = true; m.make();
+      const showTask = () => {
+        if (k >= tasks.length) { m.task = null; return mystery(); }
+        box.innerHTML = `<div class="task"><div style="font-size:12px;color:var(--mute)">Find-it task ${k + 1} of 4</div><div class="q">${tasks[k][1]}</div><div class="fb" id="m1fb"></div></div>`;
+        miss = 0;
+        m.task = id => {
+          const fb = $('#m1fb');
+          if (id === tasks[k][0]) { if (!miss) first++; fb.className = 'fb ok'; fb.textContent = '✓ Correct!'; k++; m.task = null; setTimeout(showTask, 700); }
+          else { miss++; fb.className = 'fb hint'; fb.innerHTML = miss > 1 ? 'Hint: ' + { phosphate: 'it is the orange P atom with four red oxygens around it.', sugar: 'it is the five-membered ring with numbered carbons 1′–5′.', base: 'it is the flat ring structure containing blue nitrogen atoms.', c2: 'look at the carbon labelled 2′ – tap the glowing yellow spot beside it.' }[tasks[k][0]] : '✗ That is a different part – try again.'; }
+        };
+      };
+      const mystery = () => {
+        const type = Math.random() < .5 ? 'RNA' : 'DNA', set = type === 'DNA' ? 'TGC' : 'UGC', base = set[Math.floor(Math.random() * 3)];
+        m.st.type = type; m.st.base = base; m.st.quiz = true; m.make();
+        box.innerHTML = `<div class="score"><div><b>${first}/4</b><span>found first try</span></div></div><p>A new <b>mystery nucleotide</b> is on the stage. Inspect carbon 2′ and the base's rings and side groups (zoom in!).</p><div id="m1q"></div>`;
+        quiz($('#m1q'), [
+          { q: 'This mystery nucleotide belongs to…', opts: ['DNA', 'RNA'], a: type === 'DNA' ? 0 : 1, hint: 'Is there an –OH (red oxygen) or only an –H (small white) on carbon 2′?', ex: type === 'DNA' ? 'Only –H on carbon 2′ → deoxyribose → DNA.' : 'An –OH on carbon 2′ → ribose → RNA.' },
+          { q: 'Which base is it?', opts: ['Thymine', 'Uracil', 'Guanine', 'Cytosine', 'Adenine'], a: ['Thymine', 'Uracil', 'Guanine', 'Cytosine', 'Adenine'].indexOf(BASE_NAME[base]), hint: 'Two rings = purine (A or G). One ring: a CH₃ group → T; an NH₂ group → C; neither → U.', ex: `It is ${BASE_NAME[base]} – a ${PURINE[base] ? 'purine with two rings' : 'pyrimidine with one ring'}.` }
+        ], { label: 'Mystery', pass: 1, title: 'Challenge complete', onDone: (s) => { mark('m1', 'challenge'); m.st.quiz = false; m.make(); box.insertAdjacentHTML('beforeend', doneBadge('Challenge complete – move on to Assess.')); } });
+      };
+      showTask();
+    },
+    function (b) {
+      b.innerHTML = '<div class="goal"><b>Quick check</b> – answer at least 2 of 3 correctly on the first try.</div><div id="m1a"></div>';
+      quiz($('#m1a'), [
+        { q: 'Which three components make up a nucleotide?', opts: ['Phosphate group, pentose sugar, nitrogenous base', 'Amino acid, sugar, phosphate', 'Glycerol, fatty acid, phosphate', 'Ribosome, tRNA, mRNA'], a: 0, hint: 'Think of the three regions you tapped in the 3D model.', ex: 'Every nucleotide has a phosphate, a 5-carbon sugar and a nitrogenous base.' },
+        { q: 'What is the chemical difference between ribose and deoxyribose?', opts: ['Ribose has –OH on carbon 2′; deoxyribose has –H', 'Deoxyribose has six carbons', 'Ribose has no oxygen in its ring', 'Deoxyribose carries the base on carbon 5′'], a: 0, hint: 'Look at carbon 2′.', ex: '“Deoxy” = without oxygen at carbon 2′.' },
+        { q: 'Which base is found in RNA but not in DNA?', opts: ['Uracil', 'Thymine', 'Adenine', 'Guanine'], a: 0, hint: 'In RNA it replaces thymine.', ex: 'RNA uses uracil (U) instead of thymine (T).' }
+      ], { pass: 2, title: 'Module 1 quick check', onDone: (s, t, p) => { if (p) mark('m1', 'assess'); } });
+    }
+  ]
+};
+
+/* sub-scene helpers: a group whose labels & pickables can be dropped together */
+function makeSub(root) { const g = new THREE.Group(); root.add(g); g.userData.labels = []; return g; }
+function subLabel(g, ...a) { const L = addLabel(...a); g.userData.labels.push(L); return L; }
+function dropSub(g) {
+  if (!g) return;
+  g.userData.labels.forEach(l => { l.d.remove(); const i = S.labels.indexOf(l); if (i >= 0) S.labels.splice(i, 1); });
+  S.pickables = S.pickables.filter(p => { let o = p; while (o) { if (o === g) return false; o = o.parent; } return true; });
+  g.parent && g.parent.remove(g);
+}
+function endLabels(g, n, o = {}) {
+  const [a] = helixPos(0, n, 0, o), [b] = helixPos(n - 1, n, 0, o), [c] = helixPos(0, n, 1, o), [d] = helixPos(n - 1, n, 1, o);
+  const t = o.ends || ['5′', '3′', '3′', '5′'];
+  subLabel(g, V(a.x - .9, a.y, a.z), t[0], 'tag'); subLabel(g, V(b.x + .9, b.y, b.z), t[1], 'tag');
+  subLabel(g, V(c.x - .9, c.y, c.z), t[2], 'tag'); subLabel(g, V(d.x + .9, d.y, d.z), t[3], 'tag');
+}
+function randSeq(n, set = 'ATGC') { let s = ''; for (let i = 0; i < n; i++) s += set[Math.floor(Math.random() * set.length)]; return s; }
+function shapeToggleHTML() { return `<div class="seg" id="shapeSeg" style="margin:6px 0 10px"><button data-s="block">Colour blocks</button><button data-s="shape">Ring shapes (purine/pyrimidine)</button></div>`; }
+function bindShapeToggle(list) {
+  const seg = $('#shapeSeg'); if (!seg) return;
+  const paint = () => seg.querySelectorAll('button').forEach(x => x.style.borderColor = x.dataset.s === SHAPE_MODE ? '#9d4edd' : '');
+  seg.querySelectorAll('button').forEach(x => x.onclick = () => { SHAPE_MODE = x.dataset.s; list().forEach(n => n.setShape(SHAPE_MODE)); paint(); });
+  paint();
+}
+
+/* ================= MODULE 2: BUILD DNA ================= */
+MODS.m2 = {
+  num: '2', title: 'Build DNA', sub: 'Double helix · base pairing', goal: 'Build a complementary strand and see hydrogen bonds form.',
+  cam: [[0, 1.5, 11.5], [0, 0, 0]], ctrl: { play: true, reset: true, speed: true },
+  build(root) { this.root = root; this.setup('ATGCCAGT', 'full'); S.playing = false; syncPlay(); legend([['#9d4edd', 'Sugar (deoxyribose)'], ['#f4a261', 'Phosphate'], ['#fff3b0', 'Hydrogen bonds']]); },
+  setup(seq, mode, o = {}) {
+    dropSub(this.g); const g = this.g = makeSub(this.root); this.seq = seq; this.mode = mode; this.cur = 0; this.first = 0; this.miss = 0; this.wrongTotal = 0; this.hints = o.hints !== false; this.msg = null; this.onFinish = o.onFinish;
+    const n = seq.length; this.top = new Strand(g); this.bot = new Strand(g); this.pairs = []; this.ghosts = [];
+    seq.split('').forEach((b, i) => {
+      const a = this.top.add(new Nt(g, b, { extra: '<p>Template strand (given).</p>' })); const [p, d] = helixPos(i, n, 0); a.set(p, d, true);
+      const [p2, d2] = helixPos(i, n, 1);
+      if (mode === 'full') { const c = this.bot.add(new Nt(g, DNA_PAIR[b])); c.set(p2, d2, true); this.pairs.push(new Pair(g, a, c)); this.pairs.at(-1).k = 1; }
+      else { const gh = new Nt(g, 'A', { ghost: true, len: .84 }); gh.set(p2, d2, true); this.ghosts.push(gh); }
+    });
+    endLabels(g, n);
+    subLabel(g, V(0, 3.2, 0), mode === 'full' ? 'DNA double helix · 2 antiparallel strands' : 'Build the complementary strand', 'big');
+    this.bondLbl = subLabel(g, V(0, 0, 0), '', 'tag'); this.bondLbl.show = false;
+    this.curRing = mesh(new THREE.TorusGeometry(.62, .05, 8, 32), new THREE.MeshBasicMaterial({ color: 0xffd166 })); this.curRing.userData.ownMat = 1; g.add(this.curRing);
+    this.curRing.visible = mode !== 'full';
+  },
+  all() { return [...this.top.nts, ...this.bot.nts]; },
+  update(dt) {
+    if (!this.top) return;
+    this.top.update(dt); this.bot.update(dt); this.ghosts.forEach(x => x.update(dt)); this.pairs.forEach(p => p.update(dt));
+    if (this.curRing.visible && this.ghosts[this.cur]) { const gh = this.ghosts[this.cur]; this.curRing.position.copy(gh.p).addScaledVector(gh.d, .7); this.curRing.lookAt(S.camera.position); this.curRing.scale.setScalar(1 + .12 * Math.sin(performance.now() / 200)); }
+    if (this.errT > 0) { this.errT -= dt; const gh = this.ghosts[this.cur]; if (gh && gh.ghostEdge) gh.ghostEdge.material.color.setHex(this.errT > 0 ? 0xff5d73 : 0xffd166); }
+  },
+  onPlay(v) { S.controls.autoRotate = v; S.controls.autoRotateSpeed = 1.2; },
+  onReset() { renderBody(); },
+  choose(b) {
+    if (this.mode === 'full' || this.cur >= this.seq.length) return;
+    const t = this.seq[this.cur], need = DNA_PAIR[t], fb = $('#m2fb');
+    if (b !== need) {
+      this.miss++; this.wrongTotal++; this.errT = .6;
+      const pane = $('#m2seq'); pane && (pane.classList.remove('shake'), void pane.offsetWidth, pane.classList.add('shake'));
+      if (fb) {
+        fb.className = 'fb ' + (this.miss >= 2 && this.hints ? 'hint' : 'no');
+        fb.innerHTML = `✗ ${BASE_NAME[b]} cannot pair with ${BASE_NAME[t]}.` + (this.hints ? (this.miss >= 2 ? ` <b>Hint:</b> ${t} is a ${PURINE[t] ? 'purine (two rings) – it needs a one-ring pyrimidine' : 'pyrimidine (one ring) – it needs a two-ring purine'} that can form <b>${HB[t]}</b> hydrogen bonds with it.` : ' Think about the pairing rules.') : ' No hints in the challenge – try again.');
+      }
+      return;
+    }
+    if (!this.miss) this.first++;
+    const gh = this.ghosts[this.cur], n = new Nt(this.g, b); this.bot.add(n);
+    n.set(gh.tp.clone().addScaledVector(gh.td, -3).add(V(0, 0, 2)), gh.td, true); n.s = 0; n.set(gh.tp, gh.td); n.setShape(SHAPE_MODE);
+    gh.show(false);
+    const pr = new Pair(this.g, this.top.nts[this.cur], n); this.pairs.push(pr);
+    this.bondLbl.target = gh.tp.clone().addScaledVector(gh.td, -.8); this.bondLbl.d.textContent = `${t}–${b}: ${HB[t]} H-bonds`; this.bondLbl.show = true;
+    this.msg = { c: 'ok', h: `✓ ${BASE_NAME[t]} pairs with ${BASE_NAME[b]} – <b>${HB[t]} hydrogen bonds</b> form${HB[t] === 3 ? ' (G–C pairs are held more strongly)' : ''}.` };
+    this.cur++; this.miss = 0;
+    if (this.cur >= this.seq.length) { this.curRing.visible = false; this.onFinish && this.onFinish(); }
+    this.drawPanel && this.drawPanel();
+  },
+  panelHTML(title) {
+    return `<div class="task" id="m2seq"><div class="q">${title}</div>
+      ${seqCells(this.seq, { pre: '5′', post: '3′ (template)' })}
+      ${seqCells(this.seq.split('').map((c, i) => i < this.cur ? DNA_PAIR[c] : '?').join(''), { pre: '3′', post: '5′ (new)', cur: this.cur })}
+      <div class="bases" id="m2pad" style="margin-top:10px">${'ATGC'.split('').map(x => `<button class="bbtn b${x}" data-b="${x}" title="${BASE_NAME[x]}">${x}</button>`).join('')}</div>
+      <div class="fb ${this.msg ? this.msg.c : ''}" id="m2fb">${this.msg ? this.msg.h : ''}</div></div>`;
+  },
+  bindPad() { $('#m2pad') && $('#m2pad').querySelectorAll('button').forEach(x => x.onclick = () => this.choose(x.dataset.b)); },
+  onStepChange(i) { this.drawPanel = null; },
+  steps: [
+    function (b) {
+      const m = MODS.m2; m.setup('ATGCCAGT', 'full');
+      b.innerHTML = `<div class="goal"><b>Goal:</b> recognise the parts of the DNA double helix.</div>
+      <p>Rotate the molecule. Find the two <b>sugar–phosphate backbones</b> on the outside and the <b>base pairs</b> forming the rungs inside.</p>
+      <p>Tap any base or phosphate for details. Zoom in to see the dotted <b>hydrogen bonds</b> between paired bases.</p>
+      <h3>Base representation</h3>${shapeToggleHTML()}
+      <div class="note">Distances between base pairs are stretched for clarity (real rise: 0.34 nm; real width: about 2 nm).</div>`;
+      bindShapeToggle(() => m.all());
+    },
+    function (b) {
+      b.innerHTML = `<h3>The double helix</h3>
+      <ul><li>Two polynucleotide strands wind around each other – a <b>double helix</b> (Watson, Crick, Franklin and Wilkins, 1953).</li>
+      <li>Sugar–phosphate <b>backbones</b> are on the outside; <b>bases</b> point inwards.</li>
+      <li>The strands are <b>antiparallel</b>: one runs 5′→3′, the other 3′→5′.</li></ul>
+      <h3>Complementary base pairing</h3>
+      <table class="cmp"><tr><th>Pair</th><th>H-bonds</th><th>Types</th></tr><tr><td><b>A – T</b></td><td>2</td><td>purine – pyrimidine</td></tr><tr><td><b>G – C</b></td><td>3</td><td>purine – pyrimidine</td></tr></table>
+      <p>A purine always pairs with a pyrimidine, so every rung has the same width. Hydrogen bonds are individually weak, so the strands can be separated – yet millions of them together keep DNA stable.</p>
+      <p><b>Chargaff's rule:</b> in double-stranded DNA, amount of A = T and G = C.</p>
+      <div class="note">Simplified: each hydrogen bond is drawn as a dotted line between base edges; real bonds link specific atoms (N–H···O and N–H···N).</div>`;
+    },
+    function (b) {
+      const m = MODS.m2;
+      m.setup('ATGCCAGT', 'build');
+      const draw = m.drawPanel = () => {
+        b.innerHTML = `<div class="goal"><b>Build:</b> choose the complementary base for each yellow-ringed position. Points count only for first-try answers.</div>` + m.panelHTML('Template: 5′-ATGCCAGT-3′');
+        if (m.cur >= m.seq.length) b.insertAdjacentHTML('beforeend', `<div class="score"><div><b>${m.first}/${m.seq.length}</b><span>first try</span></div><div><b>${m.wrongTotal}</b><span>mistakes</span></div><div><b>${Math.round(m.first / m.seq.length * 100)}%</b><span>score</span></div></div>${doneBadge('Complementary strand: 3′-TACGGTCA-5′. Rotate it – notice the 2 or 3 H-bonds in each rung.')}`);
+        const r = el('button', 'btn sm', '↺ Retry with the same sequence'); r.style.marginTop = '8px'; r.onclick = () => { m.setup('ATGCCAGT', 'build'); draw(); }; b.appendChild(r);
+        m.bindPad();
+      };
+      draw();
+    },
+    function (b) {
+      const m = MODS.m2, seq = randSeq(10);
+      b.innerHTML = `<div class="goal"><b>Challenge:</b> a new 10-base template, <b>no hints</b>. Score at least 8/10 on the first try.</div><div id="m2c"></div><div id="m2q"></div>`;
+      m.setup(seq, 'build', { hints: false });
+      m.drawPanel = () => {
+        $('#m2c').innerHTML = m.panelHTML(`Template: 5′-${seq}-3′`); m.bindPad();
+        if (m.cur >= seq.length) {
+          const pass = m.first >= 8;
+          $('#m2c').insertAdjacentHTML('beforeend', `<div class="score"><div><b>${m.first}/10</b><span>first try</span></div><div><b>${pass ? '✓' : '✗'}</b><span>${pass ? 'passed' : 'need 8'}</span></div></div>`);
+          if (!pass) { const r = el('button', 'btn', '↺ New sequence'); r.onclick = () => renderBody(); $('#m2c').appendChild(r); return; }
+          quiz($('#m2q'), [{ q: 'Your new strand was written 3′→5′ under a 5′→3′ template. This arrangement is called…', opts: ['Antiparallel', 'Parallel', 'Semiconservative', 'Degenerate'], a: 0, hint: 'The strands run in opposite directions.', ex: 'The two strands of DNA are antiparallel.' }],
+            { label: 'Bonus', pass: 1, title: 'Challenge complete', onDone: () => { mark('m2', 'challenge'); } });
+        }
+      };
+      m.drawPanel();
+    },
+    function (b) {
+      MODS.m2.setup('GCGCATAT', 'full');
+      b.innerHTML = '<div class="goal"><b>Quick check</b> – at least 2 of 3 first-try correct. The model shows a G–C-rich half (left) and an A–T-rich half (right).</div><div id="m2a"></div>';
+      quiz($('#m2a'), [
+        { q: 'How many hydrogen bonds hold a G–C base pair together?', opts: ['3', '2', '1', '4'], a: 0, hint: 'G–C pairs are the stronger pairs.', ex: 'G–C: 3 hydrogen bonds; A–T: 2.' },
+        { q: 'A DNA sample contains 30% adenine. What percentage is guanine?', opts: ['20%', '30%', '40%', '70%'], a: 0, kind: 'calculation', hint: 'A = T, so A + T = 60%. The rest is split equally between G and C.', ex: 'A = T = 30% → 60%. G + C = 40% → G = 20%.' },
+        { q: 'Which half of the DNA in the model needs more energy to separate?', opts: ['The G–C-rich half', 'The A–T-rich half', 'Both need the same energy', 'Neither – DNA strands cannot separate'], a: 0, hint: 'Count the hydrogen bonds per rung.', ex: 'G–C pairs have 3 H-bonds, so G–C-rich regions are harder to separate.' }
+      ], { pass: 2, title: 'Module 2 quick check', onDone: (s, t, p) => { if (p) mark('m2', 'assess'); } });
+    }
+  ]
+};
+
+/* ================= MODULE 3: DNA REPLICATION ================= */
+const REP = { N: 12, rise: .75, seq: 'ATGCGTACCTGA', PAR: 0x4361ee, NEW: 0xf72585 };
+REP.tOpen = i => 2 + i * 1.1;
+REP.tLead = i => REP.tOpen(i) + 1.4;
+REP.chunkReady = c => REP.tOpen(4 * c + 3) + .6;
+REP.tLag = i => { const c = Math.floor(i / 4); return REP.chunkReady(c) + (4 * c + 3 - i) * .55 + .3; };
+REP.T_LIG = 17.2; REP.T_SEP = 18.4; REP.T_END = 22.5;
+REP.PHASES = [
+  [0, '1 · Initiation', 'Helicase binds at a replication origin.'],
+  [2, '2 · Unwinding', '<b>Helicase</b> unwinds the helix and breaks the hydrogen bonds between base pairs – a replication fork forms.'],
+  [5.6, '3 · Elongation', '<b>DNA polymerase</b> adds complementary nucleotides, building each new strand 5′→3′: the <b>leading strand</b> continuously, the <b>lagging strand</b> in short <b>Okazaki fragments</b>.'],
+  [REP.T_LIG - .3, '4 · Joining', '<b>DNA ligase</b> seals the gaps between Okazaki fragments.'],
+  [REP.T_SEP, '5 · Two daughter molecules', 'Each daughter DNA = <b>one parental strand + one new strand</b>: replication is <b>semiconservative</b>.']
+];
+const xr = i => (i - (REP.N - 1) / 2) * REP.rise;
+
+MODS.m3 = {
+  num: '3', title: 'DNA replication', sub: 'Helicase · polymerase', goal: 'Watch the fork open and two daughter molecules form.',
+  cam: [[0, 1, 17], [0, 0, 0]], ctrl: { play: true, step: true, reset: true, speed: true },
+  build(root) {
+    const g = this.g = makeSub(root), N = REP.N, o = { rise: REP.rise };
+    this.t = 0; this.predict = null; this.waiting = null; this._ph = -1;
+    const A = new Strand(g, REP.PAR), B = new Strand(g, REP.PAR);
+    const A2 = new Strand(g, REP.NEW, { linkOk: i => i % 4 !== 3 || this.t > REP.T_LIG + .6 }), B2 = new Strand(g, REP.NEW);
+    const info = (s) => ({ extra: `<p>${s}</p>` });
+    for (let i = 0; i < N; i++) {
+      const a = REP.seq[i], b = DNA_PAIR[a];
+      A.add(new Nt(g, a, { sugarHex: REP.PAR, ...info('Parental (old) strand – used as a template.') }));
+      B.add(new Nt(g, b, { sugarHex: REP.PAR, ...info('Parental (old) strand – used as a template.') }));
+      A2.add(new Nt(g, b, { sugarHex: REP.NEW, ...info('New strand – lagging strand, made in Okazaki fragments.') }));
+      B2.add(new Nt(g, a, { sugarHex: REP.NEW, ...info('New strand – leading strand, made continuously.') }));
+    }
+    this.S4 = { A, B, A2, B2 };
+    this.pPar = A.nts.map((n, i) => new Pair(g, n, B.nts[i]));
+    this.pA = A.nts.map((n, i) => new Pair(g, n, A2.nts[i]));
+    this.pB = B.nts.map((n, i) => new Pair(g, n, B2.nts[i]));
+    this.closed = i => [helixPos(i, N, 0, o), helixPos(i, N, 1, o)];
+    // enzymes
+    const hel = this.hel = new THREE.Group(); g.add(hel);
+    for (let k = 0; k < 6; k++) { const s = mesh(GEO.sph, mat(0xffb703, { roughness: .5 }), .36); const a = k / 6 * Math.PI * 2; s.position.set(0, Math.cos(a) * .72, Math.sin(a) * .72); hel.add(s); }
+    pickable(hel, 'Helicase', '<p>A ring-shaped enzyme (six subunits) that moves along the DNA and <b>unwinds</b> the double helix by <b>breaking the hydrogen bonds</b> between base pairs, using energy from ATP.</p><p>It creates the Y-shaped <b>replication fork</b>.</p>');
+    const mkPol = (lab) => { const p = new THREE.Group(); const sh = mesh(GEO.sph, glassMat(0x219ebc, .45), [1.0, 1.25, 1.1]); sh.userData.ownMat = 1; const core = mesh(GEO.sph, mat(0x219ebc), .45); core.position.set(0, 0, -.5); p.add(sh, core); g.add(p); pickable(p, 'DNA polymerase', `<p>Reads the template strand 3′→5′ and joins new nucleotides to the <b>3′ end</b> of the growing strand – so new DNA is always made <b>5′→3′</b>.</p><p>It also <b>proofreads</b>, removing most wrongly paired nucleotides.</p><p>Here: ${lab} strand.</p><div class="note">Simplified: real polymerase needs a short RNA primer (made by primase) to start each strand or fragment.</div>`); return p; };
+    this.polL = mkPol('leading'); this.polG = mkPol('lagging');
+    this.lig = [3, 7].map(i => { const s = mesh(GEO.sph, mat(0x90be6d), .32); s.position.set((xr(i) + xr(i + 1)) / 2, 1.0, .5); g.add(s); pickable(s, 'DNA ligase', '<p>Seals the gap in the sugar–phosphate backbone between neighbouring Okazaki fragments by forming the last phosphodiester bond.</p>'); return s; });
+    // labels
+    this.L = {
+      hel: subLabel(g, hel, 'Helicase', '', [0, 1.3, 0]), polL: subLabel(g, this.polL, 'DNA polymerase', '', [0, -1.6, 0]), polG: subLabel(g, this.polG, 'DNA polymerase', '', [0, 1.6, 0]),
+      lead: subLabel(g, V(0, -1, 0), 'Leading strand (continuous)', 'tag'), lag: subLabel(g, V(0, 1, 0), 'Lagging strand (Okazaki fragments)', 'tag'),
+      lig: subLabel(g, this.lig[0], 'DNA ligase', '', [0, .8, 0]),
+      d1: subLabel(g, V(0, 4.4, 0), 'Daughter DNA 1: old + new strand', 'big'), d2: subLabel(g, V(0, -4.5, 0), 'Daughter DNA 2: old + new strand', 'big'), par: subLabel(g, V(0, 2.4, 0), 'Parental DNA', 'big')
+    };
+    legend([['#4361ee', 'Parental (old) strand'], ['#f72585', 'New strand'], ['#ffb703', 'Helicase'], ['#219ebc', 'DNA polymerase'], ['#90be6d', 'DNA ligase']]);
+    this.render(0);
+  },
+  phase() { let k = 0; REP.PHASES.forEach((p, i) => { if (this.t >= p[0]) k = i; }); return k; },
+  newPos(i, which, t) {
+    // which: 'A2' (pairs with A, top) | 'B2' (pairs with B, bottom)
+    const s = sstep(REP.T_SEP, REP.T_SEP + 3, t), N = REP.N, o = { rise: REP.rise };
+    const open = which === 'A2' ? [V(xr(i), 1.0, 0), V(0, 1, 0)] : [V(xr(i), -1.0, 0), V(0, -1, 0)];
+    const dh = which === 'A2' ? helixPos(i, N, 1, { ...o, cy: 2.3 }) : helixPos(i, N, 0, { ...o, cy: -2.3 });
+    return [open[0].lerp(dh[0], s), open[1].lerp(dh[1], s).normalize()];
+  },
+  render(t) {
+    const { A, B, A2, B2 } = this.S4, N = REP.N, s = sstep(REP.T_SEP, REP.T_SEP + 3, t), o = { rise: REP.rise };
+    for (let i = 0; i < N; i++) {
+      const op = sstep(REP.tOpen(i) - .4, REP.tOpen(i) + .6, t), [[ca, da], [cb, db]] = this.closed(i);
+      const pa = ca.clone().lerp(V(xr(i), 3.6, 0), op), dA = da.clone().lerp(V(0, -1, 0), op).normalize();
+      const pb = cb.clone().lerp(V(xr(i), -3.6, 0), op), dB = db.clone().lerp(V(0, 1, 0), op).normalize();
+      const [ha, hda] = helixPos(i, N, 0, { ...o, cy: 2.3 }), [hb, hdb] = helixPos(i, N, 1, { ...o, cy: -2.3 });
+      pa.lerp(ha, s); dA.lerp(hda, s).normalize(); pb.lerp(hb, s); dB.lerp(hdb, s).normalize();
+      A.nts[i].set(pa, dA, true); B.nts[i].set(pb, dB, true);
+      this.pPar[i].on = op < .1;
+      [[A2, 'A2', REP.tLag(i)], [B2, 'B2', REP.tLead(i)]].forEach(([st, w, tf]) => {
+        const nt = st.nts[i], [p, d] = this.newPos(i, w, t), a = sstep(tf - 1, tf, t);
+        const spawn = p.clone().addScaledVector(d, -1.2).add(V(0, 0, 3.2));
+        nt.vis = t > tf - 1; nt.set(spawn.lerp(p, a), d, true); nt.s = nt.vis ? Math.min(1, a * 1.5) : 0;
+      });
+    }
+    [A, B, A2, B2].forEach(st => { st.nts.forEach(n => n.render()); st.updLinks(); });
+    // enzymes
+    const f = (t - 2) / 1.1, hx = xr(clamp(f, -9, N + 3)) + .5;
+    this.hel.visible = t > .2 && t < 16.5; this.hel.position.set(t < 2 ? xr(0) - 1 - (2 - t) * 4 : hx, 1.0, 0); this.hel.rotation.x = t * 3;
+    const fl = clamp((t - 3.4) / 1.1, 0, N - 1); this.polL.visible = t > 2.6 && t < 16.4; this.polL.position.set(xr(fl) + .3, -2.3, .2);
+    let gi = null;
+    for (let c = 0; c < 3; c++) { const r = REP.chunkReady(c), end = REP.tLag(4 * c); if (t >= r - .8 && t <= end + .3) gi = clamp(4 * c + 3 - (t - r - .3 + .55) / .55, 4 * c, 4 * c + 3); else if (c < 2 && t > end + .3 && t < REP.chunkReady(c + 1) - .8) gi = 4 * c + (4 * c + 7 - 4 * c) * sstep(end + .3, REP.chunkReady(c + 1) - .8, t); }
+    this.polG.visible = gi !== null && t < 17; if (gi !== null) this.polG.position.set(xr(gi) - .3, 2.3, .2);
+    const lv = t > REP.T_LIG - .5 && t < REP.T_LIG + 1; this.lig.forEach(l => { l.visible = lv; l.scale.setScalar(.32 * (1 + .2 * Math.sin(t * 12))); });
+    const L = this.L; L.hel.show = this.hel.visible; L.polL.show = this.polL.visible; L.polG.show = this.polG.visible; L.lig.show = lv;
+    L.lead.show = L.lag.show = t > 6 && t < REP.T_SEP; L.lead.target = V(xr(Math.min(fl, 9)) - 2.2, -1, 1); L.lag.target = V(xr(N - 1) + .2, 1, 1.2);
+    L.d1.show = L.d2.show = s > .4; L.par.show = t < 3.5;
+    // which strand is old/new in daughters
+    const ph = this.phase(), P = REP.PHASES[ph];
+    if (!this.waiting && this._ph !== ph) { this._ph = ph; banner(`<b>${P[1]}</b> – ${P[2]}`); }
+    const pi = $('#m3phase'); if (pi && pi.dataset.ph != ph) { pi.dataset.ph = ph; pi.innerHTML = `<b>${P[1]}</b><br>${P[2]}`; }
+    const sl = $('#m3slider'); if (sl && document.activeElement !== sl) sl.value = t;
+  },
+  update(dt) {
+    if (S.playing && !this.waiting) {
+      const nt = Math.min(REP.T_END, this.t + dt * S.speed);
+      if (this.predict) { const cp = this.predict.list.find(c => !c.done && this.t < c.t && nt >= c.t); if (cp) { this.t = cp.t; this.waiting = cp; this.ask(cp); } else this.t = nt; } else this.t = nt;
+      if (this.t >= REP.T_END) { setPlaying(false); if (this.predict && !this.predict.fin) this.finishPredict(); }
+    }
+    this.render(this.t);
+    [...this.pPar, ...this.pA, ...this.pB].forEach(p => p.update(dt));
+  },
+  onStep() { if (this.waiting) return; const k = this.phase(); this.t = k < REP.PHASES.length - 1 ? REP.PHASES[k + 1][0] + .01 : REP.T_END; if (this.predict) this.predict.list.forEach(c => { if (c.t < this.t) c.done = true; }); setPlaying(false); },
+  onReset() { this.t = 0; this.waiting = null; if (this.predict) { renderBody(); return; } setPlaying(true); },
+  ask(cp) {
+    const box = $('#m3pred'); if (!box) return;
+    box.innerHTML = `<div class="task"><div class="q">Prediction ${cp.k} of 4: DNA polymerase is about to add a nucleotide to the <b>${cp.lead ? 'leading' : 'lagging'} strand</b> opposite template base <b style="color:${BASE_CSS[cp.tb]}">${cp.tb} (${BASE_NAME[cp.tb]})</b>. Which nucleotide will it add?</div><div class="bases">${'ATGC'.split('').map(x => `<button class="bbtn b${x}" data-b="${x}">${x}</button>`).join('')}</div><div class="fb" id="m3fb"></div></div>`;
+    banner(`<b>Predict!</b> Which nucleotide pairs with template <b>${cp.tb}</b>? Answer in the panel.`);
+    let miss = 0;
+    box.querySelectorAll('.bbtn').forEach(b => b.onclick = () => {
+      const fb = $('#m3fb');
+      if (b.dataset.b === DNA_PAIR[cp.tb]) { if (!miss) this.predict.score++; cp.done = true; fb.className = 'fb ok'; fb.textContent = `✓ Correct – ${cp.tb} pairs with ${DNA_PAIR[cp.tb]}. Watch it being added…`; this.waiting = null; this._ph = -1; setPlaying(true); box.querySelectorAll('.bbtn').forEach(x => x.disabled = true); }
+      else { miss++; b.disabled = true; b.style.opacity = .35; fb.className = 'fb hint'; fb.innerHTML = `✗ ${b.dataset.b} does not pair with ${cp.tb}. Remember: A–T (2 H-bonds), G–C (3 H-bonds).`; }
+    });
+  },
+  finishPredict() {
+    this.predict.fin = true; const box = $('#m3pred'); if (!box) return;
+    box.innerHTML = `<div class="score"><div><b>${this.predict.score}/4</b><span>predictions first try</span></div></div><div id="m3q"></div>`;
+    quiz($('#m3q'), [{ q: 'Look at the two daughter molecules. What does each one contain?', opts: ['One parental (blue) strand and one new (pink) strand', 'Two new strands', 'Two parental strands', 'Random mixtures of old and new pieces in both strands'], a: 0, hint: 'Check the backbone colours in the 3D model.', ex: 'Each daughter keeps one old strand – replication is semiconservative (Meselson & Stahl, 1958).' }],
+      { label: 'Final', pass: 1, title: 'Challenge complete', onDone: (s, t, p) => { if (p && this.predict.score >= 2) mark('m3', 'challenge'); else if (p) box.insertAdjacentHTML('beforeend', '<div class="fb hint">You need at least 2/4 first-try predictions. Press ↺ Reset to try a new run.</div>'); } });
+  },
+  onStepChange(i) { this.predict = null; this.waiting = null; },
+  steps: [
+    function (b) {
+      const m = MODS.m3; m.t = 0; setPlaying(true);
+      b.innerHTML = `<div class="goal"><b>Goal:</b> observe how one DNA molecule becomes two.</div>
+      <p>The animation is running. Use the instrument bar to <b>pause</b>, change <b>speed</b> (try 0.5×), jump with <b>Step</b> or <b>Reset</b>.</p>
+      <p>Tap the yellow <b>helicase</b> ring, the blue <b>DNA polymerase</b> and the green <b>ligase</b> to learn their jobs.</p>
+      <div class="task"><div class="q">Current stage</div><div id="m3phase" style="font-size:13.5px"></div></div>
+      <p style="font-size:13px">Blue backbones = parental (old) strands; pink = newly made strands.</p>`;
+    },
+    function (b) {
+      b.innerHTML = `<h3>Why copy DNA?</h3><p>Before a cell divides it must copy its DNA so that each daughter cell receives a complete set of genes. Replication happens in the <b>S phase</b> of interphase.</p>
+      <h3>Key enzymes</h3><table class="cmp"><tr><td><b>Helicase</b></td><td>Unwinds the helix, breaking H-bonds between bases.</td></tr><tr><td><b>Primase</b></td><td>Makes short RNA primers to start synthesis (not shown in 3D).</td></tr><tr><td><b>DNA polymerase</b></td><td>Adds nucleotides complementary to the template; builds 5′→3′ only; proofreads.</td></tr><tr><td><b>DNA ligase</b></td><td>Joins Okazaki fragments.</td></tr></table>
+      <h3>Leading and lagging strands</h3><p>The strands are antiparallel, but polymerase can only extend the 3′ end. On one template it follows the fork continuously (<b>leading strand</b>); on the other it works backwards in short pieces called <b>Okazaki fragments</b> (<b>lagging strand</b>).</p>
+      <h3>Semiconservative replication</h3><p>Each new DNA molecule contains <b>one original strand and one new strand</b>. This was shown by Meselson and Stahl (1958).</p>
+      <div class="note">Simplified model: primers, topoisomerase and single-strand binding proteins are described but not drawn; real forks also open in both directions from each origin.</div>`;
+    },
+    function (b) {
+      const m = MODS.m3; setPlaying(false);
+      b.innerHTML = `<div class="goal"><b>Observe step by step.</b> Jump to a stage, or drag the timeline to scrub through the process.</div>
+      <div class="opts" id="m3jump">${REP.PHASES.map((p, i) => `<button class="opt" data-i="${i}">${p[1]}</button>`).join('')}</div>
+      <p style="margin-top:12px"><label for="m3slider" style="font-size:13px;color:var(--mute)">Timeline</label><input type="range" id="m3slider" min="0" max="${REP.T_END}" step="0.05" value="${m.t}" style="width:100%;accent-color:#4cc9f0"></p>
+      <div class="task"><div id="m3phase" style="font-size:13.5px"></div></div>
+      <div class="task"><div class="q">Look closely</div><ul style="margin:0"><li>Pause at stage 3. Which new strand has gaps?</li><li>Watch the lagging-strand polymerase: in which direction does it move compared to the fork?</li><li>At stage 5, check the colours of each daughter molecule.</li></ul></div>`;
+      $('#m3jump').querySelectorAll('button').forEach(x => x.onclick = () => { m.t = REP.PHASES[+x.dataset.i][0] + .3; setPlaying(false); });
+      $('#m3slider').oninput = e => { m.t = +e.target.value; setPlaying(false); };
+    },
+    function (b) {
+      const m = MODS.m3;
+      b.innerHTML = `<div class="goal"><b>Predict before you see.</b> The animation will stop 4 times. Predict which nucleotide DNA polymerase adds, then watch the result. Then answer one final question.</div><div id="m3pred"><p style="color:var(--mute)">Starting…</p></div>`;
+      const cps = [[2, false], [3, true], [6, false], [9, true]].map(([i, lead], k) => ({ k: k + 1, lead, i, t: (lead ? REP.tLead(i) : REP.tLag(i)) - 1.05, tb: lead ? DNA_PAIR[REP.seq[i]] : REP.seq[i] })).sort((a, b) => a.t - b.t).map((c, k) => ({ ...c, k: k + 1 }));
+      m.predict = { list: cps, score: 0 }; m.t = 0; m.waiting = null; setPlaying(true);
+      $('#m3pred').innerHTML = '<p>Watch the fork open… the first prediction is coming.</p>';
+    },
+    function (b) {
+      b.innerHTML = '<div class="goal"><b>Quick check</b> – at least 2 of 3 first-try correct.</div><div id="m3a"></div>';
+      quiz($('#m3a'), [
+        { q: 'Which enzyme breaks the hydrogen bonds and unwinds the DNA double helix?', opts: ['Helicase', 'DNA polymerase', 'DNA ligase', 'RNA polymerase'], a: 0, hint: 'It is the ring-shaped enzyme at the fork.', ex: 'Helicase unwinds DNA at the replication fork.' },
+        { q: 'Why is the lagging strand made in short fragments?', opts: ['DNA polymerase can only add nucleotides to a 3′ end, so it builds 5′→3′ away from the fork', 'Helicase cuts it into pieces', 'The lagging strand contains uracil', 'There are not enough nucleotides'], a: 0, hint: 'Think about the direction in which polymerase works.', ex: 'Because the strands are antiparallel and polymerase works only 5′→3′, one new strand must be made backwards in Okazaki fragments.' },
+        { q: 'A DNA molecule replicates once. What is true of the two daughter molecules?', opts: ['Each has one parental and one new strand', 'One is completely old, one is completely new', 'Both are made only of new strands', 'Each has two new strands joined by ligase'], a: 0, hint: 'Semi = half.', ex: 'Semiconservative replication: each daughter keeps one original strand.' }
+      ], { pass: 2, title: 'Module 3 quick check', onDone: (s, t, p) => { if (p) mark('m3', 'assess'); } });
+    }
+  ]
+};
+
+/* ================= MODULE 4: TRANSCRIPTION ================= */
+const TR = { rise: .8, flankL: 'TAT', flankR: 'CA', COD: 0x8d99ae, TPL: 0x7b2cbf, RNA: 0xc77dff };
+MODS.m4 = {
+  num: '4', title: 'DNA to RNA: transcription', sub: 'RNA polymerase · mRNA', goal: 'Transcribe a template strand into mRNA, base by base.',
+  cam: [[0, 2.5, 15], [0, .8, 0]], ctrl: { play: true, step: true, reset: true, speed: true },
+  build(root) { this.root = root; this.setup('ATGCCTGAA', 'bound'); legend([['#8d99ae', 'Coding strand'], ['#7b2cbf', 'Template strand'], ['#c77dff', 'mRNA'], ['#219ebc', 'RNA polymerase']]); },
+  setup(gene, mode, o = {}) {
+    dropSub(this.g); const g = this.g = makeSub(this.root);
+    this.gene = gene; this.mode = mode; this.j = 0; this.first = 0; this.miss = 0; this.wrong = 0; this.state = mode === 'idle' ? 'idle' : 'elong'; this.hints = o.hints !== false; this.msg = null; this.auto = false; this.autoT = 0;
+    const coding = TR.flankL + gene + TR.flankR, n = this.n = coding.length, ho = { rise: TR.rise };
+    this.cod = new Strand(g, TR.COD); this.tpl = new Strand(g, TR.TPL); this.rna = new Strand(g, TR.RNA); this.pairs = []; this.rpairs = [];
+    for (let k = 0; k < n; k++) {
+      const inGene = k >= 3 && k < 3 + gene.length;
+      const c = this.cod.add(new Nt(g, coding[k], { sugarHex: TR.COD, extra: `<p><b>Coding (non-template) strand.</b> Same sequence as the mRNA, but with T instead of U.${inGene ? '' : ' (outside the transcribed region)'}</p>` }));
+      const t = this.tpl.add(new Nt(g, DNA_PAIR[coding[k]], { sugarHex: TR.TPL, extra: `<p><b>Template (antisense) strand.</b> RNA polymerase reads this strand 3′→5′.${inGene ? '' : ' (outside the transcribed region)'}</p>` }));
+      const [p0, d0] = helixPos(k, n, 0, ho), [p1, d1] = helixPos(k, n, 1, ho); c.set(p0, d0, true); t.set(p1, d1, true);
+      this.pairs.push(new Pair(g, c, t)); this.pairs.at(-1).k = 1;
+    }
+    for (let r = 0; r < gene.length; r++) { const b = gene[r] === 'T' ? 'U' : gene[r]; const nt = this.rna.add(new Nt(g, b, { rna: true, extra: '<p><b>mRNA nucleotide</b> – ribose sugar; U replaces T.</p>' })); nt.show(false, true); this.rpairs.push(new Pair(g, this.tpl.nts[r + 3], nt)); }
+    // RNA polymerase
+    const pol = this.pol = new THREE.Group(); g.add(pol);
+    const body = mesh(GEO.sph, glassMat(0x219ebc, .28), [2.7, 2.3, 2.0]); body.userData.ownMat = 1; pol.add(body);
+    const cl = mesh(GEO.sph, glassMat(0x48cae4, .22), [1.4, 1.0, 1.6]); cl.userData.ownMat = 1; cl.position.set(1.6, -.4, 0); pol.add(cl);
+    pickable(pol, 'RNA polymerase', '<p>The enzyme that makes RNA. It <b>binds to the promoter</b>, <b>unwinds a short stretch of DNA</b> (the transcription bubble), reads the <b>template strand 3′→5′</b> and joins RNA nucleotides into a chain growing <b>5′→3′</b>.</p><p>Unlike DNA polymerase it needs no primer. Behind it the DNA winds up again.</p>');
+    this.site = mesh(new THREE.TorusGeometry(.55, .06, 8, 32), new THREE.MeshBasicMaterial({ color: 0xffd166 })); this.site.userData.ownMat = 1; g.add(this.site);
+    this.polX = xk(-6, n); this.polA = 0;
+    const L = this.L = {
+      cod: subLabel(g, V(0, 0, 0), 'Coding strand 5′→3′', 'tag'), tpl: subLabel(g, V(0, 0, 0), 'Template strand 3′→5′', 'tag'),
+      pol: subLabel(g, pol, 'RNA polymerase', 'big', [0, 2.6, 0]), rna5: subLabel(g, V(), '5′ end of mRNA', ''), rna: subLabel(g, V(), 'mRNA', 'tag'),
+      prom: subLabel(g, V(xk(1, n), -2.3, 0), 'Promoter region (simplified)', 'small'), dir: subLabel(g, V(xk(n - 1, n) + .6, 3.6, 0), 'direction of transcription →', 'small')
+    };
+    subLabel(g, V(xk(0, n) - .9, 1.3, 0), '5′', 'tag'); subLabel(g, V(xk(n - 1, n) + .9, 1.3, 0), '3′', 'tag');
+    subLabel(g, V(xk(0, n) - .9, -1.3, 0), '3′', 'tag'); subLabel(g, V(xk(n - 1, n) + .9, -1.3, 0), '5′', 'tag');
+    this.layout(true);
+  },
+  layout(snap) {
+    const n = this.n, ho = { rise: TR.rise }, ka = 3 + this.j, done = this.state === 'done', idle = this.state === 'idle';
+    const open = k => !done && !idle && k >= ka - 3 && k <= ka + 1;
+    for (let k = 0; k < n; k++) {
+      const c = this.cod.nts[k], t = this.tpl.nts[k];
+      if (open(k)) { c.set(V(xk(k, n), 2.8, -.4), V(0, -1, 0), snap); t.set(V(xk(k, n), -1.6, 0), V(0, 1, 0), snap); }
+      else { const [p0, d0] = helixPos(k, n, 0, ho), [p1, d1] = helixPos(k, n, 1, ho); c.set(p0, d0, snap); t.set(p1, d1, snap); }
+      this.pairs[k].on = !open(k);
+    }
+    const step = V(-.3, .5, .55).normalize().multiplyScalar(.8), base0 = V(xk(ka - 3, n), 1.0, 0);
+    this.rna.nts.forEach((r, i) => {
+      const k = i + 3; r.vis = i < this.j;
+      if (done) r.set(V(xk(k, n), 4.6, 2.4), V(0, -1, 0), snap);
+      else if (k >= ka - 3) r.set(V(xk(k, n), 1.0, 0), V(0, -1, 0), snap);
+      else { const m = ka - 3 - k; r.set(base0.clone().addScaledVector(step, m), V(0, -.4, -1), snap); }
+      this.rpairs[i].on = !done && k >= ka - 3;
+    });
+    this.polTarget = idle ? xk(-7, n) : done ? xk(n + 7, n) : xk(ka, n) - .9;
+    this.polAlpha = done || idle ? 0 : 1;
+    if (snap) { this.polX = this.polTarget; this.polA = this.polAlpha; }
+  },
+  update(dt) {
+    if (!this.cod) return;
+    if (!S.playing) dt = 0;
+    if (this.auto && this.state === 'elong') { this.autoT -= dt * S.speed; if (this.autoT <= 0) { this.autoT = 1.3; this.add(); } }
+    this.cod.update(dt); this.tpl.update(dt); this.rna.update(dt); this.pairs.forEach(p => p.update(dt)); this.rpairs.forEach(p => p.update(dt));
+    const k = 1 - Math.exp(-dt * 3 * S.speed); this.polX += (this.polTarget - this.polX) * k; this.polA += (this.polAlpha - this.polA) * k;
+    this.pol.position.set(this.polX, .5, 0); this.pol.visible = this.polA > .05; this.pol.scale.setScalar(.6 + .4 * this.polA);
+    const ka = 3 + this.j, tn = this.tpl.nts[ka];
+    this.site.visible = this.state === 'elong' && this.j < this.gene.length && !!tn; if (this.site.visible) { this.site.position.copy(tn.p).addScaledVector(tn.d, 1.6); this.site.lookAt(S.camera.position); this.site.scale.setScalar(1 + .12 * Math.sin(performance.now() / 200)); }
+    const L = this.L, n = this.n; L.pol.show = this.pol.visible;
+    L.cod.target = V(xk(n - 1, n) - .3, 2.4, 1.2); L.tpl.target = V(xk(n - 1, n) - .3, -2.4, 1.2);
+    const r0 = this.rna.nts[0]; L.rna5.show = r0.vis && r0.s > .5; L.rna5.target = r0.p.clone().add(V(-.6, .5, .3));
+    const rl = this.rna.nts[Math.max(0, this.j - 1)]; L.rna.show = this.j > 2; L.rna.target = this.state === 'done' ? V(xk(n, n), 4.6, 2.4) : rl.p.clone().add(V(.3, 1.2, .4));
+    L.prom.show = this.state !== 'done';
+  },
+  add() {
+    if (this.state !== 'elong' || this.j >= this.gene.length) return;
+    const r = this.rna.nts[this.j], t = this.tpl.nts[3 + this.j];
+    r.set(t.p.clone().add(V(0, 3.2, 3.2)), V(0, -1, 0), true); r.s = 0; r.vis = true;
+    this.j++; this.layout(false);
+    if (this.j >= this.gene.length) setTimeout(() => { if (CUR === 'm4' && this.state === 'elong' && this.j >= this.gene.length) { this.state = 'done'; this.layout(false); banner('<b>Termination</b> – RNA polymerase reaches the end of the gene, releases the mRNA and the DNA rewinds.'); this.drawPanel && this.drawPanel(); } }, 1400 / S.speed);
+  },
+  choose(b) {
+    if (this.state !== 'elong' || this.j >= this.gene.length || this.auto) return;
+    if (!S.playing) setPlaying(true);
+    const tb = DNA_PAIR[this.gene[this.j]], need = RNA_FROM_TEMPLATE[tb];
+    if (b !== need) {
+      this.miss++; this.wrong++;
+      const msg = b === 'T' ? '✗ RNA never contains thymine (T). Which base replaces T in RNA?' : `✗ ${BASE_NAME[b]} does not pair with template ${BASE_NAME[tb]}.`;
+      const hint = this.hints && this.miss >= 2 ? ` <b>Hint:</b> template ${tb} → RNA ${tb === 'A' ? '? (not T!)' : '?'}: ${tb === 'A' ? 'adenine pairs with uracil in RNA.' : tb === 'T' ? 'thymine pairs with adenine.' : tb === 'G' ? 'guanine pairs with cytosine.' : 'cytosine pairs with guanine.'}` : '';
+      const fb = $('#m4fb'); if (fb) { fb.className = 'fb ' + (hint ? 'hint' : 'no'); fb.innerHTML = msg + hint; }
+      const p = $('#m4seq'); p && (p.classList.remove('shake'), void p.offsetWidth, p.classList.add('shake'));
+      return;
+    }
+    if (!this.miss) this.first++; this.miss = 0;
+    this.msg = { c: 'ok', h: `✓ Template ${tb} → RNA <b>${need}</b>. RNA polymerase joins it to the 3′ end of the growing chain.` };
+    this.add(); this.drawPanel && this.drawPanel();
+  },
+  onPlay(v) { },
+  onStep() { if (this.state === 'elong' && (this.auto || this.mode === 'demo')) this.add(); else banner('Choose the next RNA nucleotide in the panel – the process advances when you answer correctly.'); },
+  onReset() { renderBody(); },
+  rnaSoFar() { return this.gene.split('').map((c, i) => i < this.j ? (c === 'T' ? 'U' : c) : '?').join(''); },
+  panel(title) {
+    const tpl = this.gene.split('').map(c => DNA_PAIR[c]).join('');
+    return `<div class="task" id="m4seq"><div class="q">${title}</div>
+      <div style="font-size:12px;color:var(--mute)">DNA template strand</div>${seqCells(tpl, { pre: '3′', post: '5′', group: true, cur: this.state === 'elong' ? this.j : -1 })}
+      <div style="font-size:12px;color:var(--mute);margin-top:6px">mRNA being made</div>${seqCells(this.rnaSoFar(), { pre: '5′', post: '3′', group: true })}
+      ${this.state === 'elong' ? `<div class="bases" id="m4pad" style="margin-top:10px">${'AUGCT'.split('').map(x => `<button class="bbtn b${x}" data-b="${x}" title="${BASE_NAME[x]}">${x}</button>`).join('')}</div>` : ''}
+      <div class="fb ${this.msg ? this.msg.c : ''}" id="m4fb">${this.msg ? this.msg.h : ''}</div></div>`;
+  },
+  bind() { $('#m4pad') && $('#m4pad').querySelectorAll('button').forEach(x => x.onclick = () => this.choose(x.dataset.b)); },
+  onStepChange() { },
+  steps: [
+    function (b) {
+      const m = MODS.m4; m.drawPanel = null; m.setup('ATGCCTGAA', 'bound'); setPlaying(true);
+      b.innerHTML = `<div class="goal"><b>Goal:</b> see how a gene's DNA is opened so that it can be read.</div>
+      <p><b>RNA polymerase</b> (blue) has bound to the promoter and opened a small <b>transcription bubble</b>. Rotate the scene and tap the strands.</p>
+      <ul><li>The <b>template strand</b> (dark violet) is the one that will be read.</li><li>The <b>coding strand</b> (grey) is pushed aside – it is not read.</li><li>The yellow ring marks the first template base to be copied.</li></ul>
+      <div class="note">The RNA sequence is not shown yet – you will build it yourself in step 3.</div>`;
+    },
+    function (b) {
+      b.innerHTML = `<h3>Transcription: DNA → RNA</h3><p>Transcription copies the information of one gene into a molecule of <b>messenger RNA (mRNA)</b>. In eukaryotes it happens in the <b>nucleus</b>; the mRNA then travels to the ribosomes in the cytoplasm.</p>
+      <h3>Three stages</h3><ol style="color:#cfd6f1;padding-left:20px"><li><b>Initiation</b> – RNA polymerase binds the promoter and unwinds the DNA.</li><li><b>Elongation</b> – it reads the template strand 3′→5′ and builds RNA 5′→3′.</li><li><b>Termination</b> – at the end of the gene the mRNA is released and the DNA rewinds.</li></ol>
+      <h3>Pairing rules</h3><table class="cmp"><tr><th>DNA template</th><th>RNA</th></tr><tr><td>A</td><td><b>U</b></td></tr><tr><td>T</td><td>A</td></tr><tr><td>G</td><td>C</td></tr><tr><td>C</td><td>G</td></tr></table>
+      <h3>Template vs coding strand</h3><p>The mRNA is complementary to the <b>template strand</b>, so it has the <b>same sequence as the coding strand</b> – except that U replaces T.</p>
+      <div class="note">Simplified: real transcription bubbles are about 12–14 bases long, and eukaryotic mRNA is processed (5′ cap, poly-A tail, splicing) before leaving the nucleus.</div>`;
+    },
+    function (b) {
+      const m = MODS.m4; m.setup('ATGCCTGAA', 'build'); setPlaying(true);
+      const draw = m.drawPanel = () => {
+        b.innerHTML = `<div class="goal"><b>Transcribe!</b> Choose the RNA nucleotide that pairs with each template base marked by the yellow ring.</div>` + m.panel('Template: 3′-TAC GGA CTT-5′');
+        if (m.state === 'done' || m.j >= m.gene.length) {
+          b.insertAdjacentHTML('beforeend', `<div class="score"><div><b>${m.first}/9</b><span>first try</span></div><div><b>${m.wrong}</b><span>mistakes</span></div></div>${m.state === 'done' ? doneBadge('mRNA: 5′-AUG CCU GAA-3′') : ''}<div id="m4cmp"></div>`);
+          if (m.state === 'done') quiz($('#m4cmp'), [{ q: 'Compare your mRNA (5′-AUG CCU GAA-3′) with the coding strand (5′-ATG CCT GAA-3′). What is the only difference?', opts: ['U in the mRNA replaces T in the coding strand', 'The mRNA is the reverse of the coding strand', 'The mRNA has G where the coding strand has C', 'There is no difference'], a: 0, hint: 'Compare them letter by letter.', ex: 'The mRNA matches the coding strand, with U instead of T.' }], { label: 'Compare', pass: 1, title: 'Interaction complete' });
+          const r = el('button', 'btn sm', '▶ Replay automatically'); r.style.marginTop = '8px'; r.onclick = () => { m.drawPanel = null; m.setup('ATGCCTGAA', 'demo'); m.auto = true; setPlaying(true); }; b.appendChild(r);
+        }
+        m.bind();
+      };
+      draw();
+    },
+    function (b) {
+      const m = MODS.m4, cod = 'ATG' + randSeq(6, 'ACGT').replace(/T(AA|AG|GA)/g, 'C$1'), tpl = cod.split('').map(c => DNA_PAIR[c]).join('');
+      m.setup(cod, 'build', { hints: false }); setPlaying(true);
+      b.innerHTML = `<div class="goal"><b>Challenge:</b> a new gene, no hints. At least 8/9 first try, then two questions.</div><div id="m4c"></div><div id="m4q"></div>`;
+      m.drawPanel = () => {
+        $('#m4c').innerHTML = m.panel(`Template: 3′-${tpl.slice(0, 3)} ${tpl.slice(3, 6)} ${tpl.slice(6)}-5′`); m.bind();
+        if (m.state !== 'done') return;
+        const pass = m.first >= 8;
+        $('#m4c').insertAdjacentHTML('beforeend', `<div class="score"><div><b>${m.first}/9</b><span>first try</span></div><div><b>${pass ? '✓' : '✗'}</b><span>${pass ? 'passed' : 'need 8'}</span></div></div>`);
+        if (!pass) { const r = el('button', 'btn', '↺ New gene'); r.onclick = () => renderBody(); $('#m4c').appendChild(r); return; }
+        quiz($('#m4q'), [
+          { q: 'In which direction is the new RNA strand synthesised?', opts: ['5′ → 3′', '3′ → 5′', 'Both directions at once', 'It depends on the gene'], a: 0, hint: 'New nucleotides are always added to the 3′ end.', ex: 'RNA polymerase adds nucleotides to the 3′ end, so RNA grows 5′→3′ while the template is read 3′→5′.' },
+          { q: `Which DNA strand has the same sequence as your mRNA (with T instead of U)?`, opts: ['The coding strand', 'The template strand', 'Neither strand', 'Both strands'], a: 0, hint: 'The mRNA is complementary to the strand that was read.', ex: 'The mRNA is complementary to the template, so it matches the coding strand.' }
+        ], { label: 'Question', pass: 2, title: 'Challenge result', onDone: (s, t, p) => { if (p) mark('m4', 'challenge'); } });
+      };
+      m.drawPanel();
+    },
+    function (b) {
+      MODS.m4.drawPanel = null;
+      b.innerHTML = '<div class="goal"><b>Quick check</b> – at least 2 of 3 first-try correct.</div><div id="m4a"></div>';
+      quiz($('#m4a'), [
+        { q: 'A DNA template strand reads 3′-TAC-5′. What is the mRNA codon?', opts: ['5′-AUG-3′', '5′-ATG-3′', '5′-UAC-3′', '5′-GUA-3′'], a: 0, hint: 'T→A, A→U, C→G.', ex: 'TAC → AUG (the start codon).' },
+        { q: 'Where does transcription take place in a eukaryotic cell?', opts: ['In the nucleus', 'On ribosomes in the cytoplasm', 'In the cell membrane', 'In the Golgi apparatus'], a: 0, hint: 'Where is the DNA?', ex: 'DNA stays in the nucleus, so transcription happens there.' },
+        { q: 'Which enzyme carries out transcription?', opts: ['RNA polymerase', 'DNA polymerase', 'Helicase', 'Ligase'], a: 0, hint: 'It makes RNA.', ex: 'RNA polymerase unwinds DNA locally and builds the RNA strand.' }
+      ], { pass: 2, title: 'Module 4 quick check', onDone: (s, t, p) => { if (p) mark('m4', 'assess'); } });
+    }
+  ]
+};
+function xk(k, n) { return (k - (n - 1) / 2) * TR.rise; }
+
+/* ================= MODULE 5: TRANSLATION ================= */
+const RNA_COMP = { A: 'U', U: 'A', G: 'C', C: 'G' };
+const TL = { sp: .6, leader: 'GC', trailer: 'A' };
+const AA_GEO = new THREE.SphereGeometry(1, 20, 14);
+
+class TRNA {
+  constructor(g, codonNts, codon, aa, o = {}) {
+    this.g = g; this.aa = aa; this.codon = codon; this.anti = codon.split('').map(c => RNA_COMP[c]).join('');
+    const T = this.T = new THREE.Group(); g.add(T);
+    const body = mat(0xff8fab, { roughness: .45 });
+    T.add(stick(V(-.6, 0, 0), V(.6, 0, 0), .09, 0xff8fab));
+    const stem = mesh(GEO.cyl, body); placeCyl(stem, V(0, 0, 0), V(0, 2.0, 0), .3); T.add(stem);
+    [[-.58, 1.1], [.58, 1.1]].forEach(([x, y]) => { const s = mesh(GEO.sph, body, [.34, .3, .3]); s.position.set(x, y, 0); T.add(s); });
+    const acc = mesh(GEO.cyl, mat(0xffc2d1)); placeCyl(acc, V(0, 2.0, 0), V(0, 2.3, 0), .12); T.add(acc);
+    pickable(T, `tRNA (anticodon ${this.anti})`, `<p><b>Transfer RNA</b> folds into a cloverleaf/L shape. At one end is the <b>anticodon</b> (here 3′-${this.anti}-5′), which base-pairs with a codon on the mRNA. At the other end it carries a specific <b>amino acid</b>${o.hideAA || !aa ? '' : ` – here ${AA[aa][0]}`}.</p>`);
+    this.ac = this.anti.split('').map(b => { const n = new Nt(g, b, { rna: true, extra: '<p>Anticodon base of the tRNA.</p>' }); n.axis.set(0, 0, 1); return n; });
+    this.pairs = codonNts ? codonNts.map((cn, i) => new Pair(g, cn, this.ac[i])) : [];
+    this.pairs.forEach(p => p.on = false);
+    this.pos = V(); this.tp = V(); this.a = 0; this.ta = 1;
+    this.aaObj = aa ? makeAA(g, aa, o.hideAA) : null;
+  }
+  at(p, snap) { this.tp.copy(p); if (snap) { this.pos.copy(p); if (this.aaObj) { this.aaObj.p.copy(p).add(V(0, 2.65, 0)); this.aaObj.tp.copy(this.aaObj.p); } } return this; }
+  update(dt) {
+    const k = 1 - Math.exp(-dt * 3.2 * S.speed);
+    this.pos.lerp(this.tp, k); this.a += (this.ta - this.a) * k;
+    this.T.position.copy(this.pos); this.T.visible = this.a > .05; this.T.scale.setScalar(Math.max(.01, this.a));
+    this.ac.forEach((n, i) => { n.set(V(this.pos.x - .6 + .6 * i, this.pos.y, this.pos.z), V(0, -1, 0), true); n.vis = this.a > .5; n.s = this.a; n.render(); });
+    this.pairs.forEach(p => p.update(dt));
+    if (this.aaObj && !this.aaObj.inChain) this.aaObj.tp.copy(this.pos).add(V(0, 2.65, 0));
+  }
+  top() { return this.pos.clone().add(V(0, 2.65, 0)); }
+}
+function makeAA(g, aa, hide) {
+  const grp = new THREE.Group(); g.add(grp);
+  const s = mesh(AA_GEO, mat(AA_HEX[aa] ?? 0xcccccc), .36); grp.add(s);
+  const sp = letterSprite(hide ? '?' : aa, aaCss(aa), '#10142a', .52); sp.material.depthTest = false; sp.renderOrder = 6; grp.add(sp);
+  pickable(grp, hide ? 'Amino acid' : `${AA[aa][0]} (${aa})`, hide ? '<p>Decode the codon to find out which amino acid this is.</p>' : `<p>Amino acid <b>${AA[aa][0]}</b> (${aa}, ${AA[aa][1]}) – ${CLASS_NAME[AA[aa][2]]}.</p><p>Amino acids are joined by <b>peptide bonds</b> to form a polypeptide.</p>`);
+  return { grp, p: V(), tp: V(), inChain: false, aa };
+}
+
+MODS.m5 = {
+  num: '5', title: 'RNA to protein: translation', sub: 'Ribosome · tRNA · codons', goal: 'Decode an mRNA on the ribosome and build a polypeptide.',
+  cam: [[0, 3, 14], [0, 2, 0]], ctrl: { play: true, step: true, reset: true, speed: true },
+  build(root) { this.root = root; this.setup(['AUG', 'GCU', 'UUU', 'GGC', 'UAA']); legend([['#c77dff', 'mRNA'], ['#e9c46a', 'Small subunit'], ['#e76f51', 'Large subunit'], ['#ff8fab', 'tRNA']]); },
+  setup(codons, o = {}) {
+    dropSub(this.g); const g = this.g = makeSub(this.root);
+    this.codons = codons; this.q = new Queue(); this.trnas = []; this.chain = []; this.anchor = null; this.freeAnchor = null; this.stage = 'start'; this.ci = 0; this.log = []; this.msg = null; this.first = 0; this.tasks = 0; this.miss = 0; this.hideAA = !!o.hideAA;
+    const seq = TL.leader + codons.join('') + TL.trailer, n = this.n = seq.length; this.seq = seq;
+    this.mr = new Strand(g, 0xc77dff);
+    seq.split('').forEach((b, q) => { const nt = this.mr.add(new Nt(g, b, { rna: true, axis: V(0, 0, 1), extra: `<p>mRNA nucleotide ${q + 1}.${q < TL.leader.length || q >= TL.leader.length + codons.length * 3 ? ' (untranslated region)' : ' Read in groups of three – a <b>codon</b>.'}</p>` })); nt.set(V(this.x(q), 0, 0), V(0, 1, 0), true); });
+    subLabel(g, V(this.x(0) - .8, 0, 0), '5′', 'tag'); subLabel(g, V(this.x(n - 1) + .8, 0, 0), '3′', 'tag');
+    subLabel(g, V(this.x(0) + .3, -1, 0), 'mRNA', '');
+    // codon bars
+    this.bars = codons.map((c, i) => { const b = mesh(GEO.box, new THREE.MeshBasicMaterial({ color: i % 2 ? 0x4cc9f0 : 0xffd166 }), [3 * TL.sp - .12, .08, .08]); b.userData.ownMat = 1; b.position.set(this.cx(i), -.55, .45); b.visible = false; g.add(b); return b; });
+    this.barL = codons.map((c, i) => { const L = subLabel(g, V(this.cx(i), -.95, 1.3), `codon ${i + 1}`, 'small'); L.show = false; return L; });
+    // ribosome
+    const sm = this.small = mesh(GEO.sph, glassMat(0xe9c46a, .5), [3.6, 1.05, 2.1]); sm.userData.ownMat = 1; g.add(sm);
+    const lg = this.large = mesh(GEO.sph, glassMat(0xe76f51, .3), [3.9, 2.35, 2.6]); lg.userData.ownMat = 1; g.add(lg);
+    pickable(sm, 'Ribosome – small subunit', '<p>Binds the mRNA and scans for the <b>start codon (AUG)</b>. The mRNA runs through the groove between the two subunits.</p><p>Ribosomes are made of <b>rRNA and proteins</b>.</p>');
+    pickable(lg, 'Ribosome – large subunit', '<p>Contains three tRNA sites: <b>A</b> (aminoacyl – the new tRNA arrives), <b>P</b> (peptidyl – holds the growing chain) and <b>E</b> (exit). Its rRNA catalyses <b>peptide bond</b> formation.</p>');
+    this.rx = this.cx(0); this.rxT = this.rx; this.smT = V(this.cx(0) - 12, -1.25, 0); this.lgT = V(this.cx(0) - 12, 6, 0);
+    sm.position.copy(this.smT); lg.position.copy(this.lgT);
+    this.site = ['E', 'P', 'A'].map((s, i) => { const L = subLabel(g, V(), `${s} site`, 'small'); return L; });
+    this.L = { small: subLabel(g, sm, 'Small subunit', '', [0, -1.4, 0]), large: subLabel(g, lg, 'Large subunit', '', [2.6, 1.8, 0]), pep: subLabel(g, V(), 'Peptide bond!', 'tag'), chain: subLabel(g, V(), 'Growing polypeptide', '') };
+    this.L.pep.show = false; this.pepT = 0;
+    this.rf = mesh(GEO.sph, glassMat(0x48bfe3, .55), [.7, 1.4, .7]); this.rf.userData.ownMat = 1; this.rf.position.set(this.cx(4) + 6, 9, 0); this.rf.visible = false; g.add(this.rf); this.rfT = this.rf.position.clone();
+    pickable(this.rf, 'Release factor', '<p>A protein (not a tRNA) that recognises a <b>stop codon</b> in the A site. It causes the finished polypeptide to be released from the last tRNA.</p>');
+    this.bonds = [];
+  },
+  x(q) { return (q - (this.n - 1) / 2) * TL.sp; },
+  cx(i) { return this.x(TL.leader.length + 3 * i + 1); },
+  codonNts(i) { const s = TL.leader.length + 3 * i; return this.mr.nts.slice(s, s + 3); },
+  update(dt) {
+    if (!this.mr) return;
+    if (!S.playing) dt = 0;
+    this.q.update(dt * S.speed);
+    this.mr.update(dt);
+    const k = 1 - Math.exp(-dt * 3 * S.speed);
+    this.rx += (this.rxT - this.rx) * k;
+    this.small.position.lerp(this.smT, k); this.large.position.lerp(this.lgT, k);
+    const asm = this.large.position.distanceTo(V(this.rx, 3.05, 0)) < .6;
+    this.site.forEach((L, i) => { L.show = asm; L.target = V(this.rx + (i - 1) * 3 * TL.sp, 5.75, 1.6); });
+    this.trnas.forEach(t => t.update(dt));
+    // chain
+    const anc = this.anchor ? this.anchor.top() : this.freeAnchor;
+    this.chain.forEach((a, i) => { const m = this.chain.length - 1 - i; if (anc) a.tp.copy(anc).add(V(-.5 * m, .55 * m + (this.freeAnchor ? .3 * Math.sin(m * 1.7) : 0), .35 * Math.sin(m * 1.2))); });
+    [...this.chain, ...this.trnas.map(t => t.aaObj).filter(Boolean)].forEach(a => { a.p.lerp(a.tp, k); a.grp.position.copy(a.p); });
+    this.trnas.forEach(t => { if (t.aaObj && !t.aaObj.inChain) t.aaObj.grp.visible = t.T.visible; });
+    while (this.bonds.length < this.chain.length - 1) { const b = mesh(GEO.cyl, mat(0xffffff, { emissive: 0x333333 })); this.g.add(b); this.bonds.push(b); }
+    this.bonds.forEach((b, i) => { const a1 = this.chain[i], a2 = this.chain[i + 1]; b.visible = !!(a1 && a2); if (b.visible) placeCyl(b, a1.p, a2.p, .07); });
+    this.L.chain.show = this.chain.length > 1; if (this.chain.length) this.L.chain.target = this.chain[0].p.clone().add(V(0, .7, 0));
+    if (this.pepT > 0) { this.pepT -= dt * S.speed; this.L.pep.show = this.pepT > 0; }
+    this.rf.position.lerp(this.rfT, k);
+  },
+  /* ---- animation building blocks ---- */
+  assemble() {
+    this.q.add(1.3, () => { this.smT = V(this.cx(0), -1.25, 0); banner('<b>Initiation</b> – the small subunit binds the mRNA and finds the start codon AUG.'); });
+    this.q.add(1.6, () => { const t = this.newTRNA(0); t.at(V(this.cx(0) - 3, 8, 2), true); t.at(V(this.cx(0), 2.6, 0)); t.pairs.forEach(p => p.on = true); t.aaObj.inChain = true; this.chain.push(t.aaObj); this.anchor = t; banner('The <b>initiator tRNA</b> (anticodon 3′-UAC-5′) carrying <b>methionine</b> pairs with AUG in the <b>P site</b>.'); });
+    this.q.add(1.3, () => { this.lgT = V(this.cx(0), 3.05, 0); this.rxT = this.cx(0); banner('The <b>large subunit</b> joins – the ribosome is complete.'); });
+  },
+  newTRNA(i) { const t = new TRNA(this.g, this.codonNts(i), this.codons[i], CODE[this.codons[i]], { hideAA: false }); this.trnas.push(t); return t; },
+  elongate(i) {
+    let tA;
+    this.q.add(1.7, () => { tA = this.newTRNA(i); tA.at(V(this.cx(i) + 4, 9, 2.5), true); tA.at(V(this.cx(i), 2.6, 0)); banner(`A tRNA with anticodon <b>3′-${tA.anti}-5′</b> enters the <b>A site</b> and pairs with codon <b>${this.codons[i]}</b>.`); });
+    this.q.add(.8, () => { tA.pairs.forEach(p => p.on = true); });
+    this.q.add(1.3, () => { tA.aaObj.inChain = true; this.chain.push(tA.aaObj); this.anchor = tA; this.pepT = 1.4; this.L.pep.target = tA.top().add(V(-1, .4, .5)); banner('<b>Peptide bond</b> – the growing chain is transferred onto the amino acid of the tRNA in the A site.'); });
+    this.q.add(1.4, () => { this.rxT = this.cx(i); this.lgT = V(this.cx(i), 3.05, 0); this.smT = V(this.cx(i), -1.25, 0); banner('<b>Translocation</b> – the ribosome moves one codon (3 bases) towards the 3′ end. The empty tRNA moves to the <b>E site</b>.'); });
+    this.q.add(1.1, () => { const old = this.trnas.find(t => t !== tA && t.ta > 0 && Math.abs(t.tp.x - this.cx(i - 1)) < .1); if (old) { old.pairs.forEach(p => p.on = false); old.at(old.tp.clone().add(V(-4, 6, 2))); old.ta = 0; } });
+  },
+  terminate() {
+    const last = this.codons.length - 1;
+    this.q.add(1.6, () => { this.rf.visible = true; this.rfT = V(this.cx(last), 2.4, 0); banner(`Stop codon <b>${this.codons[last]}</b> in the A site – no tRNA fits. A <b>release factor</b> binds instead.`); });
+    this.q.add(1.8, () => { this.freeAnchor = V(this.cx(last) - 1.5, 6.2, 1.5); this.anchor = null; banner('<b>Termination</b> – the polypeptide is released and will fold into its 3D shape.'); });
+    this.q.add(1.6, () => { this.trnas.forEach(t => { t.pairs.forEach(p => p.on = false); t.at(t.tp.clone().add(V(3, 6, 2))); t.ta = 0; }); this.rfT = V(this.cx(last) + 6, 9, 0); this.smT = V(this.cx(last) + 5, -4, -7); this.lgT = V(this.cx(last) + 5, 7, -7); banner('The ribosome subunits separate and can be reused.'); });
+    this.q.add(.4, () => { this.rf.visible = false; this.stage = 'released'; this.drawPanel && this.drawPanel(); });
+  },
+  showFrame() { this.bars.forEach(b => b.visible = true); this.barL.forEach(L => L.show = true); },
+  runAuto() {
+    this.showFrame(); this.assemble();
+    for (let i = 1; i < this.codons.length - 1; i++) this.elongate(i);
+    this.terminate();
+  },
+  onPlay() { },
+  onStep() { banner(this.q.busy ? 'Animation in progress – use Pause to freeze it, or change the speed.' : 'Answer the task in the panel to continue the process.'); },
+  onReset() { renderBody(); },
+  /* ---- interactive lab ---- */
+  answer(ok, msgOk, hintTxt) {
+    if (ok) { if (!this.miss) this.first++; this.tasks++; this.miss = 0; this.msg = { c: 'ok', h: '✓ ' + msgOk }; return true; }
+    this.miss++; const fb = $('#m5fb'); if (fb) { fb.className = 'fb ' + (this.miss > 1 ? 'hint' : 'no'); fb.innerHTML = this.miss > 1 ? '✗ <b>Hint:</b> ' + hintTxt : '✗ Not correct – try again.'; }
+    const p = $('#m5task'); p && (p.classList.remove('shake'), void p.offsetWidth, p.classList.add('shake'));
+    return false;
+  },
+  labPanel() {
+    const m = this, b = $('#m5lab'); if (!b) return;
+    const busy = m.q.busy, cods = m.codons;
+    const logT = m.log.length ? `<table class="cmp"><tr><th>Codon</th><th>Anticodon</th><th>Amino acid</th></tr>${m.log.map(r => `<tr><td><b>${r[0]}</b></td><td>3′-${r[1]}-5′</td><td>${r[2]}</td></tr>`).join('')}</table>` : '';
+    let task = '';
+    const opts = (arr) => `<div class="opts">${arr.map(o => `<button class="opt" data-v="${o[0]}">${o[1]}</button>`).join('')}</div>`;
+    if (m.stage === 'start') task = `<div class="q">Task 1 · Find the start codon. Tap the <b>first letter</b> of the start codon in this mRNA.</div><div class="seq">${m.seq.split('').map((c, k) => `<span class="cell f btnc" data-k="${k}" style="background:${BASE_CSS[c]}">${c}</span>`).join('')}</div>`;
+    else if (m.stage === 'frame') task = `<div class="q">Task 2 · Translation reads the mRNA in non-overlapping groups of three, starting at AUG. Which grouping is correct?</div>${opts(shuffle([['ok', 'AUG | GCU | UUU | GGC | UAA'], ['x1', 'GCA | UGG | CUU | UUG | GCU'], ['x2', 'CAU | GGC | UUU | UGG | CUA']]))}`;
+    else if (m.stage === 'anti') task = `<div class="q">Task 3 · Codon 2 is <b>${cods[1]}</b>. Which tRNA anticodon pairs with it?</div>${opts(shuffle([['ok', "3′-CGA-5′"], ['x', "3′-GCU-5′"], ['x', "3′-CGU-5′"], ['x', "3′-UGC-5′"]]))}`;
+    else if (m.stage === 'decode') { const c = cods[m.ci], aa = CODE[c]; const pool = shuffle(['Ala', 'Phe', 'Gly', 'Ser', 'Leu', 'Val', 'Pro', 'Cys', 'Trp'].filter(x => x !== aa)).slice(0, 4).concat(aa); task = `<div class="q">Task ${m.ci + 2} · Decode codon ${m.ci + 1}: <b style="font:800 18px Sora">${c}</b> (now in the A site). Which amino acid does its tRNA carry? Use the codon table.</div>${opts(shuffle(pool.map(x => [x === aa ? 'ok' : 'x', `${AA[x][0]} (${x})`])))}`; }
+    else if (m.stage === 'stop') task = `<div class="q">Task 6 · Codon 5 is <b style="font:800 18px Sora">${cods[4]}</b>. What happens?</div>${opts(shuffle([['ok', 'It is a stop codon – no amino acid; translation ends'], ['x', 'It codes for tyrosine (Tyr)'], ['x', 'It codes for lysine (Lys)'], ['x', 'The ribosome skips it and continues']]))}`;
+    else if (m.stage === 'released') task = `<div class="q">Task 7 · Build the polypeptide. Tap the amino acids in order from the N-terminus (first) to the C-terminus (last).</div><div id="m5order"></div>`;
+    else if (m.stage === 'done') task = doneBadge('Polypeptide: Met – Ala – Phe – Gly. UAA ended translation without adding an amino acid.') + `<div class="score"><div><b>${m.first}/${m.tasks}</b><span>first-try tasks</span></div></div><button class="btn sm" id="m5replay">▶ Replay the whole process</button>`;
+    b.innerHTML = `<div class="task" id="m5task">${busy && !['released', 'done'].includes(m.stage) ? '<div class="q" style="color:var(--mute)">Watch the ribosome… (the next task appears when the animation finishes)</div>' : task}<div class="fb ${m.msg ? m.msg.c : ''}" id="m5fb">${m.msg ? m.msg.h : ''}</div></div>
+      <button class="btn sm" id="m5tab">🔍 Codon table</button>${logT}`;
+    $('#m5tab').onclick = openCodon;
+    if (busy && !['released', 'done'].includes(m.stage)) { clearTimeout(m.wt); m.wt = setTimeout(() => CUR === 'm5' && m.labPanel(), 400); return; }
+    b.querySelectorAll('.cell.btnc').forEach(c => c.onclick = () => {
+      const k = +c.dataset.k;
+      if (m.answer(k === TL.leader.length, 'AUG is the start codon. The small subunit binds here and the first tRNA brings methionine.', 'look for the three letters A-U-G. The first two letters are an untranslated leader.')) { m.stage = 'frame'; m.bars[0].visible = true; m.assemble(); m.labPanel(); }
+    });
+    b.querySelectorAll('.opt').forEach(o => o.onclick = () => {
+      const ok = o.dataset.v === 'ok';
+      if (!ok) { o.classList.add('wrong'); o.disabled = true; }
+      if (m.stage === 'frame') { if (m.answer(ok, 'The reading frame starts at AUG; each codon is three bases.', 'the first codon of the frame must be the start codon AUG.')) { m.showFrame(); m.stage = 'anti'; m.labPanel(); } }
+      else if (m.stage === 'anti') { if (m.answer(ok, 'Anticodon 3′-CGA-5′ pairs with codon 5′-GCU-3′ (C–G, G–C, A–U).', 'pair each base: G→C, C→G, U→A, and remember the anticodon runs 3′→5′.')) { m.stage = 'decode'; m.ci = 1; m.labPanel(); } }
+      else if (m.stage === 'decode') {
+        const c = cods[m.ci], aa = CODE[c];
+        if (m.answer(ok, `${c} → ${AA[aa][0]} (${aa}).`, `find the row for first base ${c[0]}, column for second base ${c[1]}, then the third base ${c[2]} in the codon table.`)) {
+          m.log.push([c, c.split('').map(x => RNA_COMP[x]).join(''), `${AA[aa][0]} (${aa})`]);
+          if (m.log.length === 1) m.log.unshift(['AUG', 'UAC', 'Methionine (Met)']);
+          m.elongate(m.ci); m.ci++; if (m.ci >= cods.length - 1) m.stage = 'stop'; m.labPanel();
+        }
+      }
+      else if (m.stage === 'stop') { if (m.answer(ok, 'UAA is one of three stop codons (UAA, UAG, UGA). It does not code for an amino acid.', 'look up UAA in the codon table.')) { m.log.push([cods[4], '—', 'STOP (release factor)']); m.terminate(); m.stage = 'stopping'; m.labPanel(); } }
+    });
+    if (m.stage === 'released') {
+      const pq = $('#m5order');
+      quiz(pq, [{ type: 'order', q: 'Polypeptide (N → C):', items: ['Met', 'Ala', 'Phe', 'Gly'], distract: ['Tyr', 'Ser'], color: aaCss, hint: 'Follow the codons in order: AUG, GCU, UUU, GGC.', ex: 'Met – Ala – Phe – Gly. Methionine is always first because AUG starts translation.' }], { label: 'Build', pass: 1, title: 'Polypeptide built', onDone: () => { m.stage = 'done'; m.labPanel(); } });
+    }
+    const rp = $('#m5replay'); if (rp) rp.onclick = () => { m.setup(m.codons); m.stage = 'done'; m.runAuto(); setPlaying(true); m.labPanel(); };
+  },
+  steps: [
+    function (b) {
+      const m = MODS.m5; m.drawPanel = null; m.setup(['AUG', 'GCU', 'UUU', 'GGC', 'UAA']);
+      m.smT = V(m.cx(1), -2.2, 0); m.lgT = V(m.cx(1), 4.4, 0);
+      const t = new TRNA(m.g, null, 'GGU', null); t.at(V(m.cx(4) + 1.5, 3.6, 0), true); m.trnas.push(t);
+      const L1 = subLabel(m.g, t.T, 'tRNA', 'big', [0, 2.9, 0]), L2 = subLabel(m.g, t.T, 'anticodon', 'small', [1.3, -.6, 0]), L3 = subLabel(m.g, t.T, 'amino-acid attachment site', 'small', [1.4, 2.3, 0]);
+      b.innerHTML = `<div class="goal"><b>Goal:</b> meet the machinery of protein synthesis.</div>
+      <ul><li><b>mRNA</b> (lilac strand) – the message copied from DNA.</li><li><b>Ribosome</b> – small and large subunits, here still apart.</li><li><b>tRNA</b> (pink) – an adaptor with an <b>anticodon</b> at one end and an amino-acid site at the other.</li></ul>
+      <p>Tap each part. Then open the <b>codon table</b> (top-right) and try searching for “stop” or “Ala”.</p>
+      <div class="note">The ribosome and tRNA are simplified shapes; a real ribosome is a huge complex of rRNA and about 80 proteins.</div>`;
+    },
+    function (b) {
+      b.innerHTML = `<h3>Translation: mRNA → protein</h3><p>On the ribosomes, the base sequence of mRNA is translated into a sequence of <b>amino acids</b>.</p>
+      <h3>The genetic code</h3><ul><li>Read in <b>triplets</b> called <b>codons</b>; 4³ = <b>64 codons</b>.</li><li><b>AUG</b> = start codon (and methionine). <b>UAA, UAG, UGA</b> = stop codons.</li><li><b>Degenerate:</b> most amino acids have several codons. <b>Non-overlapping</b> and almost <b>universal</b> across living things.</li></ul>
+      <h3>Steps</h3><ol style="color:#cfd6f1;padding-left:20px"><li><b>Initiation</b> – small subunit + initiator tRNA (Met) at AUG; large subunit joins.</li><li><b>Elongation</b> – a tRNA whose anticodon matches the codon in the A site arrives; a <b>peptide bond</b> forms; the ribosome moves on by one codon.</li><li><b>Termination</b> – a stop codon is reached; a release factor frees the polypeptide.</li></ol>
+      <div class="note">The anticodon is written 3′→5′ so that it lines up antiparallel with the 5′→3′ codon.</div>`;
+    },
+    function (b) {
+      const m = MODS.m5; m.setup(['AUG', 'GCU', 'UUU', 'GGC', 'UAA']); setPlaying(true);
+      b.innerHTML = `<div class="goal"><b>Codon-decoding lab.</b> mRNA: <b>AUG – GCU – UUU – GGC – UAA</b>. Complete each task – the ribosome works when you answer.</div><div id="m5lab"></div>`;
+      m.drawPanel = () => m.labPanel(); m.labPanel();
+    },
+    function (b) {
+      const m = MODS.m5; m.drawPanel = null;
+      const sense = Object.keys(CODE).filter(c => CODE[c] !== 'Stop' && c !== 'AUG'), stops = ['UAA', 'UAG', 'UGA'];
+      const cods = ['AUG', ...shuffle(sense).slice(0, 3), stops[Math.floor(Math.random() * 3)]];
+      m.setup(cods); m.showFrame();
+      const aas = cods.map(c => CODE[c]);
+      b.innerHTML = `<div class="goal"><b>Challenge:</b> decode a new mRNA with the codon table. Pass with ${cods.length + 1} of ${cods.length + 2}, then watch the ribosome translate it.</div><div class="seq">${cods.map(c => `<span style="font:800 17px Sora;background:#1b2648;border:1px solid var(--line);border-radius:8px;padding:4px 8px">${c}</span>`).join('')}</div><div id="m5c"></div>`;
+      const allAA = Object.keys(AA).filter(a => a !== 'Stop');
+      const qs = cods.map((c, i) => {
+        const a = CODE[c], wrong = shuffle(allAA.filter(x => x !== a)).slice(0, 3), opts = (a === 'Stop' ? ['Stop – no amino acid', ...wrong.map(x => `${AA[x][0]} (${x})`)] : [`${AA[a][0]} (${a})`, ...wrong.slice(0, 2).map(x => `${AA[x][0]} (${x})`), 'Stop – no amino acid']);
+        return { q: `Codon ${i + 1}: <b style="font:800 18px Sora">${c}</b> codes for…`, opts, a: 0, tool: true, kind: 'codon decoding', hint: `Find first base ${c[0]}, second ${c[1]}, third ${c[2]} in the table.`, ex: `${c} → ${a === 'Stop' ? 'STOP' : AA[a][0]}.` };
+      });
+      qs.push({ q: `Which anticodon pairs with codon 2 (<b>${cods[1]}</b>)?`, opts: [cods[1].split('').map(x => RNA_COMP[x]).join(''), cods[1], cods[1].split('').reverse().join(''), cods[1].split('').map(x => RNA_COMP[x]).reverse().join('')].map((x, k) => `3′-${x}-5′`), a: 0, kind: 'anticodon', hint: 'Pair each base (A–U, G–C) in the same order; the anticodon is written 3′→5′.', ex: 'Each anticodon base is complementary to the codon base opposite it.' });
+      qs.push({ type: 'order', q: 'Build the polypeptide in order (N → C):', items: aas.filter(a => a !== 'Stop'), distract: shuffle(allAA.filter(x => !aas.includes(x))).slice(0, 2), color: aaCss, hint: 'Follow your decoded codons in order; the stop codon adds nothing.', ex: 'The polypeptide follows the codon order.' });
+      const uniq = new Set(qs[qs.length - 2].opts); if (uniq.size < 4) qs[qs.length - 2].opts = [...uniq].concat(['3′-AAA-5′', '3′-GGG-5′']).slice(0, 4);
+      quiz($('#m5c'), qs, { pass: qs.length - 1, title: 'Decoding result', onDone: (s, t, p) => { if (p) { mark('m5', 'challenge'); m.setup(cods); m.runAuto(); setPlaying(true); } } });
+    },
+    function (b) {
+      MODS.m5.drawPanel = null;
+      b.innerHTML = '<div class="goal"><b>Quick check</b> – at least 2 of 3 first-try correct.</div><div id="m5a"></div>';
+      quiz($('#m5a'), [
+        { q: 'What is a codon?', opts: ['A sequence of three mRNA bases that codes for one amino acid or a stop signal', 'A three-base sequence on tRNA', 'One amino acid', 'A gene on DNA'], a: 0, hint: 'It is found on mRNA.', ex: 'Codons are mRNA triplets; anticodons are on tRNA.' },
+        { q: 'Which molecule carries amino acids to the ribosome?', opts: ['tRNA', 'mRNA', 'rRNA', 'DNA'], a: 0, hint: 'It has an anticodon.', ex: 'Transfer RNA delivers specific amino acids.' },
+        { q: 'Which bond joins amino acids in a polypeptide?', opts: ['Peptide bond', 'Hydrogen bond', 'Phosphodiester bond', 'Glycosidic bond'], a: 0, hint: 'The chain is called a poly-“…”-ide.', ex: 'The ribosome catalyses peptide bonds between amino acids.' }
+      ], { pass: 2, title: 'Module 5 quick check', onDone: (s, t, p) => { if (p) mark('m5', 'assess'); } });
+    }
+  ]
+};
+
+/* ================= MUTATION LABORATORY ================= */
+const MUT = { seq: 'AUGUACGCUUGGGGCUAA' };
+function classify(orig, mut) {
+  let k = 0; while (k < orig.length && orig[k] === mut[k]) k++;
+  if (k >= orig.length) return { type: 'none' };
+  const ci = Math.floor(k / 3), oc = orig.slice(ci * 3, ci * 3 + 3), mc = mut.slice(ci * 3, ci * 3 + 3), oa = CODE[oc], ma = CODE[mc];
+  const r = { k, ci, oc, mc, oa, ma };
+  if (ci === 0) r.type = 'start'; else if (oa === ma) r.type = 'silent'; else if (ma === 'Stop') r.type = 'nonsense'; else if (oa === 'Stop') r.type = 'stoploss'; else r.type = 'missense';
+  return r;
+}
+const MUT_NAME = { silent: 'Silent mutation', missense: 'Missense mutation', nonsense: 'Nonsense mutation', start: 'Start-codon mutation', stoploss: 'Stop-loss mutation' };
+function mutExplain(r) {
+  if (r.type === 'silent') return `Codon ${r.oc} → ${r.mc}, but both code for <b>${r.oa === 'Stop' ? 'STOP' : AA[r.oa][0]}</b>. Because the genetic code is <b>degenerate</b>, the amino acid sequence does not change. Silent mutations often occur in the third base of a codon and usually have no effect on the protein.`;
+  if (r.type === 'missense') { const same = AA[r.oa][2] === AA[r.ma][2]; return `Codon ${r.oc} → ${r.mc} changes <b>${AA[r.oa][0]} → ${AA[r.ma][0]}</b>. One amino acid is replaced. ${same ? 'Both amino acids have similar chemical properties (' + CLASS_NAME[AA[r.oa][2]] + '), so the protein may still work normally.' : 'The new amino acid has different properties (' + CLASS_NAME[AA[r.oa][2]] + ' → ' + CLASS_NAME[AA[r.ma][2]] + '), which may change how the protein folds.'} The effect can be harmless, harmful or occasionally beneficial – it depends on where the change is. Example: sickle-cell anaemia is caused by one missense change (Glu → Val) in haemoglobin.`; }
+  if (r.type === 'nonsense') return `Codon ${r.oc} → <b>${r.mc}, a stop codon</b>. Translation ends early, giving a <b>shortened (truncated) polypeptide</b>, which is usually not functional.`;
+  if (r.type === 'start') return `The start codon AUG has changed to ${r.mc}. Ribosomes cannot start translation here, so this protein is probably <b>not made at all</b> from this position (a ribosome might start at a later AUG instead).`;
+  if (r.type === 'stoploss') return `The stop codon ${r.oc} became ${r.mc} (${AA[r.ma][0]}). The ribosome does not stop, keeps reading into the untranslated region and makes an <b>abnormally long protein</b>.`;
+  return 'No change yet.';
+}
+MODS.mut = {
+  num: 'M', title: 'Mutation laboratory', sub: 'Silent · missense · nonsense', goal: 'Change one nucleotide and see what happens to the protein.',
+  cam: [[0, 1.2, 17], [0, .8, 0]], ctrl: { play: true, reset: true },
+  build(root) { this.root = root; this.mutSeq = MUT.seq; this.sel = null; this.made = {}; this.draw3D(); legend([['#c77dff', 'mRNA'], ['#ff5d73', 'Mutated base'], ['#ffd166', 'Changed amino acid']]); S.playing = false; syncPlay(); },
+  onPlay(v) { S.controls.autoRotate = v; S.controls.autoRotateSpeed = .8; },
+  onReset() { this.mutSeq = MUT.seq; this.sel = null; this.draw3D(); renderBody(); },
+  row(g, seq, y, lab, mutK) {
+    const st = new Strand(g, 0xc77dff), n = seq.length, x = q => (q - (n - 1) / 2) * .6;
+    seq.split('').forEach((b, q) => { const nt = st.add(new Nt(g, b, { rna: true, axis: V(0, 0, 1), extra: `<p>Position ${q + 1}, codon ${Math.floor(q / 3) + 1}.</p>` })); nt.set(V(x(q), y, 0), V(0, 1, 0), true); });
+    if (mutK != null) { const r = mesh(new THREE.TorusGeometry(.5, .07, 8, 28), new THREE.MeshBasicMaterial({ color: 0xff5d73 })); r.userData.ownMat = 1; r.position.set(x(mutK), y + .9, .2); g.add(r); this.ring = r; }
+    subLabel(g, V(x(0) - 1.1, y + .5, 0), lab, 'big');
+    const t = translate(seq), aas = t.aas; let prev = null;
+    aas.forEach((a, i) => {
+      const o = makeAA(g, a), p = V(x(3 * i + 1), y + 2.6, 0); o.grp.position.copy(p); o.p.copy(p);
+      if (prev) g.add(stick(prev, p, .07, 0xffffff)); prev = p;
+      if (this.changed && y < 0 && this.changed.includes(i)) { const h = mesh(GEO.sph, glassMat(0xffd166, .35), .62); h.userData.ownMat = 1; h.position.copy(p); g.add(h); }
+    });
+    const end = t.stopped ? (aas.length < 5 ? `stop after ${aas.length} amino acid${aas.length === 1 ? '' : 's'}` : 'stop') : (aas.length ? 'no stop – continues…' : 'no start');
+    subLabel(g, V(x(Math.min(17, 3 * aas.length + 2)), y + 2.6, 0), end, 'small');
+    st.update(0);
+    return st;
+  },
+  draw3D() {
+    dropSub(this.g); const g = this.g = makeSub(this.root);
+    const r = classify(MUT.seq, this.mutSeq), o = translate(MUT.seq).aas, m = translate(this.mutSeq).aas;
+    this.changed = r.type === 'none' ? [] : o.map((a, i) => a !== m[i] ? i : -1).filter(i => i >= 0);
+    this.row(g, MUT.seq, 2.2, 'Original', null);
+    this.row(g, this.mutSeq, -2.8, 'Mutated', r.type === 'none' ? null : r.k);
+  },
+  update(dt) { if (this.ring) this.ring.rotation.z += dt * 2; },
+  labHTML(mode) {
+    const s = this.mutSeq;
+    return `<div class="task"><div class="q">1 · Tap a nucleotide to change</div><div class="seq">${s.split('').map((c, k) => `${k && k % 3 === 0 ? '<span class="cell gap"></span>' : ''}<span class="cell f btnc ${this.sel === k ? 'sel' : ''} ${c !== MUT.seq[k] ? 'mut' : ''}" data-k="${k}" style="background:${BASE_CSS[c]}">${c}</span>`).join('')}</div>
+      ${this.sel != null ? `<div class="q" style="margin-top:8px">2 · Replace ${s[this.sel]} (position ${this.sel + 1}) with:</div><div class="bases">${'AUGC'.split('').filter(x => x !== MUT.seq[this.sel]).map(x => `<button class="bbtn b${x}" data-b="${x}">${x}</button>`).join('')}</div>` : ''}
+      <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">${mode === 'free' ? '<button class="btn sm" data-pre="silent">Example: silent</button><button class="btn sm" data-pre="missense">Example: missense</button><button class="btn sm" data-pre="nonsense">Example: nonsense</button>' : ''}<button class="btn sm" data-pre="reset">↺ Original</button></div></div><div id="mutRes"></div>`;
+  },
+  bindLab(b, mode, after) {
+    b.querySelectorAll('.cell.btnc').forEach(c => c.onclick = () => { this.mutSeq = MUT.seq; this.sel = +c.dataset.k; this.draw3D(); after(); });
+    b.querySelectorAll('.bbtn').forEach(x => x.onclick = () => { this.mutSeq = MUT.seq.slice(0, this.sel) + x.dataset.b + MUT.seq.slice(this.sel + 1); this.draw3D(); after(true); });
+    b.querySelectorAll('[data-pre]').forEach(x => x.onclick = () => {
+      const p = { silent: [8, 'C'], missense: [7, 'U'], nonsense: [11, 'A'], reset: null }[x.dataset.pre];
+      if (!p) { this.mutSeq = MUT.seq; this.sel = null; } else { this.sel = p[0]; this.mutSeq = MUT.seq.slice(0, p[0]) + p[1] + MUT.seq.slice(p[0] + 1); }
+      this.draw3D(); after(!!p);
+    });
+  },
+  resultHTML(r, reveal = true) {
+    const o = translate(MUT.seq), m = translate(this.mutSeq), fmt = t => t.aas.join(' – ') + (t.stopped ? ' (stop)' : ' …(no stop)');
+    const cod = s => s.match(/.{3}/g).map((c, i) => i === r.ci ? `<b style="color:#ff5d73">${c}</b>` : c).join(' ');
+    return `<table class="cmp"><tr><td>Original mRNA</td><td>${cod(MUT.seq)}</td></tr><tr><td>Mutated mRNA</td><td>${cod(this.mutSeq)}</td></tr><tr><td>Original protein</td><td>${fmt(o)}</td></tr><tr><td>Mutated protein</td><td>${r.type === 'start' ? 'not made from this start' : fmt(m)}</td></tr></table>${reveal ? `<div class="fb ok" style="display:block"><b>${MUT_NAME[r.type]}.</b> ${mutExplain(r)}</div>` : ''}`;
+  },
+  steps: [
+    function (b) {
+      const m = MODS.mut; m.mutSeq = MUT.seq; m.sel = null; m.draw3D();
+      b.innerHTML = `<div class="goal"><b>Goal:</b> discover how a change of a single nucleotide (a <b>point mutation</b>) can affect a protein.</div>
+      <p>The top row is the original mRNA <b>AUG UAC GCU UGG GGC UAA</b> with its polypeptide above it. The bottom row will show your mutated version.</p>
+      <p>Original polypeptide: <b>Met – Tyr – Ala – Trp – Gly</b>.</p><p>Tap the amino-acid beads and mRNA bases to inspect them.</p>
+      <div class="note">A mutation is a change in the DNA base sequence. Here we show its effect directly on the mRNA for simplicity.</div>`;
+    },
+    function (b) {
+      b.innerHTML = `<h3>Types of point substitution</h3><table class="cmp"><tr><th>Type</th><th>Effect on codon</th><th>Effect on protein</th></tr>
+      <tr><td><b>Silent</b></td><td>New codon codes for the same amino acid</td><td>None</td></tr>
+      <tr><td><b>Missense</b></td><td>New codon codes for a different amino acid</td><td>One amino acid changed – effect ranges from none to severe</td></tr>
+      <tr><td><b>Nonsense</b></td><td>New codon is a stop codon</td><td>Shortened protein, usually non-functional</td></tr></table>
+      <h3>Not every mutation is harmful</h3><p>Many mutations are <b>neutral</b>. Some are harmful, and a few are <b>beneficial</b> – they provide the variation on which natural selection acts. Silent mutations work because the genetic code is <b>degenerate</b>: most amino acids have more than one codon.</p>
+      <div class="note">Insertions and deletions (frameshift mutations) also exist; they change every codon after the mutation. This lab focuses on substitutions.</div>`;
+    },
+    function (b) {
+      const m = MODS.mut;
+      const draw = (changed) => {
+        b.innerHTML = `<div class="goal"><b>Experiment:</b> pick a nucleotide, choose a new base, <b>predict</b> the outcome, then reveal it.</div>` + m.labHTML('free');
+        const r = classify(MUT.seq, m.mutSeq), res = $('#mutRes');
+        if (r.type !== 'none') {
+          res.innerHTML = `<div class="task"><div class="q">3 · Predict: what kind of mutation is this?</div><div class="opts">${['silent', 'missense', 'nonsense', 'start', 'stoploss'].map(t => `<button class="opt" data-t="${t}">${MUT_NAME[t]}</button>`).join('')}</div><div class="fb" id="mutfb"></div></div><div id="mutOut">${m.resultHTML(r, false)}</div>`;
+          res.querySelectorAll('.opt').forEach(o => o.onclick = () => {
+            res.querySelectorAll('.opt').forEach(x => x.disabled = true);
+            o.classList.add(o.dataset.t === r.type ? 'right' : 'wrong');
+            const fb = $('#mutfb'); fb.className = 'fb ' + (o.dataset.t === r.type ? 'ok' : 'no'); fb.innerHTML = o.dataset.t === r.type ? '✓ Your prediction was right.' : `✗ Not quite – it is a <b>${MUT_NAME[r.type].toLowerCase()}</b>.`;
+            $('#mutOut').innerHTML = m.resultHTML(r, true);
+          });
+        }
+        m.bindLab(b, 'free', draw);
+      };
+      draw();
+    },
+    function (b) {
+      const m = MODS.mut; m.made = m.made || {};
+      const goals = [['silent', 'Make a <b>silent</b> mutation'], ['missense', 'Make a <b>missense</b> mutation'], ['nonsense', 'Make a <b>nonsense</b> mutation']];
+      const draw = () => {
+        const r = classify(MUT.seq, m.mutSeq);
+        if (r.type !== 'none' && goals.some(g => g[0] === r.type)) m.made[r.type] = m.made[r.type] || r.mc;
+        const all = goals.every(g => m.made[g[0]]);
+        b.innerHTML = `<div class="goal"><b>Mutation hunter:</b> find one single-base change for each type. Use the codon table to plan!</div>
+        <div class="task">${goals.map(([k, t]) => `<div style="padding:4px 0">${m.made[k] ? '✅' : '⬜'} ${t}${m.made[k] ? ` – found (${m.made[k]})` : ''}</div>`).join('')}</div>` + m.labHTML('hunt').replace('<div id="mutRes"></div>', '') + (r.type !== 'none' ? `<div class="fb ${goals.some(g => g[0] === r.type) ? 'ok' : 'hint'}" style="display:block">This change is a <b>${MUT_NAME[r.type].toLowerCase()}</b>. ${mutExplain(r)}</div>` : '') + (all ? doneBadge('All three types found – remember: the outcome depends on which codon changes and how.') : '') + `<button class="btn sm" style="margin-top:8px" onclick="document.getElementById('btnCodon').click()">🔍 Codon table</button>`;
+        if (all) mark('mut', 'challenge');
+        m.bindLab(b, 'hunt', draw);
+      };
+      draw();
+    },
+    function (b) {
+      b.innerHTML = '<div class="goal"><b>Quick check</b> – at least 2 of 3 first-try correct.</div><div id="mta"></div>';
+      quiz($('#mta'), [
+        { q: 'GAA (glutamic acid) mutates to GAG (glutamic acid). This is a…', opts: ['Silent mutation', 'Missense mutation', 'Nonsense mutation', 'Frameshift mutation'], a: 0, tool: true, hint: 'Check whether the amino acid changes.', ex: 'Both codons code for glutamic acid – a silent mutation.' },
+        { q: 'UGG (tryptophan) mutates to UGA. What is the most likely result?', opts: ['A shortened, usually non-functional protein', 'An identical protein', 'One amino acid replaced, protein length the same', 'A longer protein'], a: 0, tool: true, hint: 'Look up UGA.', ex: 'UGA is a stop codon → nonsense mutation → truncated protein.' },
+        { q: 'Which statement about mutations is correct?', opts: ['Some mutations are neutral and a few can be beneficial', 'All mutations cause disease', 'Mutations always change the protein', 'Silent mutations change the amino acid sequence'], a: 0, hint: 'Think of silent and beneficial mutations.', ex: 'Many mutations have no effect, and some provide useful variation for evolution.' }
+      ], { pass: 2, title: 'Mutation lab quick check', onDone: (s, t, p) => { if (p) mark('mut', 'assess'); } });
+    }
+  ]
+};
+
+/* ================= FINAL ASSESSMENT ================= */
+MODS.final = {
+  num: '★', title: 'Final assessment', sub: '14 questions · all topics', goal: 'Show what you have learned across all modules (70% to pass).',
+  cam: [[0, 2, 16], [0, 0, 0]], ctrl: { play: true },
+  build(root) { const g = new THREE.Group(); root.add(g); this.g = g; this.dx = buildDuplex(g, 'GATTACAGCTAGCATG', {}); S.controls.autoRotate = true; S.controls.autoRotateSpeed = .6; },
+  update(dt) { this.dx.update(dt); },
+  onPlay(v) { S.controls.autoRotate = v; },
+  body(b) {
+    b.innerHTML = `<div class="goal"><b>Final assessment.</b> 14 questions of different types: multiple choice, sequence building, ordering and codon decoding. Only first-try answers score. Pass mark: 10/14 (70%).</div><div id="fin"></div>`;
+    const qs = [
+      { q: 'Which three parts make up every nucleotide?', opts: ['Phosphate, pentose sugar, nitrogenous base', 'Phosphate, glucose, amino acid', 'Ribosome, tRNA, mRNA', 'Glycerol, fatty acid, base'], a: 0, hint: 'Module 1.', ex: 'Nucleotide = phosphate + pentose + base.' },
+      { q: 'Which combination belongs to RNA?', opts: ['Ribose and uracil', 'Deoxyribose and uracil', 'Ribose and thymine', 'Deoxyribose and thymine'], a: 0, hint: 'RNA: R for ribose; U replaces T.', ex: 'RNA contains ribose and uracil.' },
+      { type: 'build', kind: 'complementary bases', q: 'Build the complementary DNA strand for 5′-GATTCA-3′.', given: seqCells('GATTCA', { pre: '5′', post: '3′' }), bases: ['A', 'T', 'G', 'C'], answer: 'CTAAGT', prefix: '3′', suffix: '5′', hint: 'A–T and G–C.', ex: '3′-CTAAGT-5′.' },
+      { q: 'How many hydrogen bonds join an A–T pair and a G–C pair?', opts: ['A–T: 2, G–C: 3', 'A–T: 3, G–C: 2', 'Both 2', 'Both 3'], a: 0, hint: 'G–C is the stronger pair.', ex: 'A–T = 2, G–C = 3.' },
+      { q: 'What does “semiconservative replication” mean?', opts: ['Each new DNA molecule has one old and one new strand', 'Half of the DNA is copied', 'Only one strand is copied', 'The old molecule is destroyed'], a: 0, hint: 'Module 3, final stage.', ex: 'Each daughter keeps one parental strand.' },
+      { type: 'order', kind: 'ordering', q: 'Put the events of DNA replication in order.', items: ['Helicase unwinds the double helix', 'Hydrogen bonds between bases break', 'DNA polymerase adds complementary nucleotides', 'Ligase joins Okazaki fragments', 'Two daughter molecules form'], hint: 'The helix must open before copying can begin.', ex: 'Unwind → separate → build → join → two molecules.' },
+      { type: 'build', kind: 'sequence completion', q: 'Transcribe this template strand into mRNA: 3′-TACCGA-5′.', given: seqCells('TACCGA', { pre: '3′', post: '5′' }), bases: ['A', 'U', 'G', 'C', 'T'], answer: 'AUGGCU', prefix: '5′', suffix: '3′', hint: 'Template A → U, T → A, G → C, C → G.', ex: '5′-AUGGCU-3′.' },
+      { q: 'Which DNA strand has the same base sequence as the mRNA (with T instead of U)?', opts: ['Coding strand', 'Template strand', 'Lagging strand', 'Neither'], a: 0, hint: 'mRNA is complementary to the template.', ex: 'The coding strand.' },
+      { q: 'Which codon codes for tryptophan (Trp)?', opts: ['UGG', 'UGA', 'UUU', 'GGU'], a: 0, tool: true, kind: 'codon decoding', hint: 'Search “Trp” in the codon table.', ex: 'UGG is the only codon for tryptophan.' },
+      { q: 'Which anticodon pairs with the start codon 5′-AUG-3′?', opts: ['3′-UAC-5′', '3′-AUG-5′', '3′-TAC-5′', '3′-GUA-5′'], a: 0, hint: 'tRNA is RNA, so no T. A–U, U–A, G–C.', ex: '3′-UAC-5′, carried by the initiator tRNA (Met).' },
+      { type: 'order', kind: 'codon decoding', q: 'Decode the mRNA 5′-AUG UUU GGC UGA-3′. Tap the amino acids in order.', items: ['Met', 'Phe', 'Gly'], distract: ['Trp', 'Cys', 'Ala'], color: aaCss, tool: true, hint: 'UGA is a stop codon.', ex: 'Met – Phe – Gly, then stop.' },
+      { q: 'A mutation changes GAA to GAG. Both code for glutamic acid. This is a…', opts: ['Silent mutation', 'Missense mutation', 'Nonsense mutation', 'Deletion'], a: 0, hint: 'Does the amino acid change?', ex: 'No change in amino acid → silent.' },
+      { q: 'A mutation changes UAC (Tyr) to UAA. What is the result?', opts: ['A shortened polypeptide – nonsense mutation', 'One amino acid replaced – missense', 'No change – silent', 'A longer polypeptide'], a: 0, tool: true, hint: 'Look up UAA.', ex: 'UAA is a stop codon → nonsense mutation.' },
+      { q: 'Where in a eukaryotic cell do transcription and translation take place?', opts: ['Transcription in the nucleus; translation on ribosomes in the cytoplasm', 'Both in the nucleus', 'Both in the cytoplasm', 'Transcription on ribosomes; translation in the nucleus'], a: 0, hint: 'DNA stays in the nucleus.', ex: 'mRNA carries the message from the nucleus to the ribosomes.' }
+    ];
+    quiz($('#fin'), qs, { pass: 10, label: 'Question', title: 'Final assessment result', passMsg: 'Congratulations – you have completed the BIOBESIR Molecular Lab assessment!', onDone: (s, t, p) => { if (p) mark('final', 'assess'); } });
+  }
+};
+
+/* ================= BOOT ================= */
+try {
+  initEngine();
+  buildCodonTable();
+  renderProgress();
+  renderDash();
+  const start = (location.hash || '').slice(1);
+  openModule(MODS[start] ? start : 'home');
+  let last = performance.now();
+  const loop = now => {
+    const dt = Math.min(.05, (now - last) / 1000); last = now;
+    try { S.mod && S.mod.update && S.mod.update(dt); } catch (e) { console.error(e); }
+    updateFlashes(dt);
+    S.dust.rotation.y += dt * .01;
+    S.controls.update();
+    S.renderer.render(S.scene, S.camera);
+    updateLabels();
+    requestAnimationFrame(loop);
+  };
+  requestAnimationFrame(loop);
+  addEventListener('hashchange', () => { const h = location.hash.slice(1); if (MODS[h] && h !== CUR) openModule(h); });
+  window.__labReady = true;
+  $('#loading').classList.add('hide');
+} catch (e) {
+  console.error(e);
+  window.__labErr('Something went wrong while starting the lab: ' + e.message);
+}
+}
+</script>
+</body>
+</html>

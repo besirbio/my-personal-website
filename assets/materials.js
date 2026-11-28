@@ -167,6 +167,24 @@ window.MATERIALS = [
 "page": "grade9.html"
 },
 {
+"code": "9",
+"title": "Seed dispersal and its causes",
+"res": [
+{
+"type": "textbook",
+"label": "Textbook",
+"href": "pdfs/grade9/9. Seed Dispersal.pdf"
+},
+{
+"type": "interactive",
+"label": "Simulation",
+"href": "simulations/grade9/9-seed-dispersal.html"
+}
+],
+"gradeLabel": "Grade 9",
+"page": "grade9.html"
+},
+{
 "code": "1",
 "title": "Chemical composition of the cell",
 "res": [
@@ -1261,5 +1279,18 @@ window.MATERIALS = [
 ],
 "gradeLabel": "Science Club",
 "page": "ScienceClub.html"
+},
+{
+"code": "",
+"title": "DNA Lab: DNA, RNA and the genetic code",
+"res": [
+{
+"type": "interactive",
+"label": "3D virtual lab",
+"href": "simulations/special/dna-lab.html"
+}
+],
+"gradeLabel": "Special sessions",
+"page": "special-sessions.html"
 }
 ];
